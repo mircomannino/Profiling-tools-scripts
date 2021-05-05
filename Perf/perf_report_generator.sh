@@ -3,6 +3,7 @@
 #   $1: binary file to profile
 #   $2: output directory
 
-EVENTS_TO_ANALYZE=("branch-misses," "cache-misses")
+EVENTS_TO_ANALYZE=("cache-misses")
+FILE_NAME=$(basename $1)
 
-sudo perf -e ${EVENTS_TO_ANALYZE} | tee $2/$1
+sudo perf stat -e ${EVENTS_TO_ANALYZE} $1 2> $2/${FILE_NAME}

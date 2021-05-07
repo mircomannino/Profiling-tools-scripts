@@ -2,36 +2,42 @@
 # Arguments:
 #       $1: binary file to profile
 
-# VTune collect information
-ROOT_VTUNE=vtune_data
-rm -rf ${ROOT_VTUNE}
-mkdir ${ROOT_VTUNE}
+BIN_NAME=$(basename $1)
 
-# VTune report information
-FORMAT=html
+# VTune collect information - ROOT folder
+ROOT_VTUNE=vtune_data
+mkdir -p ${ROOT_VTUNE}
+
+# VTune collect information - BIN specific folder
+BIN_VTUNE_DIR=${ROOT_VTUNE}/${BIN_NAME}
+mkdir -p ${BIN_VTUNE_DIR}
+
+# VTune report information - ROOT folder
 ROOT_REPORTS=reports
-rm -rf ${ROOT_REPORTS}
-mkdir ${ROOT_REPORTS}
+mkdir -p ${ROOT_REPORTS}
+
+# VTune report information - BIN specific folder
+FORMAT=html
+BIN_REPORTS_DIR=${ROOT_REPORTS}/${BIN_NAME}
+mkdir -p ${BIN_REPORTS_DIR}
 
 
 # Add list of collection options
 COLLECT_APP_ROOT=app_times
-declare -a COLLECT_TYPES=("hotspots" "memory-consumption" 
-                          "threading" "hpc-performance"
+declare -a COLLECT_TYPES=("hpc-performance"
                           "uarch-exploration" "memory-access"
                          )
 
 
-# Collect data with vtune command 
+# Collect data with vtune command
 for TYPE in "${COLLECT_TYPES[@]}"
-do 
-        rm -rf ${ROOT_VTUNE}/${ROOT_VTUNE}_${TYPE}
-        mkdir -p ${ROOT_VTUNE}/${ROOT_VTUNE}_${TYPE}
-        vtune -collect $TYPE -result-dir ${ROOT_VTUNE}/${ROOT_VTUNE}_${TYPE} $1
+do
+        mkdir -p ${BIN_VTUNE_DIR}/${ROOT_VTUNE}_${TYPE}
+        vtune -collect $TYPE -result-dir ${BIN_VTUNE_DIR}/${ROOT_VTUNE}_${TYPE} $1
 done
 
 # Create reports with vtune command
 for TYPE in "${COLLECT_TYPES[@]}"
 do
-        vtune -report summary -result-dir ${ROOT_VTUNE}/${ROOT_VTUNE}_${TYPE} -format ${FORMAT} -report-output $(pwd)/${ROOT_REPORTS}/summary_${TYPE}.${FORMAT} 
+        vtune -report summary -result-dir ${BIN_VTUNE_DIR}/${ROOT_VTUNE}_${TYPE} -format ${FORMAT} -report-output $(pwd)/${BIN_REPORTS_DIR}/summary_${TYPE}.${FORMAT}
 done

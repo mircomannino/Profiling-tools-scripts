@@ -6,4 +6,5 @@
 EVENTS_TO_ANALYZE=("cache-misses")
 FILE_NAME=$(basename $1)
 
+mkdir -p $2
 sudo perf stat -e ${EVENTS_TO_ANALYZE} $1 2> $2/${FILE_NAME}

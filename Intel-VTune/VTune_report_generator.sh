@@ -20,13 +20,14 @@ if [ "$#" -ne 9 ]; then
 fi
 
 BIN_NAME=$(basename $1)
+BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7_$8_$9
 
 # VTune collect information - ROOT folder
 ROOT_VTUNE=$2
 mkdir -p ${ROOT_VTUNE}
 
 # VTune collect information - BIN specific folder
-BIN_VTUNE_DIR=${ROOT_VTUNE}/${BIN_NAME}
+BIN_VTUNE_DIR=${ROOT_VTUNE}/${BIN_IDENTIFIER}
 mkdir -p ${BIN_VTUNE_DIR}
 
 # VTune report information - ROOT folder
@@ -35,7 +36,7 @@ mkdir -p ${ROOT_REPORTS}
 
 # VTune report information - BIN specific folder
 FORMAT=csv
-BIN_REPORTS_DIR=${ROOT_REPORTS}/${BIN_NAME}
+BIN_REPORTS_DIR=${ROOT_REPORTS}/${BIN_IDENTIFIER}
 mkdir -p ${BIN_REPORTS_DIR}
 
 
@@ -53,11 +54,11 @@ declare -a collect_types=(
 for TYPE in "${collect_types[@]}"
 do
         mkdir -p ${BIN_VTUNE_DIR}/${ROOT_VTUNE}_${TYPE}
-        vtune -collect $TYPE -result-dir ${BIN_VTUNE_DIR}/${ROOT_VTUNE}_${TYPE} $1 $4 $5 $6 $7 $8 $9
+        vtune -collect $TYPE -result-dir ${BIN_VTUNE_DIR}/${TYPE} $1 $4 $5 $6 $7 $8 $9
 done
 
 # Create reports with vtune command
 for TYPE in "${collect_types[@]}"
 do
-        vtune -report summary -result-dir ${BIN_VTUNE_DIR}/${ROOT_VTUNE}_${TYPE} -format ${FORMAT} -report-output ${BIN_REPORTS_DIR}/summary_${TYPE}.${FORMAT}
+        vtune -report summary -result-dir ${BIN_VTUNE_DIR}/${TYPE} -format ${FORMAT} -report-output ${BIN_REPORTS_DIR}/summary_${TYPE}.${FORMAT}
 done

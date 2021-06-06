@@ -1,11 +1,28 @@
 #!/bin/bash
 # Arguments:
-#       $1: binary file to profile
+#   $1: binary file to profile
+#   $2: root data
+#   $3: output directory
+#   $4: Size of image
+#   $5: Depth of image
+#   $6: Size of kernels
+#   $7: Number of kernels
+#   $8: Order of for loops
+#   $9: Number of tests to do
+
+if [ "$#" -ne 9 ]; then
+    echo "Insert the following arguments:"
+    echo "  1) Binary file to analyze"
+    echo "  2) Root data for VTune"
+    echo "  3) Output directory"
+    echo "  4-9) Arguments of binary file. See documentation"
+    exit 1
+fi
 
 BIN_NAME=$(basename $1)
 
 # VTune collect information - ROOT folder
-ROOT_VTUNE=vtune_data
+ROOT_VTUNE=$2
 mkdir -p ${ROOT_VTUNE}
 
 # VTune collect information - BIN specific folder
@@ -13,31 +30,34 @@ BIN_VTUNE_DIR=${ROOT_VTUNE}/${BIN_NAME}
 mkdir -p ${BIN_VTUNE_DIR}
 
 # VTune report information - ROOT folder
-ROOT_REPORTS=reports
+ROOT_REPORTS=$3
 mkdir -p ${ROOT_REPORTS}
 
 # VTune report information - BIN specific folder
-FORMAT=html
+FORMAT=csv
 BIN_REPORTS_DIR=${ROOT_REPORTS}/${BIN_NAME}
 mkdir -p ${BIN_REPORTS_DIR}
 
 
 # Add list of collection options
 COLLECT_APP_ROOT=app_times
-declare -a COLLECT_TYPES=("hpc-performance"
-                          "uarch-exploration" "memory-access"
-                         )
+# declare -a collect_types=("hpc-performance"
+#                           "uarch-exploration" "memory-access"
+#                          )
+declare -a collect_types=(
+        "hpc-performance"
+)
 
 
 # Collect data with vtune command
-for TYPE in "${COLLECT_TYPES[@]}"
+for TYPE in "${collect_types[@]}"
 do
-        mkdir -p ${BIN_VTUNE_DIR}/${ROOT_VTUNE}_${TYPE}
-        vtune -collect $TYPE -result-dir ${BIN_VTUNE_DIR}/${ROOT_VTUNE}_${TYPE} $1
+        echo mkdir -p ${BIN_VTUNE_DIR}/${ROOT_VTUNE}_${TYPE}
+        echo vtune -collect $TYPE -result-dir ${BIN_VTUNE_DIR}/${ROOT_VTUNE}_${TYPE} $1 $4 $5 $6 $7 $8 $9
 done
 
 # Create reports with vtune command
-for TYPE in "${COLLECT_TYPES[@]}"
+for TYPE in "${collect_types[@]}"
 do
-        vtune -report summary -result-dir ${BIN_VTUNE_DIR}/${ROOT_VTUNE}_${TYPE} -format ${FORMAT} -report-output $(pwd)/${BIN_REPORTS_DIR}/summary_${TYPE}.${FORMAT}
+        echo vtune -report summary -result-dir ${BIN_VTUNE_DIR}/${ROOT_VTUNE}_${TYPE} -format ${FORMAT} -report-output ${BIN_REPORTS_DIR}/summary_${TYPE}.${FORMAT}
 done

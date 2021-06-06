@@ -22,6 +22,11 @@ do
     cp ../Profiling-tools-scripts/Perf/perf_report_generator.sh ./Perf_analysis_N${NUMBER}_50-repetitions
     cp ../Profiling-tools-scripts/Intel-VTune/VTune_report_generator.sh ./VTune_analysis_N${NUMBER}_1-repetitions
     cp ../Profiling-tools-scripts/Intel-VTune/VTune_report_generator.sh ./VTune_analysis_N${NUMBER}_50-repetitions
+    # Permissions
+    chmod u+x ./Perf_analysis_N${NUMBER}_1-repetitions/*.sh
+    chmod u+x ./Perf_analysis_N${NUMBER}_50-repetitions/*.sh
+    chmod u+x ./VTune_analysis_N${NUMBER}_1-repetitions/*.sh
+    chmod u+x ./VTune_analysis_N${NUMBER}_50-repetitions/*.sh
     # Return to root folder
     cd ..
 done

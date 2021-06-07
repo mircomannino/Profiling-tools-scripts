@@ -48,21 +48,21 @@ class AggregatorVTuneData:
                     for line in test_file:
                         if(parameter_file == 'summary_hpc-performance.csv'):
                             if(line.find('SP GFLOPS') != -1):   # GFLOPS
-                                self.results[subdirectory]['SP_GFLOPS'] = line.split()[3]
+                                self.results[subdirectory]['SP_GFLOPS'] = float(line.split()[3])
                             if(line.find('CPI') != -1):         # CPI
-                                self.results[subdirectory]['CPI'] = line.split()[3]
+                                self.results[subdirectory]['CPI'] = float(line.split()[3])
                         if(parameter_file == 'summary_uarch-exploration.csv'):
                             if(line.find('Branch Mispredict') != -1):   # BRANCH-MISSES
-                                self.results[subdirectory]['BRANCH-MISSES'] = line.split()[3]
+                                self.results[subdirectory]['BRANCH-MISSES'] = float(line.split()[3])
                         if(parameter_file == 'summary_memory-access.csv'):
                             if(line.find('L1 Bound') != -1):     # L1 Bound
-                                self.results[subdirectory]['L1-BOUND'] = line.split()[3]
+                                self.results[subdirectory]['L1-BOUND'] = float(line.split()[3])
                             if(line.find('L2 Bound') != -1):     # L2 Bound
-                                self.results[subdirectory]['L2-BOUND'] = line.split()[3]
-                            if(line.find('L2 Bound') != -1):     # L2 Bound
-                                self.results[subdirectory]['L2-BOUND'] = line.split()[3]
+                                self.results[subdirectory]['L2-BOUND'] = float(line.split()[3])
+                            if(line.find('L3 Bound') != -1):     # L3 Bound
+                                self.results[subdirectory]['L3-BOUND'] = float(line.split()[3])
                             if(line.find('LLC Miss Count') != -1):     # LLC Misses-COUNT
-                                self.results[subdirectory]['LLC-MISSES-COUNT'] = line.split()[4]
+                                self.results[subdirectory]['LLC-MISSES-COUNT'] = float(line.split()[4])
 
         # Show the final collected data
         print('Data grouped!')

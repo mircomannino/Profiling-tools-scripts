@@ -65,7 +65,7 @@ class AggregatorPerfData:
         branch_misses_percentage = splitted_line[3]
         branch_misses_percentage = branch_misses_percentage.replace('%', '')
         branch_misses_percentage = branch_misses_percentage.replace(',', '.')
-        return branch_misses_percentage
+        return float(branch_misses_percentage)
     
     def __get_cpi_info(self, line: str):
         splitted_line = line.split()
@@ -76,12 +76,12 @@ class AggregatorPerfData:
     def __get_L1_miss_count(self, line: str):
         splitted_line = line.split()
         L1_misses_count = splitted_line[0].replace('.', '')
-        return L1_misses_count
+        return float(L1_misses_count)
     
     def __get_LLC_miss_count(self, line: str):
         splitted_line = line.split()
         LLC_misses_count = splitted_line[0].replace('.', '')
-        return LLC_misses_count
+        return float(LLC_misses_count)
 
 
 

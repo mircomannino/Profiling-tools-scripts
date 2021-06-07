@@ -19,7 +19,7 @@ fi
 
 OUTPUT_DIR=$2
 
-EVENTS_TO_ANALYZE=("cache-misses")
+EVENTS_TO_ANALYZE=("branches,branch-misses,cycles,instructions,L1-dcache-loads-misses,LLC-loads-misses")
 FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
 
 mkdir -p ${OUTPUT_DIR}

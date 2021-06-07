@@ -41,12 +41,10 @@ mkdir -p ${BIN_REPORTS_DIR}
 
 
 # Add list of collection options
-COLLECT_APP_ROOT=app_times
-# declare -a collect_types=("hpc-performance"
-#                           "uarch-exploration" "memory-access"
-#                          )
 declare -a collect_types=(
         "hpc-performance"
+        "uarch-exploration"
+        "memory-access"
 )
 
 

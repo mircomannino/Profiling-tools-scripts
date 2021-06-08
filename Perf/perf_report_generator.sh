@@ -17,6 +17,10 @@ if [ "$#" -ne 8 ]; then
     exit 1
 fi
 
+# Permissions
+echo "0" | sudo tee /proc/sys/kernel/kptr_restrict
+echo "-1" | sudo tee /proc/sys/kernel/perf_event_paranoid
+
 OUTPUT_DIR=$2
 
 EVENTS_TO_ANALYZE=("branches,branch-misses,cycles,instructions,L1-dcache-loads-misses,LLC-loads-misses")

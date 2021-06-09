@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# declare -a list_of_analysis=("1" "2" "3" "4" "5" "6" "7" "8")
-declare -a list_of_analysis=("1")
+declare -a list_of_analysis=("1" "2" "3" "4" "5" "6" "7" "8" "9")
 
 # Clone the scripts file for profiling
 rm -rf Profiling-tools-scripts

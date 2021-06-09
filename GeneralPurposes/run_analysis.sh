@@ -12,12 +12,12 @@ declare -a arguments=( # (Image size, Image depth, Kernel size, N. Kernel)
     "56 256 1 128"
     "56 128 3 128"
     "56 128 1 512"
-    "28 512 3 256"
+    "28 512 1 256"
+    "28 256 3 256"
     "28 256 1 1024"
     "14 1024 1 512"
     "14 512 3 512"
     "14 512 1 2048"
-
 )
 
 BINARY_FILE=./bin/benchmark_Naive

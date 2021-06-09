@@ -20,7 +20,7 @@ do
         for N_REPETITIONS in "${n_repetitions[@]}"
         do
             # Execution time
-            OUT_DIR_TIME=${CURRENT_DIR}/ExecutionTime_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/execution_times
+            OUT_DIR_TIME=${CURRENT_DIR}/ExecutionTime_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/execution_times
             ./analysis_N${NUMBER_ANALYSYS}/ExecutionTime_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/execution_time_generator.sh \
             ${BINARY_FILE} ${OUT_DIR_TIME} ${ARGUMENT} ${LOOP_ORDER} ${N_REPETITIONS}
 

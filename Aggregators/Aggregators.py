@@ -4,6 +4,64 @@ import shutil
 import pandas as pd
 import csv
 
+
+class AggregatorExecutionTime:
+    '''
+    Attributes:
+        output_dir_path:    Path to the output directory
+        results:            Dictionary of dictionaries
+                            The first level key is associated to the file name.
+                            The second level key is associated to each parameter to store.
+                            {
+                                'benchmark_Naive_10.txt: {median_time: 4.0, division_time: 1.2}
+                                'benchmark_Naive_50.txt: {median_time: 4.0, division_time: 1.2}
+                            }
+    '''
+    def __init__(self, output_dir_path):
+        '''
+        Args:
+            output_dir_path:    Path to the output directory
+        '''
+        self.output_dir_path = output_dir_path
+        self.results = {}
+
+        # Remove the output folder if already exists
+        if(os.path.isdir(self.output_dir_path)):
+            print('deleting ', self.output_dir_path, ' ...')
+            shutil.rmtree(self.output_dir_path)
+        
+        # Create the new folder
+        os.mkdir(self.output_dir_path) 
+
+        # Set the root for output data
+        self.root = os.path.join(os.getcwd(), self.output_dir_path)
+    
+    
+    def group_data(self):
+        # Get all the files in the folder and sort them 
+        file_in_folder = os.listdir()
+        file_in_folder = [file_name for file_name in file_in_folder if file_name.endswith('.txt')]
+        file_in_folder.sort(key = lambda x : int(x.split('_')[2].split('.')[0]))
+        # Iterate all the file of the current folder
+        for test_file_name in file_in_folder:
+            self.results[test_file_name] = {}
+            with open(os.path.join(os.getcwd(), test_file_name)) as test_file:
+                for line in test_file:
+                    if(line.find("branch-misses") != -1):           # BRANCH-MISSES
+                        self.results[test_file_name]['BRANCH-MISSES'] = self.__get_branch_info(line)
+                    if(line.find("instructions") != -1):            # INSTRUCTIONS (--> IPC)
+                        self.results[test_file_name]['CPI'] = self.__get_cpi_info(line)
+                    if(line.find("L1-dcache-loads-misses") != -1):  # L1 DATA CACHE MISSES
+                        self.results[test_file_name]['L1-MISSES-COUNT'] = self.__get_L1_miss_count(line)
+                    if(line.find("LLC-loads-misses") != -1):        # LLC DATA CACHE MISSES
+                        self.results[test_file_name]['LLC-MISSES-COUNT'] = self.__get_LLC_miss_count(line)
+        # Show the final collected data
+        print('Data grouped!')
+        for file_name, parameters in self.results.items():
+            print(file_name)
+            for parameter, val in parameters.items():
+                print('\t', parameter, ': ', val, sep='')
+
 class AggregatorVTuneData:
     '''
     output_dir_path:        Path to the output directory

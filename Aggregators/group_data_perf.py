@@ -24,11 +24,11 @@ class AggregatorPerfData:
         '''
         self.results = {}
         self.output_path = output_path + ".csv"
-        
+
     def group_data(self):
         print('\n===============================================================================')
         print('Grouping data of: ', self.output_path)
-        # Get all the files in the folder and sort them 
+        # Get all the files in the folder and sort them
         file_in_folder = os.listdir()
         file_in_folder = [file_name for file_name in file_in_folder if file_name.endswith('.txt')]
         file_in_folder.sort(key = lambda x : int(x.split('_')[2].split('.')[0]))
@@ -51,37 +51,53 @@ class AggregatorPerfData:
             print(file_name)
             for parameter, val in parameters.items():
                 print('\t', parameter, ': ', val, sep='')
-    
+
     def save_data_to_csv(self):
         if(len(self.results) != 0):
             df = pd.DataFrame(self.results)
-            df = df.T # Transpose 
+            df = df.T # Transpose
             df.to_csv(self.output_path)
 
 
-    
+
     def __get_branch_info(self, line: str):
         splitted_line = line.split()
         branch_misses_percentage = splitted_line[3]
         branch_misses_percentage = branch_misses_percentage.replace('%', '')
         branch_misses_percentage = branch_misses_percentage.replace(',', '.')
-        return float(branch_misses_percentage)
-    
+        if self.__is_number(branch_misses_percentage):
+            return float(branch_misses_percentage)
+        return -1.0
+
     def __get_cpi_info(self, line: str):
         splitted_line = line.split()
         ipc = float(splitted_line[3].replace(',', '.'))
         cpi = str(1 / ipc)
-        return cpi
-    
+        if self.__is_number(cpi):
+            return float(cpi)
+        return -1.0
+
     def __get_L1_miss_count(self, line: str):
         splitted_line = line.split()
         L1_misses_count = splitted_line[0].replace('.', '')
-        return float(L1_misses_count)
-    
+        if self.__is_number(L1_misses_count):
+            return float(L1_misses_count)
+        return -1.0
+
     def __get_LLC_miss_count(self, line: str):
         splitted_line = line.split()
         LLC_misses_count = splitted_line[0].replace('.', '')
-        return float(LLC_misses_count)
+        if self.__is_number(LLC_misses_count):
+            return float(LLC_misses_count)
+        return -1.0
+
+    def __is_number(self, str):
+        def is_float_try(str):
+            try:
+                float(str)
+                return True
+            except ValueError:
+                return False
 
 
 

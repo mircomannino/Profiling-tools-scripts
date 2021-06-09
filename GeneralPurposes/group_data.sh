@@ -10,6 +10,21 @@ for ANALYSIS_FOLDER in ./analysis_N*
 do
     cd ${ANALYSIS_FOLDER}
 
+    # Execution time
+    for EXECUTION_TIME_FOLDER in ./ExecutionTime*
+    do
+        cd ${EXECUTION_TIME_FOLDER}
+        CSV_NAME=$(basename `pwd`)
+        # Copy the python script to group data
+        cp ${ROOT_FOLDER}/Profiling-tools-scripts/Aggregators/group_execution_times.py ./execution_times/group_execution_times.py
+        # Exectue the python script to group data
+        cd ./execution_times
+        python3 group_execution_times.py -o ${CSV_NAME}
+        # Delete python script
+        rm group_execution_times.py
+        cd ../..
+    done
+
     # Perf
     for PERF_ANALYSIS_FOLDER in ./Perf*
     do

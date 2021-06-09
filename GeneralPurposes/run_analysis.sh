@@ -1,12 +1,30 @@
 #!/bin/bash
 
-declare -a list_of_analysis=("1")
+declare -a list_of_analysis=("1" "2" "3" "4" "5" "6" "7" "8" "9")
 
 declare -a n_repetitions=("1" "50")
 
 declare -a arguments=( # (Image size, Image depth, Kernel size, N. Kernel)
-    "10 3 5 16"
-    "50 40 4 4"
+    "200 3 5 64"
+    "200 3 5 128"
+    "200 64 5 64"
+    "200 64 5 128"
+    "50 128 1 128"
+    "50 128 1 512"
+    "50 128 1 1024"
+    "50 128 3 128"
+    "50 128 3 512"
+    "50 128 3 1024"
+    "50 512 1 128"
+    "50 512 1 512"
+    "50 512 1 1024"
+    "50 512 3 128"
+    "50 512 3 512"
+    "50 512 3 1024"
+    "10 512 1 512"
+    "10 512 1 1024"
+    "10 512 3 512"
+    "10 512 3 1024"
 )
 
 BINARY_FILE=./bin/benchmark_Naive

@@ -27,4 +27,4 @@ EVENTS_TO_ANALYZE=("branches,branch-misses,cycles,instructions,L1-dcache-loads-m
 FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
 
 mkdir -p ${OUTPUT_DIR}
-sudo perf stat -e ${EVENTS_TO_ANALYZE} $1 2> ${OUTPUT_DIR}/${FILE_NAME} $3 $4 $5 $6 $7 $8
+perf stat -e ${EVENTS_TO_ANALYZE} $1 2> ${OUTPUT_DIR}/${FILE_NAME} $3 $4 $5 $6 $7 $8

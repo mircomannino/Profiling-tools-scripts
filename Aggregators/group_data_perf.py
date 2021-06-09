@@ -92,12 +92,11 @@ class AggregatorPerfData:
         return -1.0
 
     def __is_number(self, str):
-        def is_float_try(str):
-            try:
-                float(str)
-                return True
-            except ValueError:
-                return False
+        try:
+            float(str)
+            return True
+        except ValueError:
+            return False
 
 
 

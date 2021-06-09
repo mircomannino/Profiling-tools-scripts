@@ -14,25 +14,25 @@ do
     cd ${CURRENT_DIR}
     # Create a folder for each type of profiling analysis
     mkdir ExecutionTime_analysis_N${NUMBER}_1-repetitions
-    mkdir ExecutionTime_analysis_N${NUMBER}_50-repetitions
+    mkdir ExecutionTime_analysis_N${NUMBER}_20-repetitions
     mkdir Perf_analysis_N${NUMBER}_1-repetitions
-    mkdir Perf_analysis_N${NUMBER}_50-repetitions
+    mkdir Perf_analysis_N${NUMBER}_20-repetitions
     # mkdir VTune_analysis_N${NUMBER}_1-repetitions
-    # mkdir VTune_analysis_N${NUMBER}_50-repetitions
+    # mkdir VTune_analysis_N${NUMBER}_20-repetitions
     # Copy the profiling scripts in the right folder
     cp ../Profiling-tools-scripts/ExecutionTime/execution_time_generator.sh ./ExecutionTime_analysis_N${NUMBER}_1-repetitions
-    cp ../Profiling-tools-scripts/ExecutionTime/execution_time_generator.sh ./ExecutionTime_analysis_N${NUMBER}_50-repetitions
+    cp ../Profiling-tools-scripts/ExecutionTime/execution_time_generator.sh ./ExecutionTime_analysis_N${NUMBER}_20-repetitions
     cp ../Profiling-tools-scripts/Perf/perf_report_generator.sh ./Perf_analysis_N${NUMBER}_1-repetitions
-    cp ../Profiling-tools-scripts/Perf/perf_report_generator.sh ./Perf_analysis_N${NUMBER}_50-repetitions
+    cp ../Profiling-tools-scripts/Perf/perf_report_generator.sh ./Perf_analysis_N${NUMBER}_20-repetitions
     # cp ../Profiling-tools-scripts/Intel-VTune/VTune_report_generator.sh ./VTune_analysis_N${NUMBER}_1-repetitions
-    # cp ../Profiling-tools-scripts/Intel-VTune/VTune_report_generator.sh ./VTune_analysis_N${NUMBER}_50-repetitions
+    # cp ../Profiling-tools-scripts/Intel-VTune/VTune_report_generator.sh ./VTune_analysis_N${NUMBER}_20-repetitions
     # Permissions
     chmod u+x ./ExecutionTime_analysis_N${NUMBER}_1-repetitions/*.sh
-    chmod u+x ./ExecutionTime_analysis_N${NUMBER}_50-repetitions/*.sh
+    chmod u+x ./ExecutionTime_analysis_N${NUMBER}_20-repetitions/*.sh
     chmod u+x ./Perf_analysis_N${NUMBER}_1-repetitions/*.sh
-    chmod u+x ./Perf_analysis_N${NUMBER}_50-repetitions/*.sh
+    chmod u+x ./Perf_analysis_N${NUMBER}_20-repetitions/*.sh
     # chmod u+x ./VTune_analysis_N${NUMBER}_1-repetitions/*.sh
-    # chmod u+x ./VTune_analysis_N${NUMBER}_50-repetitions/*.sh
+    # chmod u+x ./VTune_analysis_N${NUMBER}_20-repetitions/*.sh
     # Return to root folder
     cd ..
 done

@@ -2,7 +2,7 @@
 
 declare -a list_of_analysis=("1" "2" "3" "4" "5" "6" "7" "8" "9")
 
-declare -a n_repetitions=("1" "50")
+declare -a n_repetitions=("1" "20")
 
 declare -a arguments=( # (Image size, Image depth, Kernel size, N. Kernel)
     "229 3 7 64"

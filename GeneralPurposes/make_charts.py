@@ -13,15 +13,15 @@ class ChartsCreator:
     def __init__(self, output_path):
         self.output_path = output_path
         self.analysis_colors = {
-            'N1': 'g',
-            'N2': 'b',
-            'N3': 'r',
-            'N4': 'c',
-            'N5': 'm',
-            'N6': 'y',
-            'N7': '#800080',
-            'N8': '#FF7F50',
-            'N9': '#F1B666'
+            'N1': '#C0392B',
+            'N2': '#7A0F9C',
+            'N3': '#2980B9',
+            'N4': '#16A085',
+            'N5': '#D68910',
+            'N6': '#7F8C8D',
+            'N7': '#273746',
+            'N8': '#D39DE4',
+            'N9': '#136397'
         }
         self.data_folder_by_tool = {
             'ExecutionTime': 'execution_times',
@@ -95,9 +95,10 @@ class ChartsCreator:
         # Create the plot
         n_groups = len(name_of_dimensions)
         fig, ax = plt.subplots()
+        ax.grid(axis='y')
         # index = np.arange(n_groups)
         index = [n for n in range(len(name_of_dimensions))]
-        bar_width = 0.1
+        bar_width = 0.09
         opacity = 0.8
 
         # Populate the plot
@@ -108,7 +109,6 @@ class ChartsCreator:
                 [(n + offset*bar_width) for n in index],
                 results_ordered_by_analysis[n_analysis],
                 bar_width,
-                alpha = opacity,
                 color = self.analysis_colors[n_analysis],
                 label = n_analysis 
             ))
@@ -117,12 +117,12 @@ class ChartsCreator:
         # Save the plot
         plt.xlabel('Dimensions')
         plt.ylabel(measurement_unit)
-        plt.title(parameter_to_plot)
+        plt.title(chart_name.replace('.pdf', ''))
         plt.xticks(
             [(n + bar_width) for n in index], 
             [label.replace('benchmark_Naive_', '') for label in name_of_dimensions], 
             rotation=90)
-        plt.legend()
+        plt.legend(loc='best')
 
         plt.tight_layout()
         # plt.show()
@@ -139,7 +139,5 @@ if __name__ == "__main__":
     my_chart_creator = ChartsCreator('./charts')
     my_chart_creator.make_chart('TIME-MEDIAN', 'Time (ms)', 1, 'ExecutionTime')
     my_chart_creator.make_chart('BRANCH-MISSES', '% of clockticks', 1, 'Perf')
-    my_chart_creator.make_chart('L1-MISSES-COUNT', 'N. of miss', 1, 'Perf')
 
-	
     

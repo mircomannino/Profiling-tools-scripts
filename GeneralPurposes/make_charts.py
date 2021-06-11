@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 import os
-import re 
+import json
 import matplotlib.pyplot as plt
 
 class ChartsCreator:
@@ -28,19 +28,21 @@ class ChartsCreator:
             'Perf': 'perf_reports',
             'VTune': 'reports'
         }
-    
-    def make_chart(self, parameter_to_plot, measurement_unit, n_repetitions, tool):
+
+    def make_chart(self, parameter_to_plot, measurement_unit, n_repetitions, tool, compute_best_order, min_is_best):
         '''
         Args:
             parameter_to_plot:      Name of the parameter to use in the charts
             n_repetitions:          Number of repetitions used in the analysis
             tool:                   Name of the tool from which the results come from [ExecutionTime, Perf, VTune]
+            compute_best_order:     Bool to say if you want the loop order that obtain best results
+            min_is_best:            Bool needed only if compute_best_order id True
         '''
         # Get all the folders with analysis
         analysis_directories = os.listdir()
         analysis_directories = [analysis_directory for analysis_directory in analysis_directories if (
             os.path.isdir(analysis_directory) and analysis_directory.find('analysis_N')!=-1)]
-        
+
         # Collect data from each analysis folder
         results = {}
         for analysis_directory in analysis_directories:
@@ -48,18 +50,18 @@ class ChartsCreator:
             n_analysis = analysis_directory.replace('analysis_', '')    # 'analysis_N1' ---> 'N1'
             print(n_analysis)
 
-            # Get data folder path 
+            # Get data folder path
             data_folder = tool + '_'
             data_folder += analysis_directory + '_'
             data_folder += str(n_repetitions) + '-repetitions'
-            data_folder = os.path.join(analysis_directory, data_folder, self.data_folder_by_tool[tool]) 
+            data_folder = os.path.join(analysis_directory, data_folder, self.data_folder_by_tool[tool])
             print(data_folder)
 
             # Read the csv file in a DataFrame
             benchmarks_data_path = [file_ for file_ in os.listdir(data_folder) if file_.endswith('.csv')][0]
             benchmarks_data = pd.read_csv(os.path.join(data_folder, benchmarks_data_path))
 
-            # Get only the column of interest 
+            # Get only the column of interest
             for index, row in benchmarks_data.iterrows():
                 # Get info from dataframe
                 dimensions = row[0].replace('.txt', '')[:-4]     # benchmark_Naive_x_x_x_x_x_x.txt ---> benchmark_Naive_x_x_x_x
@@ -67,11 +69,17 @@ class ChartsCreator:
                 # Store values
                 if dimensions not in results.keys():
                     results[dimensions] = {}
-                results[dimensions][n_analysis] = value 
+                results[dimensions][n_analysis] = value
 
         # Plot results
         chart_name = parameter_to_plot + '_' + str(n_repetitions) + '-repetitions_' + tool + '.pdf'
         self.__plot_results(results, chart_name, parameter_to_plot, measurement_unit)
+
+        # Compute the best loop order
+        if(compute_best_order):
+            best_order_name = chart_name.replace('.pdf', '')
+            best_order_name += 'BEST_ORDER.txt'
+            self.__compute_best_order(results, min_is_best, best_order_name, parameter_to_plot)
 
     def __plot_results(self, results: dict, chart_name, parameter_to_plot, measurement_unit):
         '''
@@ -105,12 +113,12 @@ class ChartsCreator:
         offset = 0
         for n_analysis in results_ordered_by_analysis.keys():
             rects = (plt.bar(
-                # index + offset*bar_width, 
+                # index + offset*bar_width,
                 [(n + offset*bar_width) for n in index],
                 results_ordered_by_analysis[n_analysis],
                 bar_width,
                 color = self.analysis_colors[n_analysis],
-                label = n_analysis 
+                label = n_analysis
             ))
             offset += 1
 
@@ -119,25 +127,65 @@ class ChartsCreator:
         plt.ylabel(measurement_unit)
         plt.title(chart_name.replace('.pdf', ''))
         plt.xticks(
-            [(n + bar_width) for n in index], 
-            [label.replace('benchmark_Naive_', '') for label in name_of_dimensions], 
+            [(n + bar_width) for n in index],
+            [label.replace('benchmark_Naive_', '') for label in name_of_dimensions],
             rotation=90)
-        plt.legend(loc='best')
-
+        plt.legend(loc='best', fontsize=6)
         plt.tight_layout()
         # plt.show()
 
-        # TODO: Save the plot in a file with the appropriate name
+        # Save the plot in a file with the appropriate name
         plt.savefig(os.path.join(self.output_path, chart_name))
 
 
+    def __compute_best_order(self, results, min_is_best, best_order_name, paramater_to_plot):
+        '''
+        Find for each of the dimensions the best loop order for the parameter of interest
+        '''
+        best_orders = {}
+        best_value = {}
+        for dimensions in results.keys():
+            if min_is_best:
+                best_value[dimensions] = min(results[dimensions].items(), key = lambda x : x[1])[1]
+                best_orders[dimensions] = [k for k, v in results[dimensions].items() if v==best_value[dimensions]]
+            else:
+                best_orders[dimensions] = max(results[dimensions].items(), key = lambda x : x[1])
 
-        
-        
+        # Save on file
+        with open(os.path.join(self.output_path, best_order_name), 'w+') as out_file:
+            # Header
+            out_file.write('BEST ORDER LOOPS - ')
+            out_file.write(paramater_to_plot)
+            out_file.write('\n')
+            out_file.write('DIMENSIONS\t\t\t')
+            out_file.write('BEST VALUE\t')
+            out_file.write('LOOP ORDERS\t\n')
+            out_file.write('-'*100)
+            out_file.write('\n')
+            for dimensions in best_orders:
+                # Dimensions
+                out_file.write(dimensions)
+                out_file.write('\t')
+                # Best value
+                out_file.write(str(best_value[dimensions])) # value
+                out_file.write('\t\t')
+                # Best loop order
+                for loop_order in sorted(best_orders[dimensions]):
+                    # print(dimensions, ': ', loop_order)
+                    out_file.write(loop_order) # N
+                    out_file.write('\t')
+                out_file.write('\n')
+
+
+
+
+
 
 if __name__ == "__main__":
     my_chart_creator = ChartsCreator('./charts')
-    my_chart_creator.make_chart('TIME-MEDIAN', 'Time (ms)', 1, 'ExecutionTime')
-    my_chart_creator.make_chart('BRANCH-MISSES', '% of clockticks', 1, 'Perf')
+    my_chart_creator.make_chart('TIME-MEDIAN', 'Time (ms)', 20, 'ExecutionTime', compute_best_order=True, min_is_best=True)
+    my_chart_creator.make_chart('BRANCH-MISSES', '% of clockticks', 20, 'Perf', compute_best_order=True, min_is_best=True)
+    my_chart_creator.make_chart('CPI', 'CPI', 20, 'Perf', compute_best_order=True, min_is_best=True)
+    my_chart_creator.make_chart('L1-MISSES-COUNT', 'N. of Miss', 20, 'Perf', compute_best_order=True, min_is_best=True)
 
     

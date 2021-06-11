@@ -28,7 +28,7 @@ class ChartsCreator:
             'VTune': 'reports'
         }
     
-    def make_chart(self, parameter_to_plot, n_repetitions, tool):
+    def make_chart(self, parameter_to_plot, measurement_unit, n_repetitions, tool):
         '''
         Args:
             parameter_to_plot:      Name of the parameter to use in the charts
@@ -69,9 +69,10 @@ class ChartsCreator:
                 results[dimensions][n_analysis] = value 
 
         # Plot results
-        self.__plot_results(results, 'MIRCO')
+        chart_name = parameter_to_plot + '_' + str(n_repetitions) + '-repetitions_' + tool + '.pdf'
+        self.__plot_results(results, chart_name, parameter_to_plot, measurement_unit)
 
-    def __plot_results(self, results: dict, name: str):
+    def __plot_results(self, results: dict, chart_name, parameter_to_plot, measurement_unit):
         '''
         The dict with results must have in the following format:
             results[benchmark_Naive_10_1_1_3] = {'N1': 0.3, 'N2': 0.3, 'N3': 1.3}
@@ -93,7 +94,8 @@ class ChartsCreator:
         # Create the plot
         n_groups = len(name_of_dimensions)
         fig, ax = plt.subplots()
-        index = np.arange(n_groups)
+        # index = np.arange(n_groups)
+        index = [n for n in range(len(name_of_dimensions))]
         bar_width = 0.1
         opacity = 0.8
 
@@ -101,7 +103,8 @@ class ChartsCreator:
         offset = 0
         for n_analysis in results_ordered_by_analysis.keys():
             rects = (plt.bar(
-                index + offset*bar_width, 
+                # index + offset*bar_width, 
+                [(n + offset*bar_width) for n in index],
                 results_ordered_by_analysis[n_analysis],
                 bar_width,
                 alpha = opacity,
@@ -112,15 +115,19 @@ class ChartsCreator:
 
         # Save the plot
         plt.xlabel('Dimensions')
-        plt.ylabel('Time (seconds)')
-        plt.title('Execution time')
-        plt.xticks(index + bar_width/2, name_of_dimensions)
+        plt.ylabel(measurement_unit)
+        plt.title(parameter_to_plot)
+        plt.xticks(
+            [(n + bar_width) for n in index], 
+            [label.replace('benchmark_Naive_', '') for label in name_of_dimensions], 
+            rotation=90)
         plt.legend()
 
         plt.tight_layout()
-        plt.show()
+        # plt.show()
 
         # TODO: Save the plot in a file with the appropriate name
+        plt.savefig(os.path.join(self.output_path, chart_name))
 
 
 
@@ -129,6 +136,7 @@ class ChartsCreator:
 
 if __name__ == "__main__":
     my_chart_creator = ChartsCreator('./charts')
-    my_chart_creator.make_chart('TIME-MEDIAN', 1, 'ExecutionTime')
+    my_chart_creator.make_chart('TIME-MEDIAN', 'Time (ms)', 1, 'ExecutionTime')
+    my_chart_creator.make_chart('BRANCH-MISSES', '% of clockticks', 1, 'Perf')
 
     

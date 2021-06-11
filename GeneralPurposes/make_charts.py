@@ -16,11 +16,12 @@ class ChartsCreator:
             'N1': 'g',
             'N2': 'b',
             'N3': 'r',
-            'N4': '00FFFF',
-            'N5': '0000FF',
-            'N6': 'FF00FF',
-            'N7': '800080',
-            'N8': 'FF7F50'
+            'N4': 'c',
+            'N5': 'm',
+            'N6': 'y',
+            'N7': '#800080',
+            'N8': '#FF7F50',
+            'N9': '#F1B666'
         }
         self.data_folder_by_tool = {
             'ExecutionTime': 'execution_times',
@@ -138,5 +139,7 @@ if __name__ == "__main__":
     my_chart_creator = ChartsCreator('./charts')
     my_chart_creator.make_chart('TIME-MEDIAN', 'Time (ms)', 1, 'ExecutionTime')
     my_chart_creator.make_chart('BRANCH-MISSES', '% of clockticks', 1, 'Perf')
+    my_chart_creator.make_chart('L1-MISSES-COUNT', 'N. of miss', 1, 'Perf')
 
+	
     

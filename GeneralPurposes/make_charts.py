@@ -147,9 +147,9 @@ class ChartsCreator:
         for dimensions in results.keys():
             if min_is_best:
                 best_value[dimensions] = min(results[dimensions].items(), key = lambda x : x[1])[1]
-                best_orders[dimensions] = [k for k, v in results[dimensions].items() if v==best_value[dimensions]]
             else:
-                best_orders[dimensions] = max(results[dimensions].items(), key = lambda x : x[1])
+		best_value[dimensions] = max(results[dimensions].items(), key = lambda x : x[1])[1]
+  	    best_orders[dimensions] = [k for k, v in results[dimensions].items() if v==best_value[dimensions]]
 
         # Save on file
         with open(os.path.join(self.output_path, best_order_name), 'w+') as out_file:

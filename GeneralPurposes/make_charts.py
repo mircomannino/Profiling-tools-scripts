@@ -4,14 +4,17 @@ import numpy as np
 import os
 import json
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import MinMaxScaler
 
 class ChartsCreator:
     '''
     Attributes:
         ouput_path:     Path of the folder in which the results will be stored
+        file_format:    Format in which tha files will be saved (pdf, png, ...)
     '''
-    def __init__(self, output_path):
+    def __init__(self, output_path, file_format):
         self.output_path = output_path
+        self.file_format = '.' + file_format
         self.analysis_colors = {
             'N1': '#C0392B',
             'N2': '#7A0F9C',
@@ -29,7 +32,7 @@ class ChartsCreator:
             'VTune': 'reports'
         }
 
-    def make_chart(self, parameter_to_plot, measurement_unit, n_repetitions, tool, compute_best_order, min_is_best):
+    def make_chart(self, parameter_to_plot, measurement_unit, n_repetitions, tool, compute_best_order, min_is_best, log_scale):
         '''
         Args:
             parameter_to_plot:      Name of the parameter to use in the charts
@@ -37,6 +40,7 @@ class ChartsCreator:
             tool:                   Name of the tool from which the results come from [ExecutionTime, Perf, VTune]
             compute_best_order:     Bool to say if you want the loop order that obtain best results
             min_is_best:            Bool needed only if compute_best_order id True
+            log_scale:              Bool to sey if the plot will be in logaritmic scale
         '''
         # Get all the folders with analysis
         analysis_directories = os.listdir()
@@ -48,7 +52,6 @@ class ChartsCreator:
         for analysis_directory in analysis_directories:
             # Get Number of the analysis
             n_analysis = analysis_directory.replace('analysis_', '')    # 'analysis_N1' ---> 'N1'
-            print(n_analysis)
 
             # Get data folder path
             data_folder = tool + '_'
@@ -71,17 +74,18 @@ class ChartsCreator:
                     results[dimensions] = {}
                 results[dimensions][n_analysis] = value
 
+
         # Plot results
-        chart_name = parameter_to_plot + '_' + str(n_repetitions) + '-repetitions_' + tool + '.pdf'
-        self.__plot_results(results, chart_name, parameter_to_plot, measurement_unit)
+        chart_name = parameter_to_plot + '_' + str(n_repetitions) + '-repetitions_' + tool + self.file_format
+        self.__plot_results(results, chart_name, parameter_to_plot, measurement_unit, log_scale)
 
         # Compute the best loop order
         if(compute_best_order):
-            best_order_name = chart_name.replace('.pdf', '')
+            best_order_name = chart_name.replace(self.file_format, '')
             best_order_name += 'BEST_ORDER.txt'
             self.__compute_best_order(results, min_is_best, best_order_name, parameter_to_plot)
 
-    def __plot_results(self, results: dict, chart_name, parameter_to_plot, measurement_unit):
+    def __plot_results(self, results: dict, chart_name, parameter_to_plot, measurement_unit, log_scale):
         '''
         The dict with results must have in the following format:
             results[benchmark_Naive_10_1_1_3] = {'N1': 0.3, 'N2': 0.3, 'N3': 1.3}
@@ -104,6 +108,8 @@ class ChartsCreator:
         n_groups = len(name_of_dimensions)
         fig, ax = plt.subplots()
         ax.grid(axis='y')
+        if(log_scale):
+            ax.set_yscale('log')
         # index = np.arange(n_groups)
         index = [n for n in range(len(name_of_dimensions))]
         bar_width = 0.09
@@ -125,7 +131,7 @@ class ChartsCreator:
         # Save the plot
         plt.xlabel('Dimensions')
         plt.ylabel(measurement_unit)
-        plt.title(chart_name.replace('.pdf', ''))
+        plt.title(chart_name.replace(self.file_format, ''))
         plt.xticks(
             [(n + bar_width) for n in index],
             [label.replace('benchmark_Naive_', '') for label in name_of_dimensions],
@@ -148,8 +154,8 @@ class ChartsCreator:
             if min_is_best:
                 best_value[dimensions] = min(results[dimensions].items(), key = lambda x : x[1])[1]
             else:
-		best_value[dimensions] = max(results[dimensions].items(), key = lambda x : x[1])[1]
-  	    best_orders[dimensions] = [k for k, v in results[dimensions].items() if v==best_value[dimensions]]
+                best_value[dimensions] = max(results[dimensions].items(), key = lambda x : x[1])[1]
+            best_orders[dimensions] = [k for k, v in results[dimensions].items() if v==best_value[dimensions]]
 
         # Save on file
         with open(os.path.join(self.output_path, best_order_name), 'w+') as out_file:
@@ -182,10 +188,10 @@ class ChartsCreator:
 
 
 if __name__ == "__main__":
-    my_chart_creator = ChartsCreator('./charts')
-    my_chart_creator.make_chart('TIME-MEDIAN', 'Time (ms)', 20, 'ExecutionTime', compute_best_order=True, min_is_best=True)
-    my_chart_creator.make_chart('BRANCH-MISSES', '% of clockticks', 20, 'Perf', compute_best_order=True, min_is_best=True)
-    my_chart_creator.make_chart('CPI', 'CPI', 20, 'Perf', compute_best_order=True, min_is_best=True)
-    my_chart_creator.make_chart('L1-MISSES-COUNT', 'N. of Miss', 20, 'Perf', compute_best_order=True, min_is_best=True)
-
-    
+    my_chart_creator = ChartsCreator('./charts', file_format='png')
+    n_repetitions = 1
+    my_chart_creator.make_chart('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', compute_best_order=True, min_is_best=True, log_scale=False)
+    my_chart_creator.make_chart('BRANCH-MISSES', '% of branches', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False)
+    my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False)
+    my_chart_creator.make_chart('L1-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False)
+    my_chart_creator.make_chart('LLC-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=True)

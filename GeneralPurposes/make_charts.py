@@ -32,15 +32,16 @@ class ChartsCreator:
             'VTune': 'reports'
         }
 
-    def make_chart(self, parameter_to_plot, measurement_unit, n_repetitions, tool, compute_best_order, min_is_best, log_scale):
+    def make_chart(self, parameter_to_plot, measurement_unit, n_repetitions, tool, compute_best_order, min_is_best, log_scale, normalize):
         '''
         Args:
             parameter_to_plot:      Name of the parameter to use in the charts
-            n_repetitions:          Number of repetitions used in the analysis
+            n_repetitions:          Number of repetitions used in the analysisfile_format
             tool:                   Name of the tool from which the results come from [ExecutionTime, Perf, VTune]
             compute_best_order:     Bool to say if you want the loop order that obtain best results
             min_is_best:            Bool needed only if compute_best_order id True
-            log_scale:              Bool to sey if the plot will be in logaritmic scale
+            log_scale:              Bool to say if the plot will be in logaritmic scale
+            normalize:              Bool to say if the results will be normalized respect to the first analysis
         '''
         # Get all the folders with analysis
         analysis_directories = os.listdir()
@@ -75,8 +76,8 @@ class ChartsCreator:
 
 
         # Plot results
-        chart_name = parameter_to_plot + '_' + str(n_repetitions) + '-repetitions_' + tool + self.file_format
-        self.__plot_results(results, chart_name, parameter_to_plot, measurement_unit, log_scale)
+        chart_name = parameter_to_plot + '_' + str(n_repetitions) + '-repetitions_' + tool + ('_normalized_' if normalize else '') + self.file_format
+        self.__plot_results(results, chart_name, parameter_to_plot, measurement_unit, log_scale, normalize)
 
         # Compute the best loop order
         if(compute_best_order):
@@ -84,20 +85,32 @@ class ChartsCreator:
             best_order_name += 'BEST_ORDER.txt'
             self.__compute_best_order(results, min_is_best, best_order_name, parameter_to_plot)
 
-    def __plot_results(self, results: dict, chart_name, parameter_to_plot, measurement_unit, log_scale):
+    def __plot_results(self, results: dict, chart_name, parameter_to_plot, measurement_unit, log_scale, normalize):
         '''
         The dict with results must have in the following format:
             results[benchmark_Naive_10_1_1_3] = {'N1': 0.3, 'N2': 0.3, 'N3': 1.3}
             results[benchmark_Naive_50_1_1_3] = {'N1': 1.2, 'N2': 1.1, 'N3': 2.0}
         '''
+        # Normalize the results by Analysis N1
+        results_normalized = {}
+        if normalize:
+            for dimension in results.keys():
+                N1_value = float(results[dimension]['N1'])
+                results_normalized[dimension] = {
+                    n_analysis: (float(value)/N1_value) for (n_analysis, value) in results[dimension].items()
+                }
+        results = results_normalized if normalize else results
+
         # Order the name of dimensions (Order: Image size, Image depth, Kernel size, N Kernels)
         name_of_dimensions_ordered = [
             dimension for dimension in 
             sorted(list(results.keys()) ,key=lambda x: (int(x.split('_')[2]), int(x.split('_')[3])))
         ]
+
         # Order the results by analysis order and get some info for plotting
         results_ordered_by_analysis = {}
         name_of_dimensions = []
+
         for dimensions in name_of_dimensions_ordered:
             for n_analysis, value in sorted(results[dimensions].items()):
                 # Append the result
@@ -107,6 +120,8 @@ class ChartsCreator:
                 # Append the name of the dimensions
                 if dimensions not in name_of_dimensions:
                     name_of_dimensions.append(dimensions)
+
+
 
         # Create the plot
         n_groups = len(name_of_dimensions)
@@ -193,10 +208,10 @@ class ChartsCreator:
 if __name__ == "__main__":
     my_chart_creator = ChartsCreator('./charts', file_format='png')
     n_repetitions = 1
-    my_chart_creator.make_chart('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', compute_best_order=True, min_is_best=True, log_scale=False)
-    my_chart_creator.make_chart('BRANCH-MISSES', '% of branches', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False)
-    my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False)
-    my_chart_creator.make_chart('L1-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False)
-    my_chart_creator.make_chart('LLC-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=True)
+    my_chart_creator.make_chart('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
+    my_chart_creator.make_chart('BRANCH-MISSES', '% of branches', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
+    my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
+    my_chart_creator.make_chart('L1-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
+    my_chart_creator.make_chart('LLC-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=True, normalize=True)
 
     

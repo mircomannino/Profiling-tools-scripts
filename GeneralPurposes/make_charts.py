@@ -58,7 +58,6 @@ class ChartsCreator:
             data_folder += analysis_directory + '_'
             data_folder += str(n_repetitions) + '-repetitions'
             data_folder = os.path.join(analysis_directory, data_folder, self.data_folder_by_tool[tool])
-            print(data_folder)
 
             # Read the csv file in a DataFrame
             benchmarks_data_path = [file_ for file_ in os.listdir(data_folder) if file_.endswith('.csv')][0]
@@ -91,10 +90,15 @@ class ChartsCreator:
             results[benchmark_Naive_10_1_1_3] = {'N1': 0.3, 'N2': 0.3, 'N3': 1.3}
             results[benchmark_Naive_50_1_1_3] = {'N1': 1.2, 'N2': 1.1, 'N3': 2.0}
         '''
+        # Order the name of dimensions (Order: Image size, Image depth, Kernel size, N Kernels)
+        name_of_dimensions_ordered = [
+            dimension for dimension in 
+            sorted(list(results.keys()) ,key=lambda x: (int(x.split('_')[2]), int(x.split('_')[3])))
+        ]
         # Order the results by analysis order and get some info for plotting
         results_ordered_by_analysis = {}
         name_of_dimensions = []
-        for dimensions in results.keys():
+        for dimensions in name_of_dimensions_ordered:
             for n_analysis, value in sorted(results[dimensions].items()):
                 # Append the result
                 if n_analysis not in results_ordered_by_analysis:
@@ -119,7 +123,6 @@ class ChartsCreator:
         offset = 0
         for n_analysis in results_ordered_by_analysis.keys():
             rects = (plt.bar(
-                # index + offset*bar_width,
                 [(n + offset*bar_width) for n in index],
                 results_ordered_by_analysis[n_analysis],
                 bar_width,
@@ -195,3 +198,5 @@ if __name__ == "__main__":
     my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False)
     my_chart_creator.make_chart('L1-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False)
     my_chart_creator.make_chart('LLC-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=True)
+
+    

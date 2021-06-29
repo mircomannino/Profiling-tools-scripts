@@ -52,11 +52,11 @@ declare -a collect_types=(
 for TYPE in "${collect_types[@]}"
 do
         mkdir -p ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE}
-        vtune -collect $TYPE -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} $1 $4 $5 $6 $7 $8 $9
+        /opt/intel/vtune_amplifier/bin64/amplxe-cl -collect $TYPE -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} $1 $4 $5 $6 $7 $8 $9
 done
 
 # Create reports with vtune command
 for TYPE in "${collect_types[@]}"
 do
-        vtune -report summary -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -format ${FORMAT} -report-output ${BIN_REPORTS_DIR}/summary_${TYPE}.${FORMAT}
+        /opt/intel/vtune_amplifier/bin64/amplxe-cl -report summary -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -format ${FORMAT} -report-output ${BIN_REPORTS_DIR}/summary_${TYPE}.${FORMAT}
 done

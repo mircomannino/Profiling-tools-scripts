@@ -59,4 +59,5 @@ done
 for TYPE in "${collect_types[@]}"
 do
         /opt/intel/vtune_amplifier/bin64/amplxe-cl -report summary -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -format ${FORMAT} -report-output ${BIN_REPORTS_DIR}/summary_${TYPE}.${FORMAT}
+
 done

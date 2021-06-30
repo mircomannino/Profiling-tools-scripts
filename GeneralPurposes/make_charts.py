@@ -16,15 +16,15 @@ class ChartsCreator:
         self.output_path = output_path
         self.file_format = '.' + file_format
         self.analysis_colors = {
-            'N1': '#C0392B',
-            'N2': '#7A0F9C',
-            'N3': '#2980B9',
-            'N4': '#16A085',
-            'N5': '#D68910',
-            'N6': '#7F8C8D',
-            'N7': '#273746',
-            'N8': '#D39DE4',
-            'N9': '#136397'
+            'N1': 'red',
+            'N2': 'blue',
+            'N3': 'green',
+            'N4': 'orange',
+            'N5': 'purple',
+            'N6': 'brown',
+            'N7': 'pink',
+            'N8': 'olive',
+            'N9': 'cyan'
         }
         self.data_folder_by_tool = {
             'ExecutionTime': 'execution_times',

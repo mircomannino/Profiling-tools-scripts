@@ -20,7 +20,11 @@ fi
 OUTPUT_DIR=$2
 BINARY_FILE=$1
 
-FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
+# Naive
+if [ "$#" -e 8 ]; then 
+    FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
+elif if [ "$#" -ne 2 ]; then
+    FILE_NAME=$(basename $1)_$3_$4.txt  
 
 mkdir -p ${OUTPUT_DIR}
 ${BINARY_FILE} $3 $4 $5 $6 $7 $8 | tee ${OUTPUT_DIR}/${FILE_NAME}

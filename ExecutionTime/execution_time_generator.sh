@@ -24,9 +24,9 @@ BINARY_FILE=$1
 FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt 
 
 mkdir -p ${OUTPUT_DIR}
-if [ ${BINARY_FILE} = "benchmark_Naive" ]; then
+if [ ${BINARY_FILE} = "./bin/benchmark_Naive" ]; then
     ${BINARY_FILE} $3 $4 $5 $6 $7 $8 | tee ${OUTPUT_DIR}/${FILE_NAME}
 fi
-if [ ${BINARY_FILE} = "benchmark_AlexNet" ]; then
+if [ ${BINARY_FILE} = "./bin/benchmark_AlexNet" ]; then
     ${BINARY_FILE} $7 $8 | tee ${OUTPUT_DIR}/${FILE_NAME}
 fi

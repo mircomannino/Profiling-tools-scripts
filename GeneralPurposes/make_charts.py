@@ -68,22 +68,53 @@ class ChartsCreator:
             for index, row in benchmarks_data.iterrows():
                 # Get info from dataframe
                 dimensions = row[0].replace('.txt', '')[:-4]     # benchmark_Naive_x_x_x_x_x_x.txt ---> benchmark_Naive_x_x_x_x
+                dimensions = dimensions.replace('benchmark_Naive_', '')
                 value = row[parameter_to_plot]
                 # Store values
-                if dimensions not in results.keys():
-                    results[dimensions] = {}
-                results[dimensions][n_analysis] = value
+                if n_analysis not in results.keys():
+                    results[n_analysis] = {}
+                results[n_analysis][dimensions] = value
 
+        # Normalize
+        if(normalize):
+            N1_values = {dim: val for (dim, val) in results['N1'].items()}
+            for n_analysis in results.keys():
+                for dimensions in results[n_analysis].keys():
+                    results[n_analysis][dimensions] /= N1_values[dimensions]
+
+        # Order the name of dimensions (Order: Image size, Image depth, Kernel size, N Kernels)
+        results_ordered = {}
+        for n_analysis in sorted(results.keys()):
+            results_ordered[n_analysis] = {}
+            for dimensions in sorted(list(results[n_analysis].keys()) ,key=lambda x: (int(x.split('_')[0]), int(x.split('_')[3]))):
+                results_ordered[n_analysis][dimensions] = results[n_analysis][dimensions]
+        results = results_ordered
+        del results_ordered
+
+        # Plot parameters
+        plt.rcParams["figure.figsize"] = [30,9]
+        font = {'family' : 'DejaVu Sans',
+        'weight' : 'bold',
+        'size'   : 22}
+        plt.rc('font', **font)
 
         # Plot results
-        chart_name = parameter_to_plot + '_' + str(n_repetitions) + '-repetitions_' + tool + ('_normalized_' if normalize else '') + self.file_format
-        self.__plot_results(results, chart_name, parameter_to_plot, measurement_unit, log_scale, normalize)
+        result_df = pd.DataFrame(results)
+        ax = result_df.plot.bar(rot=90, width=0.9)
+        ax.grid(axis='y')
 
-        # Compute the best loop order
-        if(compute_best_order):
-            best_order_name = chart_name.replace(self.file_format, '')
-            best_order_name += 'BEST_ORDER.txt'
-            self.__compute_best_order(results, min_is_best, best_order_name, parameter_to_plot)
+        chart_name = parameter_to_plot + '_' + str(n_repetitions) + '-repetitions_' + tool + ('_normalized_' if normalize else '') + self.file_format
+        plt.xlabel('Dimensions')
+        plt.ylabel(measurement_unit)
+        plt.title(chart_name.replace(self.file_format, ''))
+        # plt.legend(loc='best', fontsize=20)
+        plt.legend(bbox_to_anchor=(1, 1), loc='upper left', fontsize=20)
+        plt.tight_layout()
+        # plt.show()
+
+        # Save the plot in a file with the appropriate name
+        plt.savefig(os.path.join(self.output_path, chart_name))
+        # self.__plot_results(results, chart_name, parameter_to_plot, measurement_unit, log_scale, normalize)
 
     def __plot_results(self, results: dict, chart_name, parameter_to_plot, measurement_unit, log_scale, normalize):
         '''
@@ -103,7 +134,7 @@ class ChartsCreator:
 
         # Order the name of dimensions (Order: Image size, Image depth, Kernel size, N Kernels)
         name_of_dimensions_ordered = [
-            dimension for dimension in 
+            dimension for dimension in
             sorted(list(results.keys()) ,key=lambda x: (int(x.split('_')[2]), int(x.split('_')[3])))
         ]
 
@@ -207,21 +238,18 @@ class ChartsCreator:
 
 if __name__ == "__main__":
     my_chart_creator = ChartsCreator('./charts', file_format='png')
-    n_repetitions = 1
+    n_repetitions = 3
 
     # Execution time
     my_chart_creator.make_chart('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
-    
-    # Perf
-    my_chart_creator.make_chart('BRANCH-MISSES', '% of branches', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
-    my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
-    my_chart_creator.make_chart('L1-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
-    my_chart_creator.make_chart('LLC-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=True, normalize=True)
 
-    # Vtune
-    my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'VTune', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
-    my_chart_creator.make_chart('SP_GFLOPS', 'SP_GFLOPS', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=True)
-    my_chart_creator.make_chart('L1-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
-    
-
-    
+    # # Perf
+    # my_chart_creator.make_chart('BRANCH-MISSES', '% of branches', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
+    # my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
+    # my_chart_creator.make_chart('L1-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
+    # my_chart_creator.make_chart('LLC-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=True, normalize=True)
+    #
+    # # Vtune
+    # my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'VTune', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
+    # my_chart_creator.make_chart('SP_GFLOPS', 'SP_GFLOPS', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=True)
+    # my_chart_creator.make_chart('L1-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)

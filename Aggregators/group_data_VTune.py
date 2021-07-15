@@ -65,6 +65,8 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['L3-BOUND'] = float(line.split()[3])
                             if(line.find('LLC Miss Count') != -1):     # LLC Misses-COUNT
                                 self.results[subdirectory]['LLC-MISSES-COUNT'] = float(line.split()[4])
+                            if(line.find('Memory Bound') != -1):
+                                self.results[subdirectory]['MEMORY-BOUND'] = float(line.split()[3])
 
         # Show the final collected data
         print('Data grouped!')

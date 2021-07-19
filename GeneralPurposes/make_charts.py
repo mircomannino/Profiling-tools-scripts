@@ -255,6 +255,92 @@ class ChartsCreator:
         # Save the plot in a file with the appropriate name
         plt.savefig(os.path.join(self.output_path, chart_name))
         # self.__plot_results(results, chart_name, parameter_to_plot, measurement_unit, log_scale, normalize)
+    
+    
+    def make_chart_stacked(self, parameters_to_plot, measurements_unit, n_repetitions, tool):
+        '''
+        Args:
+            parameter_to_plot:      List with the names of the parameters to use in the charts
+            n_repetitions:          Number of repetitions used in the analysisfile_format
+            tool:                   Name of the tool from which the results come from [ExecutionTime, Perf, VTune]
+        '''
+        # Get all the folders with analysis
+        analysis_directories = os.listdir()
+        analysis_directories = [analysis_directory for analysis_directory in analysis_directories if (
+            os.path.isdir(analysis_directory) and analysis_directory.find('analysis_N')!=-1)]
+
+        # Collect data from each analysis folder
+        results = {}
+        for parameter in parameters_to_plot:
+            results[parameter] = {}
+        for analysis_directory in analysis_directories:
+            # Get Number of the analysis
+            n_analysis = analysis_directory.replace('analysis_', '')    # 'analysis_N1' ---> 'N1'
+
+            # Get data folder path
+            data_folder = tool + '_'
+            data_folder += analysis_directory + '_'
+            data_folder += str(n_repetitions) + '-repetitions'
+            data_folder = os.path.join(analysis_directory, data_folder, self.data_folder_by_tool[tool])
+
+            # Read the csv file in a DataFrame
+            benchmarks_data_path = [file_ for file_ in os.listdir(data_folder) if file_.endswith('.csv')][0]
+            benchmarks_data = pd.read_csv(os.path.join(data_folder, benchmarks_data_path))
+
+            # Get only the column of interest
+            for index, row in benchmarks_data.iterrows():
+                # Get info from dataframe
+                dimensions = row[0].replace('.txt', '')[:-4]     # benchmark_Naive_x_x_x_x_x_x.txt ---> benchmark_Naive_x_x_x_x
+                dimensions = dimensions.replace('benchmark_Naive_', '')
+                for parameter in parameters_to_plot:
+                    value = row[parameter]
+                    # Store values
+                    if n_analysis not in results[parameter].keys():
+                        results[parameter][n_analysis] = {}
+                    results[parameter][n_analysis][dimensions] = value
+
+        # Order the name of dimensions (Order: Image size, Image depth, Kernel size, N Kernels)
+        for parameter in parameters_to_plot:
+            results_ordered = {}
+            for n_analysis in sorted(results[parameter].keys()):
+                results_ordered[n_analysis] = {}
+                for dimensions in sorted(list(results[parameter][n_analysis].keys()) ,key=lambda x: (int(x.split('_')[0]), int(x.split('_')[3]))):
+                    results_ordered[n_analysis][dimensions] = results[parameter][n_analysis][dimensions]
+            results[parameter] = results_ordered
+            del results_ordered
+
+        # Plot parameters
+        plt.rcParams["figure.figsize"] = [20,9]
+        font = {'family' : 'DejaVu Sans',
+        # 'weight' : 'bold',
+        'size'   : 30}
+        plt.rc('font', **font)
+
+        # Plot results
+        result_dfs = [pd.DataFrame(parameter_dict) for parameter_name, parameter_dict in results.items()] 
+        print(type(result_dfs))
+        self.__plot_clustered_stacked(dfall=result_dfs, labels=['a', 'b', 'c'])
+        # ax = plt.gca()
+        # for result_df in result_dfs:
+        #     result_df.plot(kind='bar', stacked=True, ax=ax, width=0.5, position=0)
+        # # ax = result_df.plot.bar(width=0.9, alpha=0.6, edgecolor='black', linewidth=2, stacked=True)
+        # ax.grid(axis='y')
+        # # ax.axvline(x=4.5)
+        # plt.xticks(ha='right', rotation=30)
+
+        chart_name = str(parameters_to_plot) + '_' + str(n_repetitions) + '-repetitions_' + tool + self.file_format
+        # # plt.xlabel('x_y_z_v:  x = height and width of INPUT;  y = n. of channels of INPUT;  z = height and width of KERNEL; v = n. of KERNELS')
+        # plt.xlabel('Dimensions')
+        # # plt.ylabel(measurement_unit)
+        # plt.title(chart_name.replace(self.file_format, ''))
+        # # plt.title('CPI (Cycles per instruction) - Changing the number of kernels')
+        # # plt.legend(loc='best', fontsize=20)
+        # plt.legend(bbox_to_anchor=(1, 1), loc='upper left', fontsize=20)
+        # plt.tight_layout()
+        # # plt.show()
+
+        # Save the plot in a file with the appropriate name
+        plt.savefig(os.path.join(self.output_path, chart_name))
 
     def __compute_best_order(self, results, min_is_best, best_order_name, paramater_to_plot):
         '''
@@ -303,25 +389,28 @@ if __name__ == "__main__":
     my_chart_creator = ChartsCreator('./charts', file_format='png')
     n_repetitions = 20
 
-    # Execution time
-    my_chart_creator.make_chart('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
+    # # Execution time
+    # my_chart_creator.make_chart('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
 
-    # # # Perf
-    my_chart_creator.make_chart('BRANCH-MISSES', '% of branches', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
-    my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
-    my_chart_creator.make_chart('L1-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
-    my_chart_creator.make_chart('LLC-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=True, normalize=True)
+    # # # # Perf
+    # my_chart_creator.make_chart('BRANCH-MISSES', '% of branches', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
+    # my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
+    # my_chart_creator.make_chart('L1-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
+    # my_chart_creator.make_chart('LLC-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=True, normalize=True)
 
-    # Vtune
-    my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'VTune', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
-    my_chart_creator.make_chart('SP_GFLOPS', 'SP_GFLOPS', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=True)
-    my_chart_creator.make_chart('L1-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
-    my_chart_creator.make_chart('L2-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
-    my_chart_creator.make_chart('L3-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
-    my_chart_creator.make_chart('VECTOR-CAPACITY-USAGE', 'Vector Capacity Usage', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=False)
-    my_chart_creator.make_chart('MEMORY-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=True, normalize=True)
+    # # Vtune
+    # my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'VTune', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
+    # my_chart_creator.make_chart('SP_GFLOPS', 'SP_GFLOPS', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=True)
+    # my_chart_creator.make_chart('L1-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
+    # my_chart_creator.make_chart('L2-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
+    # my_chart_creator.make_chart('L3-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
+    # my_chart_creator.make_chart('VECTOR-CAPACITY-USAGE', 'Vector Capacity Usage', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=False)
+    # my_chart_creator.make_chart('MEMORY-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=True, normalize=True)
 
-    # Double charts
-    my_chart_creator.make_chart_double(
-        ['TIME-MEDIAN', 'LLC-MISSES-COUNT'], 'Time (ms)', n_repetitions, ['ExecutionTime', 'Perf'], compute_best_order=False, min_is_best=True, log_scale=False, normalize=True
-    )
+    # # Double charts
+    # my_chart_creator.make_chart_double(
+    #     ['TIME-MEDIAN', 'MEMORY-BOUND'], 'Time (ms)', n_repetitions, ['ExecutionTime', 'VTune'], compute_best_order=False, min_is_best=True, log_scale=False, normalize=True
+    # )
+
+    # Stacked charts
+    my_chart_creator.make_chart_stacked(['L1-BOUND', 'L2-BOUND', 'L3-BOUND'], '% of Clockticks', n_repetitions, 'VTune')

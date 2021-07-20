@@ -56,6 +56,8 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['BRANCH-MISSES'] = float(line.split()[3])
                             if(line.find('Vector Capacity Usage (FPU)') != -1):
                                 self.results[subdirectory]['VECTOR-CAPACITY-USAGE'] = float(line.split()[5])
+                            if(line.find('Memory Latency') != -1):
+                                self.results[subdirectory]['MEMORY-LATENCY'] = float(line.split()[3])
                         if(parameter_file == 'summary_memory-access.csv'):
                             if(line.find('L1 Bound') != -1):     # L1 Bound
                                 self.results[subdirectory]['L1-BOUND'] = float(line.split()[3])

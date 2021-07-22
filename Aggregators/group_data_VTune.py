@@ -62,6 +62,9 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['FRONT-END-BOUND'] = float(line.split()[3])
                             if(line.find('Back-End Bound') != -1):
                                 self.results[subdirectory]['BACK-END-BOUND'] = float(line.split()[3])
+                            if(line.find('Retiring') != -1):
+                                self.results[subdirectory]['RETIRING'] = float(line.split()[3])
+
 
                         if(parameter_file == 'summary_memory-access.csv'):
                             if(line.find('L1 Bound') != -1):     # L1 Bound

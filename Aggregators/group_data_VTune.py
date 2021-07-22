@@ -24,7 +24,7 @@ class AggregatorVTuneData:
         '''
         self.results = {}
         self.output_path = output_path + ".csv"
-    
+
     def group_data(self):
         print('\n===============================================================================')
         print('Grouping data of: ', self.output_path)
@@ -34,7 +34,7 @@ class AggregatorVTuneData:
             'summary_uarch-exploration.csv',
             'summary_memory-access.csv'
         ]
-        # Get all the files in the folder and sort them 
+        # Get all the files in the folder and sort them
         subdirectories = os.listdir()
         subdirectories = [subdirectory for subdirectory in subdirectories if (os.path.isdir(subdirectory) and subdirectory.find('benchmark')!=-1)]
         subdirectories.sort(key = lambda x : int(x.split('_')[2].split('.')[0]))
@@ -58,6 +58,11 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['VECTOR-CAPACITY-USAGE'] = float(line.split()[5])
                             if(line.find('Memory Latency') != -1):
                                 self.results[subdirectory]['MEMORY-LATENCY'] = float(line.split()[3])
+                            if(line.find('Front-End Bound') != -1):
+                                self.results[subdirectory]['FRONT-END-BOUND'] = float(line.split()[4])
+                            if(line.find('Back-End Bound') != -1):
+                                self.results[subdirectory]['BACK-END-BOUND'] = float(line.split()[4])
+
                         if(parameter_file == 'summary_memory-access.csv'):
                             if(line.find('L1 Bound') != -1):     # L1 Bound
                                 self.results[subdirectory]['L1-BOUND'] = float(line.split()[3])
@@ -76,11 +81,11 @@ class AggregatorVTuneData:
             print(file_name)
             for parameter, val in parameters.items():
                 print('\t', parameter, ': ', val, sep='')
-        
+
     def save_data_to_csv(self):
         if(len(self.results) != 0):
             df = pd.DataFrame(self.results)
-            df = df.T # Transpose 
+            df = df.T # Transpose
             df.to_csv(self.output_path)
 
 def create_parser():

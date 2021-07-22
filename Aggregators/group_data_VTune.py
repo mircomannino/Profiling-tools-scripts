@@ -59,9 +59,9 @@ class AggregatorVTuneData:
                             if(line.find('Memory Latency') != -1):
                                 self.results[subdirectory]['MEMORY-LATENCY'] = float(line.split()[3])
                             if(line.find('Front-End Bound') != -1):
-                                self.results[subdirectory]['FRONT-END-BOUND'] = float(line.split()[4])
+                                self.results[subdirectory]['FRONT-END-BOUND'] = float(line.split()[3])
                             if(line.find('Back-End Bound') != -1):
-                                self.results[subdirectory]['BACK-END-BOUND'] = float(line.split()[4])
+                                self.results[subdirectory]['BACK-END-BOUND'] = float(line.split()[3])
 
                         if(parameter_file == 'summary_memory-access.csv'):
                             if(line.find('L1 Bound') != -1):     # L1 Bound

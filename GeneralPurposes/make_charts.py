@@ -278,92 +278,92 @@ class ChartsCreator:
         # self.__plot_results(results, chart_name, parameter_to_plot, measurement_unit, log_scale, normalize)
 
 
-        def make_chart_stacked(self, parameters_to_plot, measurements_unit, n_repetitions, tool, title=None):
-            '''
-            Args:
-                parameter_to_plot:      List with the names of the parameters to use in the charts
-                n_repetitions:          Number of repetitions used in the analysisfile_format
-                tool:                   Name of the tool from which the results come from [ExecutionTime, Perf, VTune]
-                title:                  Title of the charts
-            '''
-            # Get all the folders with analysis
-            analysis_directories = os.listdir()
-            analysis_directories = [analysis_directory for analysis_directory in analysis_directories if (
-                os.path.isdir(analysis_directory) and analysis_directory.find('analysis_N')!=-1)]
+    def make_chart_stacked(self, parameters_to_plot, measurements_unit, n_repetitions, tool, title=None):
+        '''
+        Args:
+            parameter_to_plot:      List with the names of the parameters to use in the charts
+            n_repetitions:          Number of repetitions used in the analysisfile_format
+            tool:                   Name of the tool from which the results come from [ExecutionTime, Perf, VTune]
+            title:                  Title of the charts
+        '''
+        # Get all the folders with analysis
+        analysis_directories = os.listdir()
+        analysis_directories = [analysis_directory for analysis_directory in analysis_directories if (
+            os.path.isdir(analysis_directory) and analysis_directory.find('analysis_N')!=-1)]
 
-            # Collect data from each analysis folder
-            results = {}
-            for analysis_directory in analysis_directories:
-                # Get Number of the analysis
-                n_analysis = analysis_directory.replace('analysis_', '')    # 'analysis_N1' ---> 'N1'
+        # Collect data from each analysis folder
+        results = {}
+        for analysis_directory in analysis_directories:
+            # Get Number of the analysis
+            n_analysis = analysis_directory.replace('analysis_', '')    # 'analysis_N1' ---> 'N1'
 
-                # Get data folder path
-                data_folder = tool + '_'
-                data_folder += analysis_directory + '_'
-                data_folder += str(n_repetitions) + '-repetitions'
-                data_folder = os.path.join(analysis_directory, data_folder, self.data_folder_by_tool[tool])
+            # Get data folder path
+            data_folder = tool + '_'
+            data_folder += analysis_directory + '_'
+            data_folder += str(n_repetitions) + '-repetitions'
+            data_folder = os.path.join(analysis_directory, data_folder, self.data_folder_by_tool[tool])
 
-                # Read the csv file in a DataFrame
-                benchmarks_data_path = [file_ for file_ in os.listdir(data_folder) if file_.endswith('.csv')][0]
-                benchmarks_data = pd.read_csv(os.path.join(data_folder, benchmarks_data_path))
+            # Read the csv file in a DataFrame
+            benchmarks_data_path = [file_ for file_ in os.listdir(data_folder) if file_.endswith('.csv')][0]
+            benchmarks_data = pd.read_csv(os.path.join(data_folder, benchmarks_data_path))
 
-                # Get only the column of interest
-                for index, row in benchmarks_data.iterrows():
-                    # Get info from dataframe
-                    dimensions = row[0].replace('.txt', '')[:-4]     # benchmark_Naive_x_x_x_x_x_x.txt ---> benchmark_Naive_x_x_x_x
-                    dimensions = dimensions.replace('benchmark_Compilers_', '')
-                    if dimensions not in results.keys():
-                        results[dimensions] = {}
-                    for parameter in parameters_to_plot:
-                        value = row[parameter]
-                        # Store values
-                        if parameter not in results[dimensions].keys():
-                            results[dimensions][parameter] = {}
-                        results[dimensions][parameter][n_analysis] = value
-
-            # Order the name of dimensions (Order: Image size, Image depth, Kernel size, N Kernels)
-            results_ordered = {}
-            for dimensions in results.keys():
-                results_ordered[dimensions] = {}
+            # Get only the column of interest
+            for index, row in benchmarks_data.iterrows():
+                # Get info from dataframe
+                dimensions = row[0].replace('.txt', '')[:-4]     # benchmark_Naive_x_x_x_x_x_x.txt ---> benchmark_Naive_x_x_x_x
+                dimensions = dimensions.replace('benchmark_Compilers_', '')
+                if dimensions not in results.keys():
+                    results[dimensions] = {}
                 for parameter in parameters_to_plot:
-                    results_ordered[dimensions][parameter] = [v for (k,v) in sorted(list(results[dimensions][parameter].items()), key=lambda x: x[0])]
-            results = results_ordered
-            del results_ordered
+                    value = row[parameter]
+                    # Store values
+                    if parameter not in results[dimensions].keys():
+                        results[dimensions][parameter] = {}
+                    results[dimensions][parameter][n_analysis] = value
 
-            # Plot parameters
-            # plt.rcParams["figure.figsize"] = [20,9]
-            # font = {'family' : 'DejaVu Sans',
-            # # 'weight' : 'bold',
-            # # 'size'   : 30
-            # }
-            # plt.rc('font', **font)
+        # Order the name of dimensions (Order: Image size, Image depth, Kernel size, N Kernels)
+        results_ordered = {}
+        for dimensions in results.keys():
+            results_ordered[dimensions] = {}
+            for parameter in parameters_to_plot:
+                results_ordered[dimensions][parameter] = [v for (k,v) in sorted(list(results[dimensions][parameter].items()), key=lambda x: x[0])]
+        results = results_ordered
+        del results_ordered
 
-            # Plot results
-            result_dfs = {dimensions_name: pd.DataFrame(dimensions_dict, index=['N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7'])
-                for dimensions_name, dimensions_dict in results.items()}
+        # Plot parameters
+        # plt.rcParams["figure.figsize"] = [20,9]
+        # font = {'family' : 'DejaVu Sans',
+        # # 'weight' : 'bold',
+        # # 'size'   : 30
+        # }
+        # plt.rc('font', **font)
 
-            N_ROWS = 3
-            N_COLS = 2
-            fig, ax = plt.subplots(nrows=N_ROWS, ncols=N_COLS)
+        # Plot results
+        result_dfs = {dimensions_name: pd.DataFrame(dimensions_dict, index=['N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7'])
+            for dimensions_name, dimensions_dict in results.items()}
 
-            positions = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)]
+        N_ROWS = 3
+        N_COLS = 2
+        fig, ax = plt.subplots(nrows=N_ROWS, ncols=N_COLS)
 
-            for i, (dimensions_name, result_df) in enumerate(result_dfs.items()):
-                result_df.plot(kind='bar', stacked=True, ax=ax[positions[i]], alpha=0.7)
+        positions = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)]
 
-                ax[positions[i]].set_title(label=('dimensions: ' + dimensions_name.replace('_',' ')))
-                ax[positions[i]].legend(bbox_to_anchor=(1, 1), loc='upper left', fontsize=8)
-                ax[positions[i]].set(xlabel='N. of order of loops', ylabel='% Clocktick')
+        for i, (dimensions_name, result_df) in enumerate(result_dfs.items()):
+            result_df.plot(kind='bar', stacked=True, ax=ax[positions[i]], alpha=0.7)
 
-            chart_name = str(parameters_to_plot) + '_' + str(n_repetitions) + '-repetitions_' + tool + self.file_format
+            ax[positions[i]].set_title(label=('dimensions: ' + dimensions_name.replace('_',' ')))
+            ax[positions[i]].legend(bbox_to_anchor=(1, 1), loc='upper left', fontsize=8)
+            ax[positions[i]].set(xlabel='N. of order of loops', ylabel='% Clocktick')
 
-            fig.delaxes(ax[positions[-1]])
+        chart_name = str(parameters_to_plot) + '_' + str(n_repetitions) + '-repetitions_' + tool + self.file_format
 
-            plt.tight_layout()
+        fig.delaxes(ax[positions[-1]])
 
-            # Save the plot in a file with the appropriate name
-            plt.savefig(os.path.join(self.output_path, chart_name))
-            # plt.show()
+        plt.tight_layout()
+
+        # Save the plot in a file with the appropriate name
+        plt.savefig(os.path.join(self.output_path, chart_name))
+        # plt.show()
 
     def make_charts_of_different_folders(self, parameter_to_plot, measurement_unit, n_repetitions, tool, log_scale, normalize):
         '''

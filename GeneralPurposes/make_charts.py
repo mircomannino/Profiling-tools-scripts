@@ -80,7 +80,7 @@ class ChartsCreator:
 
         # Normalize
         if(normalize):
-            N1_values = {dim: val for (dim, val) in results['N1'].items()}
+            N1_values = {dim: (val if val!=0 else 1.) for (dim, val) in results['N1'].items()}
             for n_analysis in results.keys():
                 for dimensions in results[n_analysis].keys():
                     results[n_analysis][dimensions] /= N1_values[dimensions]
@@ -212,12 +212,12 @@ class ChartsCreator:
 
         if(normalize):
             # Normalize - Parameter 1
-            N1_values = {dim: val for (dim, val) in results_parameter_1['N1'].items()}
+            N1_values = {dim: (val if val!=0 else 1.) for (dim, val) in results['N1'].items()}
             for n_analysis in results_parameter_1.keys():
                 for dimensions in results_parameter_1[n_analysis].keys():
                     results_parameter_1[n_analysis][dimensions] /= N1_values[dimensions]
             # Normalize - Parameter 2
-            N1_values = {dim: val for (dim, val) in results_parameter_2['N1'].items()}
+            N1_values = {dim: (val if val!=0 else 1.) for (dim, val) in results['N1'].items()}
             for n_analysis in results_parameter_2.keys():
                 for dimensions in results_parameter_2[n_analysis].keys():
                     results_parameter_2[n_analysis][dimensions] /= N1_values[dimensions]

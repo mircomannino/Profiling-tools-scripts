@@ -57,7 +57,8 @@ class AggregatorVTuneData:
                     next(csv_reader)    # Skip header row
                     for line in csv_reader:
                         line = line[0].split('\t')  # line --> ['Hierarchy Level', 'Metric Name', 'Metric Value']
-                        print(line)
+                        if len(line) < 2:
+                            print(line)
                         metric_name = line[1]
 
                         # # TODO: change all the "if statements"

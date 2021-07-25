@@ -56,12 +56,8 @@ class AggregatorVTuneData:
                     csv_reader = csv.reader(test_file, delimiter=',')
                     next(csv_reader)    # Skip header row
                     for line in csv_reader:
-                        line = line[0].split('\t')  # line --> ['Hierarchy Level', 'Metric Name', 'Metric Value']
-                        if parameter_file == 'summary_memory-access.csv' and subdirectory=='benchmark_Compilers_27_32_5_128_5_5':
-                            print(line)
-                            # print(str(subdirectory) + ' ' + str(parameter_file) + ' ' + str(line))
-                            # next(csv_reader)
-                            # print(str(subdirectory) + ' ' + str(parameter_file) + ' ' + str(line))
+                        if len(line) == 1:
+                            line = line[0].split('\t')  # ['Hierarchy level \t Metric Name \t Metric Value'] --> ['Hierarchy Level', 'Metric Name', 'Metric Value']
                         metric_name = line[1]
 
                         # # TODO: change all the "if statements"

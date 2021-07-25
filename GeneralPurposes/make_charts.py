@@ -80,7 +80,7 @@ class ChartsCreator:
 
         # Normalize
         if(normalize):
-            N1_values = {dim: val for (dim, val) in results['N1'].items()}
+            N1_values = {dim: (val if val>0. else 1.) for (dim, val) in results['N1'].items()}
             for n_analysis in results.keys():
                 for dimensions in results[n_analysis].keys():
                     results[n_analysis][dimensions] /= N1_values[dimensions]
@@ -215,12 +215,12 @@ class ChartsCreator:
 
         if(normalize):
             # Normalize - Parameter 1
-            N1_values = {dim: val for (dim, val) in results_parameter_1['N1'].items()}
+            N1_values = {dim: (val if val>0. else 1.) for (dim, val) in results_parameter_1['N1'].items()}
             for n_analysis in results_parameter_1.keys():
                 for dimensions in results_parameter_1[n_analysis].keys():
                     results_parameter_1[n_analysis][dimensions] /= N1_values[dimensions]
             # Normalize - Parameter 2
-            N1_values = {dim: val for (dim, val) in results_parameter_2['N1'].items()}
+            N1_values = {dim: (val if val>0. else 1.) for (dim, val) in results_parameter_2['N1'].items()}
             for n_analysis in results_parameter_2.keys():
                 for dimensions in results_parameter_2[n_analysis].keys():
                     results_parameter_2[n_analysis][dimensions] /= N1_values[dimensions]
@@ -254,7 +254,7 @@ class ChartsCreator:
 
         # Title of the chart
         chart_name = parameters_to_plot[0] + '_' + parameters_to_plot[1] + '_' + str(n_repetitions) + '-repetitions_' + str(tools) + ('_normalized_' if normalize else '') + self.file_format
-        
+
         ax = sub_plot or plt.gca()
         result_df_parameter_2.plot.bar(width=0.9, alpha=0.6, edgecolor='black', linewidth=2, ax=ax)
         result_df_parameter_1.plot.bar(width=0.9, ax=ax,  color='grey', alpha=0.2, align='center', edgecolor='black', linewidth=2)
@@ -405,7 +405,7 @@ class ChartsCreator:
 
         # Save the plot in a file with the appropriate name
         plt.savefig(os.path.join(self.output_path, title))
-    
+
     def make_chart_double_from_different_folders(self, parameters_to_plot, measurement_unit, n_repetitions, tools, log_scale, normalize):
         '''
         Args:
@@ -418,7 +418,7 @@ class ChartsCreator:
 
         # Get all directories path
         directories = {path.split('_')[-1]: path for path in sorted(os.listdir(), reverse=True) if (os.path.isdir(path) and path != self.output_path.replace('./',''))}
-        
+
         # Setup subplot
         font = {'family' : 'DejaVu Sans',
             # 'weight' : 'bold',

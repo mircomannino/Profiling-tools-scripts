@@ -57,6 +57,7 @@ class AggregatorVTuneData:
                     next(csv_reader)    # Skip header row
                     for line in csv_reader:
                         line = line[0].split('\t')  # line --> ['Hierarchy Level', 'Metric Name', 'Metric Value']
+                        print(line)
                         metric_name = line[1]
 
                         # # TODO: change all the "if statements"
@@ -90,7 +91,6 @@ class AggregatorVTuneData:
                             if(metric_name.find('L1 Bound') != -1):
                                 self.results[subdirectory]['L1-BOUND'] = self.__to_float(line[2])
                             if(metric_name.find('L2 Bound') != -1):
-                                print(line[2] if len(line)==3 else 0.)
                                 self.results[subdirectory]['L2-BOUND'] = self.__to_float(line[2])
                             if(metric_name.find('L3 Bound') != -1):
                                 self.results[subdirectory]['L3-BOUND'] = self.__to_float(line[2])

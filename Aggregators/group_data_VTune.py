@@ -45,40 +45,49 @@ class AggregatorVTuneData:
             for parameter_file in parameter_files:
                 with open(os.path.join(os.getcwd(), subdirectory, parameter_file)) as test_file:
                     csv_reader = csv.reader(test_file, delimiter=',')
-                    for line in test_file:
+                    for line in csv_reader:
+                        line = line[0].split('\t')  # line --> ['Hierarchy Level', 'Metric Name', 'Metric Value']
+                        metric_name = line[1]
+                        metric_value = (float(line[2]) if len(line == 3) else 0.) # because some time VTune does not put results
+
+                        # # TODO: change all the "if statements"
+
+                        ### HPC PERFORMANCE ###
                         if(parameter_file == 'summary_hpc-performance.csv'):
-                            if(line.find('SP GFLOPS') != -1):   # GFLOPS
-                                self.results[subdirectory]['SP_GFLOPS'] = float(line.split()[3])
-                            if(line.find('CPI') != -1):         # CPI
-                                self.results[subdirectory]['CPI'] = float(line.split()[3])
+                            if(metric_name.find('SP GFLOPS') != -1):
+                                self.results[subdirectory]['SP_GFLOPS'] = metric_value
+                            if(metric_name.find('CPI') != -1):
+                                self.results[subdirectory]['CPI'] = metric_value
+
+                        ### UARCH EXPLORATION ###
                         if(parameter_file == 'summary_uarch-exploration.csv'):
-                            if(line.find('Branch Mispredict') != -1):   # BRANCH-MISSES
-                                self.results[subdirectory]['BRANCH-MISSES'] = float(line.split()[3])
-                            if(line.find('Vector Capacity Usage (FPU)') != -1):
-                                self.results[subdirectory]['VECTOR-CAPACITY-USAGE'] = float(line.split()[5])
-                            if(line.find('Memory Latency') != -1):
-                                self.results[subdirectory]['MEMORY-LATENCY'] = float(line.split()[3])
-                            if(line.find('Front-End Bound') != -1):
-                                self.results[subdirectory]['FRONT-END-BOUND'] = float(line.split()[3])
-                            if(line.find('Back-End Bound') != -1):
-                                self.results[subdirectory]['BACK-END-BOUND'] = float(line.split()[3])
-                            if(line.find('Retiring') != -1):
-                                self.results[subdirectory]['RETIRING'] = float(line.split()[2])
-                            if(line.find('Cycles of 3+ Ports Utilized') != -1):
-                                self.results[subdirectory]['CYCLES-3+-PORTS-UTILIZED'] = float(line.split()[6])
+                            if(metric_name.find('Branch Mispredict') != -1):
+                                self.results[subdirectory]['BRANCH-MISSES'] = metric_value
+                            if(metric_name.find('Vector Capacity Usage (FPU)') != -1):
+                                self.results[subdirectory]['VECTOR-CAPACITY-USAGE'] = metric_value
+                            if(metric_name.find('Memory Latency') != -1):
+                                self.results[subdirectory]['MEMORY-LATENCY'] = metric_value
+                            if(metric_name.find('Front-End Bound') != -1):
+                                self.results[subdirectory]['FRONT-END-BOUND'] = metric_value
+                            if(metric_name.find('Back-End Bound') != -1):
+                                self.results[subdirectory]['BACK-END-BOUND'] = metric_value
+                            if(metric_name.find('Retiring') != -1):
+                                self.results[subdirectory]['RETIRING'] = metric_value
+                            if(metric_name.find('Cycles of 3+ Ports Utilized') != -1):
+                                self.results[subdirectory]['CYCLES-3+-PORTS-UTILIZED'] = metric_value
 
-
+                        ### MEMORY ACCESS ###
                         if(parameter_file == 'summary_memory-access.csv'):
-                            if(line.find('L1 Bound') != -1):     # L1 Bound
-                                self.results[subdirectory]['L1-BOUND'] = float(line.split()[3])
-                            if(line.find('L2 Bound') != -1):     # L2 Bound
-                                self.results[subdirectory]['L2-BOUND'] = float(line.split()[3])
-                            if(line.find('L3 Bound') != -1):     # L3 Bound
-                                self.results[subdirectory]['L3-BOUND'] = float(line.split()[3])
-                            if(line.find('LLC Miss Count') != -1):     # LLC Misses-COUNT
-                                self.results[subdirectory]['LLC-MISSES-COUNT'] = float(line.split()[4])
-                            if(line.find('Memory Bound') != -1):
-                                self.results[subdirectory]['MEMORY-BOUND'] = float(line.split()[3])
+                            if(metric_name.find('L1 Bound') != -1):
+                                self.results[subdirectory]['L1-BOUND'] = metric_value
+                            if(metric_name.find('L2 Bound') != -1):
+                                self.results[subdirectory]['L2-BOUND'] = metric_value
+                            if(metric_name.find('L3 Bound') != -1):
+                                self.results[subdirectory]['L3-BOUND'] = metric_value
+                            if(metric_name.find('LLC Miss Count') != -1):    
+                                self.results[subdirectory]['LLC-MISSES-COUNT'] = metric_value
+                            if(metric_name.find('Memory Bound') != -1):
+                                self.results[subdirectory]['MEMORY-BOUND'] = metric_value
 
         # Show the final collected data
         print('Data grouped!')

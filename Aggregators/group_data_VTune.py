@@ -45,6 +45,7 @@ class AggregatorVTuneData:
             for parameter_file in parameter_files:
                 with open(os.path.join(os.getcwd(), subdirectory, parameter_file)) as test_file:
                     csv_reader = csv.reader(test_file, delimiter=',')
+                    next(csv_reader)    # Skip header row
                     for line in csv_reader:
                         line = line[0].split('\t')  # line --> ['Hierarchy Level', 'Metric Name', 'Metric Value']
                         metric_name = line[1]

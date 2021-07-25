@@ -48,7 +48,7 @@ class AggregatorVTuneData:
                     for line in csv_reader:
                         line = line[0].split('\t')  # line --> ['Hierarchy Level', 'Metric Name', 'Metric Value']
                         metric_name = line[1]
-                        metric_value = (float(line[2]) if len(line == 3) else 0.) # because some time VTune does not put results
+                        metric_value = float(line[2]) if len(line)==3 else 0. # because some time VTune does not put results
 
                         # # TODO: change all the "if statements"
 
@@ -84,7 +84,7 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['L2-BOUND'] = metric_value
                             if(metric_name.find('L3 Bound') != -1):
                                 self.results[subdirectory]['L3-BOUND'] = metric_value
-                            if(metric_name.find('LLC Miss Count') != -1):    
+                            if(metric_name.find('LLC Miss Count') != -1):
                                 self.results[subdirectory]['LLC-MISSES-COUNT'] = metric_value
                             if(metric_name.find('Memory Bound') != -1):
                                 self.results[subdirectory]['MEMORY-BOUND'] = metric_value

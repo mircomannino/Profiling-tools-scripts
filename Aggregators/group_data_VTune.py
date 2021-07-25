@@ -81,6 +81,7 @@ class AggregatorVTuneData:
                             if(metric_name.find('L1 Bound') != -1):
                                 self.results[subdirectory]['L1-BOUND'] = float(line[2]) if len(line)==3 else 0.
                             if(metric_name.find('L2 Bound') != -1):
+                                print(line)
                                 self.results[subdirectory]['L2-BOUND'] = float(line[2]) if len(line)==3 else 0.
                             if(metric_name.find('L3 Bound') != -1):
                                 self.results[subdirectory]['L3-BOUND'] = float(line[2]) if len(line)==3 else 0.

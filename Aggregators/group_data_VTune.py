@@ -48,6 +48,7 @@ class AggregatorVTuneData:
                     for line in csv_reader:
                         line = line[0].split('\t')  # line --> ['Hierarchy Level', 'Metric Name', 'Metric Value']
                         metric_name = line[1]
+                        print(line[2])
                         metric_value = float(line[2]) if len(line)==3 else 0. # because some time VTune does not put results
 
                         # # TODO: change all the "if statements"

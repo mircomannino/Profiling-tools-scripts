@@ -58,9 +58,9 @@ class AggregatorVTuneData:
                     for line in csv_reader:
                         line = line[0].split('\t')  # line --> ['Hierarchy Level', 'Metric Name', 'Metric Value']
                         if len(line) < 2:
-                            print(subdirectory + ' ' + parameter_file + ' ' + line)
+                            print(str(subdirectory) + ' ' + str(parameter_file) + ' ' + str(line))
                             next(csv_reader)
-                            print(subdirectory + ' ' + parameter_file + ' ' + line)
+                            print(str(subdirectory) + ' ' + str(parameter_file) + ' ' + str(line))
                         metric_name = line[1]
 
                         # # TODO: change all the "if statements"

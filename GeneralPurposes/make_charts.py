@@ -65,6 +65,7 @@ class ChartsCreator:
 
             # Read the csv file in a DataFrame
             benchmarks_data_path = [file_ for file_ in os.listdir(data_folder) if file_.endswith('.csv')][0]
+            
             benchmarks_data = pd.read_csv(os.path.join(data_folder, benchmarks_data_path))
 
             # Get only the column of interest
@@ -80,7 +81,7 @@ class ChartsCreator:
 
         # Normalize
         if(normalize):
-            N1_values = {dim: (val if val>0. else 1.) for (dim, val) in results['N1'].items()}
+            N1_values = {dim: (val if val>0 else 1.) for (dim, val) in results['N1'].items()}
             for n_analysis in results.keys():
                 for dimensions in results[n_analysis].keys():
                     results[n_analysis][dimensions] /= N1_values[dimensions]
@@ -111,6 +112,17 @@ class ChartsCreator:
         ax = sub_plot or plt.gca()
         result_df.plot.bar(width=0.9, alpha=0.6, edgecolor='black', linewidth=2, ax=ax)
         ax.grid(axis='y')
+
+        if (normalize):
+            Y_LIM = 2.
+            ax.set_ylim(top=Y_LIM)
+            for p in ax.patches:
+                value = np.round(p.get_height(), decimals=2)
+                if value <= Y_LIM:
+                    value = ''
+                ax.annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=9.5)
+
+        # Set Log Scale
         if(log_scale):
             ax.set_yscale('log')
         # plt.tight_layout()
@@ -121,7 +133,7 @@ class ChartsCreator:
             ax.set_xlabel('Dimensions')
             ax.set_ylabel(measurement_unit)
             ax.set_title(chart_name.replace(self.file_format, '') + ' ' + sub_title)
-            plt.subplots_adjust(hspace=1)
+            plt.subplots_adjust(hspace=1.2)
             ax.legend(bbox_to_anchor=(1,1), loc='upper left', fontsize=14)
             for tick in ax.get_xticklabels():
                 tick.set_rotation(20)
@@ -143,6 +155,7 @@ class ChartsCreator:
         # Save the plot in a file with the appropriate name
         plt.savefig(os.path.join(self.output_path, chart_name))
         plt.clf() # Clear the figure
+        print(chart_name, ': Done')
 
 
     def make_chart_double(self, parameters_to_plot, measurement_unit, n_repetitions, tools, compute_best_order, min_is_best, log_scale, normalize, sub_plot=None, sub_title=None):
@@ -215,12 +228,12 @@ class ChartsCreator:
 
         if(normalize):
             # Normalize - Parameter 1
-            N1_values = {dim: (val if val>0. else 1.) for (dim, val) in results_parameter_1['N1'].items()}
+            N1_values = {dim: (val if val>0 else 1.) for (dim, val) in results_parameter_1['N1'].items()}
             for n_analysis in results_parameter_1.keys():
                 for dimensions in results_parameter_1[n_analysis].keys():
                     results_parameter_1[n_analysis][dimensions] /= N1_values[dimensions]
             # Normalize - Parameter 2
-            N1_values = {dim: (val if val>0. else 1.) for (dim, val) in results_parameter_2['N1'].items()}
+            N1_values = {dim: (val if val>0 else 1.) for (dim, val) in results_parameter_2['N1'].items()}
             for n_analysis in results_parameter_2.keys():
                 for dimensions in results_parameter_2[n_analysis].keys():
                     results_parameter_2[n_analysis][dimensions] /= N1_values[dimensions]
@@ -254,12 +267,22 @@ class ChartsCreator:
 
         # Title of the chart
         chart_name = parameters_to_plot[0] + '_' + parameters_to_plot[1] + '_' + str(n_repetitions) + '-repetitions_' + str(tools) + ('_normalized_' if normalize else '') + self.file_format
-
+        
         ax = sub_plot or plt.gca()
         result_df_parameter_2.plot.bar(width=0.9, alpha=0.6, edgecolor='black', linewidth=2, ax=ax)
         result_df_parameter_1.plot.bar(width=0.9, ax=ax,  color='grey', alpha=0.2, align='center', edgecolor='black', linewidth=2)
-        # ax.grid(axis='y')
+        ax.grid(axis='y')
         plt.xticks(ha='right', rotation=30)
+
+        if (normalize):
+            Y_LIM = 2.
+            ax.set_ylim(top=Y_LIM)
+            for p in ax.patches:
+                value = np.round(p.get_height(), decimals=2)
+                if value <= Y_LIM:
+                    value = ''
+                ax.annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=9.5)
+
         if(log_scale):
             ax.set_yscale('log')
 
@@ -268,7 +291,7 @@ class ChartsCreator:
             ax.set_xlabel('Dimensions')
             ax.set_ylabel(measurement_unit)
             ax.set_title(chart_name.replace(self.file_format, '') + ' ' + sub_title)
-            plt.subplots_adjust(hspace=1)
+            plt.subplots_adjust(hspace=1.2)
             ax.legend(
                 [str(n_analysis) for n_analysis in list(results_parameter_2.keys())] +  ['Exec Time'],
                 bbox_to_anchor=(1, 1),
@@ -297,6 +320,7 @@ class ChartsCreator:
         # Save the plot in a file with the appropriate name
         plt.savefig(os.path.join(self.output_path, chart_name))
         plt.clf() # Clear the figure
+        print(chart_name, ': Done')
 
 
     def make_chart_stacked(self, parameters_to_plot, measurements_unit, n_repetitions, tool, title=None):
@@ -377,6 +401,7 @@ class ChartsCreator:
         # Save the plot in a file with the appropriate name
         plt.savefig(os.path.join(self.output_path, chart_name))
         plt.clf() # Clear the figure
+        print(chart_name, ': Done')
 
     def make_charts_of_different_folders(self, parameter_to_plot, measurement_unit, n_repetitions, tool, log_scale, normalize):
         '''
@@ -405,7 +430,9 @@ class ChartsCreator:
 
         # Save the plot in a file with the appropriate name
         plt.savefig(os.path.join(self.output_path, title))
-
+        plt.clf()
+        print(str(parameter_to_plot), ': Done')
+    
     def make_chart_double_from_different_folders(self, parameters_to_plot, measurement_unit, n_repetitions, tools, log_scale, normalize):
         '''
         Args:
@@ -418,7 +445,7 @@ class ChartsCreator:
 
         # Get all directories path
         directories = {path.split('_')[-1]: path for path in sorted(os.listdir(), reverse=True) if (os.path.isdir(path) and path != self.output_path.replace('./',''))}
-
+        
         # Setup subplot
         font = {'family' : 'DejaVu Sans',
             # 'weight' : 'bold',
@@ -434,6 +461,7 @@ class ChartsCreator:
 
         # Save the plot in a file with the appropriate name
         plt.savefig(os.path.join(self.output_path, title))
+        print(str(parameters_to_plot), ': Done')
 
 
 
@@ -470,7 +498,8 @@ if __name__ == "__main__":
     # # Stacked charts
     # my_chart_creator.make_chart_stacked(['L1-BOUND', 'L2-BOUND', 'L3-BOUND'], '% of Clockticks', n_repetitions, 'VTune')
 
-    # # Charts from different folders
+    # Charts from different folders
+    # my_chart_creator.make_charts_of_different_folders('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', log_scale=False, normalize=True)
     # my_chart_creator.make_charts_of_different_folders('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', log_scale=False, normalize=False)
     # my_chart_creator.make_charts_of_different_folders('CPI', 'CPI', n_repetitions, 'VTune', log_scale=False, normalize=True)
     # my_chart_creator.make_charts_of_different_folders('BRANCH-MISSES', '% of branches', n_repetitions, 'Perf', log_scale=False, normalize=False)
@@ -487,8 +516,10 @@ if __name__ == "__main__":
     # my_chart_creator.make_charts_of_different_folders('VECTOR-CAPACITY-USAGE', 'Vector Capacity Usage', n_repetitions, 'VTune', log_scale=False, normalize=False)
     # my_chart_creator.make_charts_of_different_folders('MEMORY-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=True, normalize=True)
     # my_chart_creator.make_charts_of_different_folders('MEMORY-LATENCY', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)
-    # my_chart_creator.make_charts_of_different_folders('FRONT-END-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=True, normalize=True)
+    # my_chart_creator.make_charts_of_different_folders('FRONT-END-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=True, normalize=False)
     # my_chart_creator.make_charts_of_different_folders('BACK-END-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)
-    # my_chart_creator.make_charts_of_different_folders('RETIRING', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)
+    # my_chart_creator.make_charts_of_different_folders('RETIRING', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=False)
+    # # my_chart_creator.make_charts_of_different_folders('FB-FILL', '% of Clockticks', n_repetitions, 'VTune', log_scale=True, normalize=True)
 
+    # Double charts
     my_chart_creator.make_chart_double_from_different_folders(['TIME-MEDIAN', 'MEMORY-BOUND'], 'Time (ms)', n_repetitions, ['ExecutionTime', 'VTune'], log_scale=False, normalize=True)

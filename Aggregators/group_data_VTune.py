@@ -87,6 +87,8 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['CYCLES-3+-PORTS-UTILIZED'] = self.__to_float(line[2])
                             if(metric_name.find('FB Full') != -1):
                                 self.results[subdirectory]['FB-FILL'] = self.__to_float(line[2])
+                            if(metric_name.find('Core Bound') != -1):
+                                self.results[subdirectory]['CORE-BOUND'] = self.__to_float(line[2])
 
                         ### MEMORY ACCESS ###
                         if(parameter_file == 'summary_memory-access.csv'):

@@ -82,7 +82,6 @@ class ChartsCreator:
 
         # Normalize
         if(normalize):
-            print(results.keys())
             N1_values = {dim: (val if val>0 else 1.) for (dim, val) in results['N1'].items()}
             for n_analysis in results.keys():
                 for dimensions in results[n_analysis].keys():

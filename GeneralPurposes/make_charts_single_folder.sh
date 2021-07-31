@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get python script
-git clone
+git clone https://github.com/mircomannino/Profiling-tools-scripts.git
 cp Profiling-tools-scripts/MakeCharts/make_charts.py ./
 
 # Launch the python script

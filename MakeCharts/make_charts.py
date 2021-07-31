@@ -508,7 +508,7 @@ if __name__ == "__main__":
         my_chart_creator.make_chart('L3-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
         my_chart_creator.make_chart('VECTOR-CAPACITY-USAGE', 'Vector Capacity Usage', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=False)
         my_chart_creator.make_chart('MEMORY-BOUND', '% of PipelineSlots', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=True, normalize=True)
-        my_chart_creator.make_chart('CLOCK-BOUND', '% of PipelineSlots', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=True, normalize=True)
+        my_chart_creator.make_chart('CORE-BOUND', '% of PipelineSlots', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=True, normalize=True)
         my_chart_creator.make_chart('MEMORY-LATENCY', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
 
         # Double charts
@@ -539,7 +539,7 @@ if __name__ == "__main__":
         my_chart_creator.make_charts_of_different_folders('L3-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)
         my_chart_creator.make_charts_of_different_folders('VECTOR-CAPACITY-USAGE', 'Vector Capacity Usage', n_repetitions, 'VTune', log_scale=False, normalize=False)
         my_chart_creator.make_charts_of_different_folders('MEMORY-BOUND', '% of PipelineSlots', n_repetitions, 'VTune', log_scale=True, normalize=True)
-        my_chart_creator.make_charts_of_different_folders('CLOCK-BOUND', '% of PipelineSlots', n_repetitions, 'VTune', log_scale=True, normalize=True)
+        my_chart_creator.make_charts_of_different_folders('CORE-BOUND', '% of PipelineSlots', n_repetitions, 'VTune', log_scale=True, normalize=True)
         my_chart_creator.make_charts_of_different_folders('MEMORY-LATENCY', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)
         my_chart_creator.make_charts_of_different_folders('FRONT-END-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=True, normalize=False)
         my_chart_creator.make_charts_of_different_folders('BACK-END-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)

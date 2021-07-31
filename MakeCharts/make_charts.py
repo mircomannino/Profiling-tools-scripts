@@ -433,8 +433,10 @@ class ChartsCreator:
         fig, ax = plt.subplots(nrows=len(directories), figsize=(20, 15))
 
         # Make all the charts in each folder
+        print('dir: ', directories)
         for i, (name, directory) in enumerate(directories.items()):
             os.chdir(directory)
+            os.system('pwd')
             _, title = self.make_chart(parameter_to_plot, measurement_unit, n_repetitions, tool, '', '', log_scale, normalize, sub_plot=ax[i], sub_title=name)
             os.chdir('..')
 
@@ -464,10 +466,8 @@ class ChartsCreator:
         fig, ax = plt.subplots(nrows=len(directories), figsize=(20, 15))
 
         # Make all the charts in each folder
-        print(directories)
         for i, (name, directory) in enumerate(directories.items()):
             os.chdir(directory)
-            os.system('pwd')
             _, title = self.make_chart_double(parameters_to_plot, measurement_unit, n_repetitions, tools, '', '', log_scale, normalize, sub_plot=ax[i], sub_title=name)
             os.chdir('..')
 

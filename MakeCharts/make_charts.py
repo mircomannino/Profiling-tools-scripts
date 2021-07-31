@@ -66,7 +66,7 @@ class ChartsCreator:
 
             # Read the csv file in a DataFrame
             benchmarks_data_path = [file_ for file_ in os.listdir(data_folder) if file_.endswith('.csv')][0]
-            
+
             benchmarks_data = pd.read_csv(os.path.join(data_folder, benchmarks_data_path))
 
             # Get only the column of interest
@@ -82,6 +82,7 @@ class ChartsCreator:
 
         # Normalize
         if(normalize):
+            print(results.keys())
             N1_values = {dim: (val if val>0 else 1.) for (dim, val) in results['N1'].items()}
             for n_analysis in results.keys():
                 for dimensions in results[n_analysis].keys():
@@ -269,7 +270,7 @@ class ChartsCreator:
 
         # Title of the chart
         chart_name = parameters_to_plot[0] + '_' + parameters_to_plot[1] + '_' + str(n_repetitions) + '-repetitions_' + str(tools) + ('_normalized_' if normalize else '') + self.file_format
-        
+
         ax = sub_plot or plt.gca()
         result_df_parameter_2.plot.bar(width=0.9, alpha=0.6, edgecolor='black', linewidth=2, ax=ax)
         result_df_parameter_1.plot.bar(width=0.9, ax=ax,  color='grey', alpha=0.2, align='center', edgecolor='black', linewidth=2)
@@ -441,7 +442,7 @@ class ChartsCreator:
         plt.savefig(os.path.join(self.output_path, title))
         plt.clf()
         print(str(parameter_to_plot), ': Done')
-    
+
     def make_chart_double_from_different_folders(self, parameters_to_plot, measurement_unit, n_repetitions, tools, log_scale, normalize):
         '''
         Args:
@@ -454,7 +455,7 @@ class ChartsCreator:
 
         # Get all directories path
         directories = {path.split('_')[-1]: path for path in sorted(os.listdir(), reverse=True) if (os.path.isdir(path) and path != self.output_path.replace('./',''))}
-        
+
         # Setup subplot
         font = {'family' : 'DejaVu Sans',
             # 'weight' : 'bold',
@@ -518,7 +519,7 @@ if __name__ == "__main__":
         my_chart_creator.make_chart_stacked(['L1-BOUND', 'L2-BOUND', 'L3-BOUND'], '% of Clockticks', n_repetitions, 'VTune')
 
     if args.multiple_folders:
-        # Execution time 
+        # Execution time
         my_chart_creator.make_charts_of_different_folders('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', log_scale=False, normalize=True)
         my_chart_creator.make_charts_of_different_folders('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', log_scale=False, normalize=False)
 

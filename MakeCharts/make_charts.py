@@ -464,6 +464,7 @@ class ChartsCreator:
         fig, ax = plt.subplots(nrows=len(directories), figsize=(20, 15))
 
         # Make all the charts in each folder
+        print(directories)
         for i, (name, directory) in enumerate(directories.items()):
             os.chdir(directory)
             os.system('pwd')

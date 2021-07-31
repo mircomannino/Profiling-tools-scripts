@@ -389,7 +389,7 @@ class ChartsCreator:
             for dimensions_name, dimensions_dict in results.items()}
 
         N_ROWS = 3
-        N_COLS = 2
+        N_COLS = 3
         fig, ax = plt.subplots(nrows=N_ROWS, ncols=N_COLS)
 
         positions = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)]
@@ -403,7 +403,7 @@ class ChartsCreator:
 
         chart_name = str(parameters_to_plot) + '_' + str(n_repetitions) + '-repetitions_' + tool + self.file_format
 
-        fig.delaxes(ax[positions[-1]])
+        # fig.delaxes(ax[positions[-1]])
 
         plt.tight_layout()
 

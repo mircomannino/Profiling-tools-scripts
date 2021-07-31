@@ -389,7 +389,7 @@ class ChartsCreator:
             for dimensions_name, dimensions_dict in results.items()}
 
         N_ROWS = 3
-        N_COLS = 3
+        N_COLS = 2
         fig, ax = plt.subplots(nrows=N_ROWS, ncols=N_COLS)
 
         positions = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)]

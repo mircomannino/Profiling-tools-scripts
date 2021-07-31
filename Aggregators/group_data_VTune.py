@@ -83,6 +83,12 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['BACK-END-BOUND'] = self.__to_float(line[2])
                             if(metric_name.find('Retiring') != -1):
                                 self.results[subdirectory]['RETIRING'] = self.__to_float(line[2])
+                            if(metric_name.find('Cycles of 0 Ports Utilized') != -1):
+                                self.results[subdirectory]['CYCLES-0-PORTS-UTILIZED'] = self.__to_float(line[2])
+                            if(metric_name.find('Cycles of 1 Port Utilized') != -1):
+                                self.results[subdirectory]['CYCLES-1-PORT-UTILIZED'] = self.__to_float(line[2])
+                            if(metric_name.find('Cycles of 2 Ports Utilized') != -1):
+                                self.results[subdirectory]['CYCLES-2-PORTS-UTILIZED'] = self.__to_float(line[2])
                             if(metric_name.find('Cycles of 3+ Ports Utilized') != -1):
                                 self.results[subdirectory]['CYCLES-3+-PORTS-UTILIZED'] = self.__to_float(line[2])
                             if(metric_name.find('FB Full') != -1):
@@ -91,6 +97,10 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['CORE-BOUND'] = self.__to_float(line[2])
                             if(metric_name.find('DTLB Overhead') != -1):
                                 self.results[subdirectory]['DTLB-OVERHEAD'] = self.__to_float(line[2])
+                            if(metric_name.find('Load Operation Utilization') != -1):
+                                self.results[subdirectory]['LOAD-OPERATION-UTILIZATION'] = self.__to_float(line[2])
+                            if(metric_name.find('Store Operation Utilization') != -1):
+                                self.results[subdirectory]['STORE-OPERATION-UTILIZATION'] = self.__to_float(line[2])
 
                         ### MEMORY ACCESS ###
                         if(parameter_file == 'summary_memory-access.csv'):

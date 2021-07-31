@@ -513,8 +513,12 @@ if __name__ == "__main__":
         my_chart_creator.make_chart('MEMORY-BOUND', '% of PipelineSlots', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
         my_chart_creator.make_chart('CORE-BOUND', '% of PipelineSlots', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
         my_chart_creator.make_chart('MEMORY-LATENCY', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
-        my_chart_creator.make_chart('DTLB-OVERHEAD', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
-
+        my_chart_creator.make_chart('LOAD-OPERATION-UTILIZATION', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        my_chart_creator.make_chart('STORE-OPERATION-UTILIZATION', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        my_chart_creator.make_chart('CYCLES-0-PORTS-UTILIZED, '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        my_chart_creator.make_chart('CYCLES-1-PORT-UTILIZED, '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        my_chart_creator.make_chart('CYCLES-2-PORTS-UTILIZED, '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        my_chart_creator.make_chart('CYCLES-3+-PORTS-UTILIZED, '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
 
         # Double charts
         my_chart_creator.make_chart_double(

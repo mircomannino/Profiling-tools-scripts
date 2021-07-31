@@ -89,6 +89,8 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['FB-FILL'] = self.__to_float(line[2])
                             if(metric_name.find('Core Bound') != -1):
                                 self.results[subdirectory]['CORE-BOUND'] = self.__to_float(line[2])
+                            if(metric_name.find('DTLB Overhead' != -1)):
+                                self.results[subdirectory]['DTLB-OVERHEAD'] = self.__to_float(line[2])
 
                         ### MEMORY ACCESS ###
                         if(parameter_file == 'summary_memory-access.csv'):

@@ -466,6 +466,7 @@ class ChartsCreator:
         # Make all the charts in each folder
         for i, (name, directory) in enumerate(directories.items()):
             os.chdir(directory)
+            os.system('pwd')
             _, title = self.make_chart_double(parameters_to_plot, measurement_unit, n_repetitions, tools, '', '', log_scale, normalize, sub_plot=ax[i], sub_title=name)
             os.chdir('..')
 

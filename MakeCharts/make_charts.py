@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 import os
+import argparse
 import json
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
@@ -114,18 +115,19 @@ class ChartsCreator:
         ax.grid(axis='y')
 
         if (normalize):
-            Y_LIM = 2.
+            if(log_scale):
+                ax.set_yscale('log')
+                Y_LIM = 10**2
+                ax.set_yticks(np.arange(10**(0), Y_LIM, 10))
+            else:
+                Y_LIM = 1.5
+                ax.set_yticks(np.arange(0, Y_LIM, 0.5))
             ax.set_ylim(top=Y_LIM)
             for p in ax.patches:
                 value = np.round(p.get_height(), decimals=2)
                 if value <= Y_LIM:
                     value = ''
                 ax.annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=9.5)
-
-        # Set Log Scale
-        if(log_scale):
-            ax.set_yscale('log')
-        # plt.tight_layout()
 
 
         # Only for subplots operations
@@ -275,13 +277,20 @@ class ChartsCreator:
         plt.xticks(ha='right', rotation=30)
 
         if (normalize):
-            Y_LIM = 2.
+            if(log_scale):
+                ax.set_yscale('log')
+                Y_LIM = 10**2
+                ax.set_yticks(np.arange(10**(0), Y_LIM, 10))
+            else:
+                Y_LIM = 1.5
+                ax.set_yticks(np.arange(0, Y_LIM, 0.5))
             ax.set_ylim(top=Y_LIM)
             for p in ax.patches:
                 value = np.round(p.get_height(), decimals=2)
                 if value <= Y_LIM:
                     value = ''
                 ax.annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=9.5)
+
 
         if(log_scale):
             ax.set_yscale('log')
@@ -468,58 +477,71 @@ class ChartsCreator:
 
 
 if __name__ == "__main__":
-    my_chart_creator = ChartsCreator('./charts', file_format='png')
-    n_repetitions = 5
+    # Create a parser for arguments
+    parser = argparse.ArgumentParser(description='Make charts.')
+    parser.add_argument('--output-folder', '-o', type=str, default='./charts', help='destination folder. default: ./charts')
+    parser.add_argument('--output-type', '-t', type=str, default='png', help='format of output charts [png, pdf]. default: png')
+    parser.add_argument('--n-repetitions', '-n', type=int, default=5, help='Number of repetitions used in the benchmarks. default=5')
+    parser.add_argument('--single-folder', '-s', action='store_true', help='Use it when you plot a single folder')
+    parser.add_argument('--multiple-folders', '-m', action='store_true', help='Use it when you polot from different folders')
+    args = parser.parse_args()
 
-    # # Execution time
-    # my_chart_creator.make_chart('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
+    my_chart_creator = ChartsCreator(args.output_folder, file_format=args.output_type)
+    n_repetitions = args.n_repetitions
 
-    # # Perf
-    # my_chart_creator.make_chart('BRANCH-MISSES', '% of branches', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
-    # my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
-    # my_chart_creator.make_chart('L1-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
-    # my_chart_creator.make_chart('LLC-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=True, normalize=True)
+    if args.single_folder:
+        # Execution time
+        my_chart_creator.make_chart('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
 
-    # # Vtune
-    # my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'VTune', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
-    # my_chart_creator.make_chart('SP_GFLOPS', 'SP_GFLOPS', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=True)
-    # my_chart_creator.make_chart('L1-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
-    # my_chart_creator.make_chart('L2-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
-    # my_chart_creator.make_chart('L3-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
-    # my_chart_creator.make_chart('VECTOR-CAPACITY-USAGE', 'Vector Capacity Usage', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=False)
-    # my_chart_creator.make_chart('MEMORY-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=True, normalize=True)
-    # my_chart_creator.make_chart('MEMORY-LATENCY', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        # Perf
+        my_chart_creator.make_chart('BRANCH-MISSES', '% of branches', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
+        my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
+        my_chart_creator.make_chart('L1-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
+        my_chart_creator.make_chart('LLC-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=True, normalize=True)
 
-    # # Double charts
-    # my_chart_creator.make_chart_double(
-    #     ['TIME-MEDIAN', 'MEMORY-BOUND'], 'Time (ms)', n_repetitions, ['ExecutionTime', 'VTune'], compute_best_order=False, min_is_best=True, log_scale=False, normalize=True
-    # )
+        # Vtune
+        my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'VTune', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
+        my_chart_creator.make_chart('SP_GFLOPS', 'SP_GFLOPS', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=True)
+        my_chart_creator.make_chart('L1-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
+        my_chart_creator.make_chart('L2-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
+        my_chart_creator.make_chart('L3-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
+        my_chart_creator.make_chart('VECTOR-CAPACITY-USAGE', 'Vector Capacity Usage', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=False)
+        my_chart_creator.make_chart('MEMORY-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=True, normalize=True)
+        my_chart_creator.make_chart('MEMORY-LATENCY', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
 
-    # # Stacked charts
-    # my_chart_creator.make_chart_stacked(['L1-BOUND', 'L2-BOUND', 'L3-BOUND'], '% of Clockticks', n_repetitions, 'VTune')
+        # Double charts
+        my_chart_creator.make_chart_double(
+            ['TIME-MEDIAN', 'MEMORY-BOUND'], 'Time (ms)', n_repetitions, ['ExecutionTime', 'VTune'], compute_best_order=False, min_is_best=True, log_scale=False, normalize=True
+        )
 
-    # Charts from different folders
-    # my_chart_creator.make_charts_of_different_folders('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', log_scale=False, normalize=True)
-    # my_chart_creator.make_charts_of_different_folders('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', log_scale=False, normalize=False)
-    # my_chart_creator.make_charts_of_different_folders('CPI', 'CPI', n_repetitions, 'VTune', log_scale=False, normalize=True)
-    # my_chart_creator.make_charts_of_different_folders('BRANCH-MISSES', '% of branches', n_repetitions, 'Perf', log_scale=False, normalize=False)
-    # my_chart_creator.make_charts_of_different_folders('CPI', 'CPI', n_repetitions, 'Perf', log_scale=False, normalize=False)
-    # my_chart_creator.make_charts_of_different_folders('L1-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', log_scale=False, normalize=True)
-    # my_chart_creator.make_charts_of_different_folders('LLC-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', log_scale=True, normalize=True)
+        # Stacked charts
+        my_chart_creator.make_chart_stacked(['L1-BOUND', 'L2-BOUND', 'L3-BOUND'], '% of Clockticks', n_repetitions, 'VTune')
 
-    # # Vtune
-    # my_chart_creator.make_charts_of_different_folders('CPI', 'CPI', n_repetitions, 'VTune', log_scale=False, normalize=False)
-    # my_chart_creator.make_charts_of_different_folders('SP_GFLOPS', 'SP_GFLOPS', n_repetitions, 'VTune', log_scale=False, normalize=True)
-    # my_chart_creator.make_charts_of_different_folders('L1-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)
-    # my_chart_creator.make_charts_of_different_folders('L2-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)
-    # my_chart_creator.make_charts_of_different_folders('L3-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)
-    # my_chart_creator.make_charts_of_different_folders('VECTOR-CAPACITY-USAGE', 'Vector Capacity Usage', n_repetitions, 'VTune', log_scale=False, normalize=False)
-    # my_chart_creator.make_charts_of_different_folders('MEMORY-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=True, normalize=True)
-    # my_chart_creator.make_charts_of_different_folders('MEMORY-LATENCY', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)
-    # my_chart_creator.make_charts_of_different_folders('FRONT-END-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=True, normalize=False)
-    # my_chart_creator.make_charts_of_different_folders('BACK-END-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)
-    # my_chart_creator.make_charts_of_different_folders('RETIRING', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=False)
-    # # my_chart_creator.make_charts_of_different_folders('FB-FILL', '% of Clockticks', n_repetitions, 'VTune', log_scale=True, normalize=True)
+    if args.multiple_folders:
+        # Execution time 
+        my_chart_creator.make_charts_of_different_folders('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', log_scale=False, normalize=True)
+        my_chart_creator.make_charts_of_different_folders('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', log_scale=False, normalize=False)
 
-    # Double charts
-    my_chart_creator.make_chart_double_from_different_folders(['TIME-MEDIAN', 'MEMORY-BOUND'], 'Time (ms)', n_repetitions, ['ExecutionTime', 'VTune'], log_scale=False, normalize=True)
+        # Perf
+        my_chart_creator.make_charts_of_different_folders('BRANCH-MISSES', '% of branches', n_repetitions, 'Perf', log_scale=False, normalize=False)
+        my_chart_creator.make_charts_of_different_folders('CPI', 'CPI', n_repetitions, 'Perf', log_scale=False, normalize=False)
+        my_chart_creator.make_charts_of_different_folders('L1-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', log_scale=False, normalize=True)
+        my_chart_creator.make_charts_of_different_folders('LLC-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', log_scale=True, normalize=True)
+
+        # Vtune
+        my_chart_creator.make_charts_of_different_folders('CPI', 'CPI', n_repetitions, 'VTune', log_scale=False, normalize=False)
+        my_chart_creator.make_charts_of_different_folders('CPI', 'CPI', n_repetitions, 'VTune', log_scale=False, normalize=True)
+        my_chart_creator.make_charts_of_different_folders('SP_GFLOPS', 'SP_GFLOPS', n_repetitions, 'VTune', log_scale=False, normalize=True)
+        my_chart_creator.make_charts_of_different_folders('L1-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)
+        my_chart_creator.make_charts_of_different_folders('L2-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)
+        my_chart_creator.make_charts_of_different_folders('L3-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)
+        my_chart_creator.make_charts_of_different_folders('VECTOR-CAPACITY-USAGE', 'Vector Capacity Usage', n_repetitions, 'VTune', log_scale=False, normalize=False)
+        my_chart_creator.make_charts_of_different_folders('MEMORY-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=True, normalize=True)
+        my_chart_creator.make_charts_of_different_folders('MEMORY-LATENCY', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)
+        my_chart_creator.make_charts_of_different_folders('FRONT-END-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=True, normalize=False)
+        my_chart_creator.make_charts_of_different_folders('BACK-END-BOUND', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=True)
+        my_chart_creator.make_charts_of_different_folders('RETIRING', '% of Clockticks', n_repetitions, 'VTune', log_scale=False, normalize=False)
+        # my_chart_creator.make_charts_of_different_folders('FB-FILL', '% of Clockticks', n_repetitions, 'VTune', log_scale=True, normalize=True)
+
+        # Double charts
+        my_chart_creator.make_chart_double_from_different_folders(['TIME-MEDIAN', 'MEMORY-BOUND'], 'Time (ms)', n_repetitions, ['ExecutionTime', 'VTune'], log_scale=False, normalize=True)

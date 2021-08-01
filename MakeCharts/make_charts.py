@@ -33,7 +33,7 @@ class ChartsCreator:
             'VTune': 'reports'
         }
 
-    def make_chart(self, parameter_to_plot, measurement_unit, n_repetitions, tool, compute_best_order, min_is_best, log_scale, normalize, sub_plot=None, sub_title=None):
+    def make_chart(self, parameter_to_plot, measurement_unit, n_repetitions, tool, compute_best_order, min_is_best, log_scale, normalize, sub_plot=None, sub_title=None, y_lim=None):
         '''
         Args:
             parameter_to_plot:      Name of the parameter to use in the charts
@@ -45,6 +45,7 @@ class ChartsCreator:
             normalize:              Bool to say if the results will be normalized respect to the first analysis
             sub_plot:               Axes used to plot subplots, default: None
             sub_title:              String with subtitle, default: None
+            y_lim:                  Float value of y axis limit, default: None
         '''
         # Get all the folders with analysis
         analysis_directories = os.listdir()
@@ -120,7 +121,7 @@ class ChartsCreator:
                 Y_LIM = 10**2
                 ax.set_yticks(np.arange(10**(0), Y_LIM, 10))
             else:
-                Y_LIM = 1.5
+                Y_LIM = 1.5 if y_lim == None else y_lim
                 ax.set_yticks(np.arange(0, Y_LIM, 0.5))
             ax.set_ylim(top=Y_LIM)
             for p in ax.patches:
@@ -282,7 +283,7 @@ class ChartsCreator:
                 Y_LIM = 10**2
                 ax.set_yticks(np.arange(10**(0), Y_LIM, 10))
             else:
-                Y_LIM = 1.5
+                Y_LIM = 1.5 if y_lim == None else y_lim
                 ax.set_yticks(np.arange(0, Y_LIM, 0.5))
             ax.set_ylim(top=Y_LIM)
             for p in ax.patches:

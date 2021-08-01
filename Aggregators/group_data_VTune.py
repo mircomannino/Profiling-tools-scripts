@@ -117,6 +117,8 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['L3-BOUND'] = self.__to_float(line[2])
                             if(metric_name.find('LLC Miss Count') != -1):
                                 self.results[subdirectory]['LLC-MISSES-COUNT'] = self.__to_float(line[2])
+                            if(metric_name.find('DRAM Bound') != -1):
+                                self.results[subdirectory]['DRAM-BOUND'] = self.__to_float(line[2])
                             if(metric_name.find('Memory Bound') != -1):
                                 self.results[subdirectory]['MEMORY-BOUND'] = self.__to_float(line[2])
 

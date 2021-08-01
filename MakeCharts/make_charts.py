@@ -525,6 +525,7 @@ if __name__ == "__main__":
         my_chart_creator.make_chart('CYCLES-3+-PORTS-UTILIZED', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
         my_chart_creator.make_chart('BAD-SPECULATION', '% of PipelineSlots', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
         my_chart_creator.make_chart('MACHINE-CLEARS', '% of PipelineSlots', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        my_chart_creator.make_charts('RETIRING', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
 
         # Double charts
         my_chart_creator.make_chart_double(

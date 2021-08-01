@@ -68,6 +68,11 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['SP_GFLOPS'] = self.__to_float(line[2])
                             if(metric_name.find('CPI') != -1):
                                 self.results[subdirectory]['CPI'] = self.__to_float(line[2])
+                            if(metric_name.find('FP Arith/Mem Rd Instr. Ratio') != -1):
+                                self.results[subdirectory]['FP_OP-OVER-MEM_READ'] = self.__to_float(line[2])
+                            if(metric_name.find('FP Arith/Mem Wr Instr. Ratio') != -1):
+                                self.results[subdirectory]['FP_OP-OVER-MEM_WRITE'] = self.__to_float(line[2])
+
 
                         ### UARCH EXPLORATION ###
                         if(parameter_file == 'summary_uarch-exploration.csv'):

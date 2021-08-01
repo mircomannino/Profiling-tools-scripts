@@ -103,6 +103,8 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['STORE-OPERATION-UTILIZATION'] = self.__to_float(line[2])
                             if(metric_name.find('Bad Speculation') != -1):
                                 self.results[subdirectory]['BAD-SPECULATION'] = self.__to_float(line[2])
+                            if(metric_name.find('Machine Clears') != -1):
+                                self.results[subdirectory]['MACHINE-CLEARS'] = self.__to_float(line[2])
 
 
                         ### MEMORY ACCESS ###

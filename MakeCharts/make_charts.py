@@ -161,7 +161,7 @@ class ChartsCreator:
         print(chart_name, ': Done')
 
 
-    def make_chart_double(self, parameters_to_plot, measurement_unit, n_repetitions, tools, compute_best_order, min_is_best, log_scale, normalize, sub_plot=None, sub_title=None):
+    def make_chart_double(self, parameters_to_plot, measurement_unit, n_repetitions, tools, compute_best_order, min_is_best, log_scale, normalize, sub_plot=None, sub_title=None, y_lim=None):
         '''
         Args:
             parameter_to_plot:      List with the names of the parameters to use in the charts
@@ -173,6 +173,7 @@ class ChartsCreator:
             normalize:              Bool to say if the results will be normalized respect to the first analysis
             sub_plot:               Axes used to plot subplots, default: None
             sub_title:              String with subtitle, default: None
+            y_lim:                  Float value of y axis limit, default: None
         '''
         # Get all the folders with analysis
         analysis_directories = os.listdir()

@@ -150,7 +150,6 @@ class ChartsCreator:
         plt.ylabel(measurement_unit)
         # plt.title(chart_name.replace(self.file_format, ''))
         plt.title('Execution time - Normalized respect to order N1')
-        plt.subtitle('Layers of AlexNet')
         # plt.legend(loc='best', fontsize=20)
         plt.legend(bbox_to_anchor=(1, 1), loc='upper left', fontsize=20)
         plt.tight_layout()

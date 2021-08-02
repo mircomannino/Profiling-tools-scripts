@@ -152,7 +152,7 @@ class ChartsCreator:
 
 
         # plt.xticks(ha='right', rotation=30)
-        plt.xticks(ha='center', rotation=0, fontsize=18)
+        plt.xticks(ha='center', rotation=0, fontsize=30)
 
         plt.xlabel('x_y_z_v: x = height and width of INPUT;  y = n. of channels of INPUT; z = height and width of KERNEL; v = n. of KERNELS')
         # plt.xlabel('Dimensions')

@@ -121,7 +121,7 @@ class ChartsCreator:
                 Y_LIM = 10**2
                 ax.set_yticks(np.arange(10**(0), Y_LIM, 10))
             else:
-                Y_LIM = 4. if y_lim == None else y_lim
+                Y_LIM = 1.5 if y_lim == None else y_lim
                 ax.set_yticks(np.arange(0, Y_LIM, 0.5))
             ax.set_ylim(top=Y_LIM)
             for p in ax.patches:
@@ -284,7 +284,7 @@ class ChartsCreator:
                 Y_LIM = 10**2
                 ax.set_yticks(np.arange(10**(0), Y_LIM, 10))
             else:
-                Y_LIM = 4. if y_lim == None else y_lim
+                Y_LIM = 1.5 if y_lim == None else y_lim
                 ax.set_yticks(np.arange(0, Y_LIM, 0.5))
             ax.set_ylim(top=Y_LIM)
             for p in ax.patches:
@@ -533,7 +533,6 @@ if __name__ == "__main__":
         my_chart_creator.make_chart('RETIRING', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
         my_chart_creator.make_chart('FP_OP-OVER-MEM_READ', 'FP / READ', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True, y_lim=4.)
         my_chart_creator.make_chart('FP_OP-OVER-MEM_WRITE', 'FP / WRITE', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True, y_lim=4.)
-        my_chart_creator.make_chart('STORE-BOUND', 'FP / WRITE', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
 
         # Double charts
         my_chart_creator.make_chart_double(

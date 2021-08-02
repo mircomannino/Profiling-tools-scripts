@@ -546,7 +546,7 @@ if __name__ == "__main__":
             'CYCLES-1-PORT-UTILIZED',
             'CYCLES-2-PORTS-UTILIZED',
             'CYCLES-3+-PORTS-UTILIZED'
-        ], n_repetitions, 'VTune')
+        ], '%PipelineSlots', n_repetitions, 'VTune')
 
     if args.multiple_folders:
         # Execution time

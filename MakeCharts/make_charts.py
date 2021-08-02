@@ -147,7 +147,7 @@ class ChartsCreator:
             plt.subplots_adjust(hspace=1.2)
             ax.legend(bbox_to_anchor=(1,1), loc='upper left', fontsize=14)
             for tick in ax.get_xticklabels():
-                tick.set_rotation(20)
+                # tick.set_rotation(20)
             return ax, chart_name
 
 

@@ -145,8 +145,8 @@ class ChartsCreator:
 
         plt.xticks(ha='right', rotation=30)
 
-        # plt.xlabel('x_y_z_v:  x = height and width of INPUT;  y = n. of channels of INPUT;  z = height and width of KERNEL; v = n. of KERNELS')
-        plt.xlabel('Dimensions')
+        plt.xlabel('x_y_z_v:  x = height and width of INPUT;  y = n. of channels of INPUT;  z = height and width of KERNEL; v = n. of KERNELS')
+        # plt.xlabel('Dimensions')
         plt.ylabel(measurement_unit)
         plt.title(chart_name.replace(self.file_format, ''))
         # plt.title('CPI (Cycles per instruction) - Changing the number of kernels')

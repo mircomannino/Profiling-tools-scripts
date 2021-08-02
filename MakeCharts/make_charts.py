@@ -99,7 +99,7 @@ class ChartsCreator:
 
         # Plot parameters
         if sub_plot == None:
-            plt.rcParams["figure.figsize"] = [20,12]
+            plt.rcParams["figure.figsize"] = [20,13]
             font = {'family' : 'DejaVu Sans',
             # 'weight' : 'bold',
             'size'   : 30}
@@ -145,7 +145,7 @@ class ChartsCreator:
 
         plt.xticks(ha='right', rotation=30)
 
-        plt.xlabel('x_y_z_v:\tx = height and width of INPUT;  y = n. of channels of INPUT;\n\tz = height and width of KERNEL; v = n. of KERNELS')
+        plt.xlabel('x_y_z_v: x = height and width of INPUT;  y = n. of channels of INPUT; z = height and width of KERNEL; v = n. of KERNELS')
         # plt.xlabel('Dimensions')
         plt.ylabel(measurement_unit)
         plt.title(chart_name.replace(self.file_format, ''))

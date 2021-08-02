@@ -92,7 +92,7 @@ class ChartsCreator:
         results_ordered = {}
         for n_analysis in sorted(results.keys()):
             results_ordered[n_analysis] = {}
-            for dimensions in sorted(list(results[n_analysis].keys()) ,key=lambda x: (int(x.split('_')[0]), int(x.split('_')[3]))):
+            for dimensions in sorted(list(results[n_analysis].keys()) ,key=lambda x: (int(x.split('_')[0]), int(x.split('_')[1])), reverse=True):
                 results_ordered[n_analysis][dimensions] = results[n_analysis][dimensions]
         results = results_ordered
         del results_ordered
@@ -122,7 +122,7 @@ class ChartsCreator:
                 ax.set_yticks(np.arange(10**(0), Y_LIM, 10))
             else:
                 Y_LIM = 1.5 if y_lim == None else y_lim
-                ax.set_yticks(np.arange(0, Y_LIM, 0.5))
+                ax.set_yticks(np.arange(0, Y_LIM, 0.25))
             ax.set_ylim(top=Y_LIM)
             for p in ax.patches:
                 value = np.round(p.get_height(), decimals=2)
@@ -248,7 +248,7 @@ class ChartsCreator:
         for n_analysis in sorted(results_parameter_1.keys()):
             results_ordered_parameter_1[n_analysis] = {}
             results_ordered_parameter_2[n_analysis] = {}
-            for dimensions in sorted(list(results_parameter_1[n_analysis].keys()) ,key=lambda x: (int(x.split('_')[0]), int(x.split('_')[3]))):
+            for dimensions in sorted(list(results_parameter_1[n_analysis].keys()) ,key=lambda x: (int(x.split('_')[0]), int(x.split('_')[1])), reverse=True):
                 results_ordered_parameter_1[n_analysis][dimensions] = results_parameter_1[n_analysis][dimensions]
                 results_ordered_parameter_2[n_analysis][dimensions] = results_parameter_2[n_analysis][dimensions]
         results_parameter_1 = results_ordered_parameter_1
@@ -285,7 +285,7 @@ class ChartsCreator:
                 ax.set_yticks(np.arange(10**(0), Y_LIM, 10))
             else:
                 Y_LIM = 1.5 if y_lim == None else y_lim
-                ax.set_yticks(np.arange(0, Y_LIM, 0.5))
+                ax.set_yticks(np.arange(0, Y_LIM, 0.25))
             ax.set_ylim(top=Y_LIM)
             for p in ax.patches:
                 value = np.round(p.get_height(), decimals=2)

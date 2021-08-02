@@ -147,12 +147,12 @@ class ChartsCreator:
             plt.subplots_adjust(hspace=1.2)
             ax.legend(bbox_to_anchor=(1,1), loc='upper left', fontsize=14)
             for tick in ax.get_xticklabels():
-                # tick.set_rotation(20)
-                pass  
+                tick.set_rotation(20)
             return ax, chart_name
 
 
-        plt.xticks(ha='right', rotation=30)
+        # plt.xticks(ha='right', rotation=30)
+        plt.xticks(ha='right', rotation=0)
 
         plt.xlabel('x_y_z_v: x = height and width of INPUT;  y = n. of channels of INPUT; z = height and width of KERNEL; v = n. of KERNELS')
         # plt.xlabel('Dimensions')

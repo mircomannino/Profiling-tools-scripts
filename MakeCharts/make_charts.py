@@ -99,7 +99,7 @@ class ChartsCreator:
 
         # Plot parameters
         if sub_plot == None:
-            plt.rcParams["figure.figsize"] = [20,15]
+            plt.rcParams["figure.figsize"] = [25,15]
             font = {'family' : 'DejaVu Sans',
             # 'weight' : 'bold',
             'size'   : 30}

@@ -121,7 +121,7 @@ class ChartsCreator:
                 Y_LIM = 10**2
                 ax.set_yticks(np.arange(10**(0), Y_LIM, 10))
             else:
-                Y_LIM = 1.5 if y_lim == None else y_lim
+                Y_LIM = 1.25 if y_lim == None else y_lim
                 ax.set_yticks(np.arange(0, Y_LIM, 0.25))
             ax.set_ylim(top=Y_LIM)
             for p in ax.patches:

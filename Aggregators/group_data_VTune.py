@@ -72,6 +72,8 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['FP_OP-OVER-MEM_READ'] = self.__to_float(line[2])
                             if(metric_name.find('FP Arith/Mem Wr Instr. Ratio') != -1):
                                 self.results[subdirectory]['FP_OP-OVER-MEM_WRITE'] = self.__to_float(line[2])
+                            if(metric_name.find('Cache Bound') != -1):
+                                self.results[subdirectory]['CACHE-BOUND'] = self.__to_float(line[2])
 
 
                         ### UARCH EXPLORATION ###

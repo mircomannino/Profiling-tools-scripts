@@ -541,6 +541,12 @@ if __name__ == "__main__":
 
         # Stacked charts
         my_chart_creator.make_chart_stacked(['L1-BOUND', 'L2-BOUND', 'L3-BOUND'], '% of Clockticks', n_repetitions, 'VTune')
+        my_chart_creator.make_chart_stacked([
+            'CYCLES-0-PORTS-UTILIZED',
+            'CYCLES-1-PORT-UTILIZED',
+            'CYCLES-2-PORTS-UTILIZED',
+            'CYCLES-3+-PORTS-UTILIZED'
+        ], n_repetitions, 'VTune')
 
     if args.multiple_folders:
         # Execution time

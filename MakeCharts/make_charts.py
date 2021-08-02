@@ -148,6 +148,7 @@ class ChartsCreator:
             ax.legend(bbox_to_anchor=(1,1), loc='upper left', fontsize=14)
             for tick in ax.get_xticklabels():
                 # tick.set_rotation(20)
+                pass  
             return ax, chart_name
 
 

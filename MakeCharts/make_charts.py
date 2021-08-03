@@ -544,7 +544,7 @@ if __name__ == "__main__":
         my_chart_creator.make_chart('FP_OP-OVER-MEM_READ', 'FP / READ', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True, y_lim=3.25)
         my_chart_creator.make_chart('FP_OP-OVER-MEM_WRITE', 'FP / WRITE', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True, y_lim=3.25)
         my_chart_creator.make_chart('AVG-CPU-FREQUENCY(GHz)', 'GHz', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
-        my_chart_creator.make_chart('N-FP-ARITHMETIC', 'N. FP Arithmetic', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True, y_lim=3.25)
+        my_chart_creator.make_chart('N-FP-ARITHMETIC', '% uOps', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True, y_lim=3.25)
 
 
 
@@ -563,10 +563,9 @@ if __name__ == "__main__":
             'CYCLES-3+-PORTS-UTILIZED'
         ], '%PipelineSlots', n_repetitions, 'VTune')
         my_chart_creator.make_chart_stacked([
-            'ALU-OPERATION-UTILIZATION',
-            'STORE-OPERATION-UTILIZATION',
-            'LOAD-OPERATION-UTILIZATION'
-        ], '%PipelineSlots', n_repetitions, 'VTune')
+            'FP_OP-OVER-MEM_READ',
+            'FP_OP-OVER-MEM_WRITE'
+        ], 'Ratio', n_repetitions, 'VTune')
 
     if args.multiple_folders:
         # Execution time

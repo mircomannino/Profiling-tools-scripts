@@ -75,7 +75,7 @@ class AggregatorVTuneData:
                             if(metric_name.find('Cache Bound') != -1):
                                 self.results[subdirectory]['CACHE-BOUND'] = self.__to_float(line[2])
                             if(metric_name.find('Average CPU Frequency') != -1):
-                                self.results[subdirectory]['AVG-CPU-FREQUENCY(GHz)'] = self.__to_float(line[2]) / 10**9
+                                self.results[subdirectory]['AVG-CPU-FREQUENCY(GHz)'] = self.__to_float(line[2])
 
 
                         ### UARCH EXPLORATION ###

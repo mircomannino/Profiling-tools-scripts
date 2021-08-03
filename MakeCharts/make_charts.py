@@ -510,7 +510,7 @@ if __name__ == "__main__":
         my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
         my_chart_creator.make_chart('L1-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
         my_chart_creator.make_chart('LLC-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
-        my_chart_creator.make_chart('N-INSTRUCTIONS', 'N. of instructions', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True, y_lim=3.25)
+        my_chart_creator.make_chart('N-INSTRUCTIONS', 'N. of instructions', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True, y_lim=1.)
 
         # Vtune
         my_chart_creator.make_chart('CPI', 'CPI', n_repetitions, 'VTune', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)

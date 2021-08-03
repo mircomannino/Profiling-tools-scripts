@@ -89,18 +89,17 @@ class ChartsCreator:
                     results[n_analysis][dimensions] /= N1_values[dimensions]
 
         # Order the name of dimensions (Order: Image size, Image depth, Kernel size, N Kernels)
-        alex_net_dim = [
-            '227_3_11_96',
-            '27_96_5_256',
-            '13_256_3_384',
-            '13_384_3_384',
-            '13_384_3_256'
-        ]
+        # alex_net_dim = [
+        #     '227_3_11_96',
+        #     '27_96_5_256',
+        #     '13_256_3_384',
+        #     '13_384_3_384',
+        #     '13_384_3_256'
+        # ]
         results_ordered = {}
         for n_analysis in sorted(results.keys()):
             results_ordered[n_analysis] = {}
-            # for dimensions in sorted(list(results[n_analysis].keys()) ,key=lambda x: (int(x.split('_')[0]), int(x.split('_')[1])), reverse=True):
-            for dimensions in alex_net_dim:
+            for dimensions in sorted(list(results[n_analysis].keys()) ,key=lambda x: (int(x.split('_')[0]), int(x.split('_')[1])), reverse=True):
                 results_ordered[n_analysis][dimensions] = results[n_analysis][dimensions]
         results = results_ordered
         del results_ordered
@@ -136,7 +135,7 @@ class ChartsCreator:
                 value = np.round(p.get_height(), decimals=2)
                 if value <= Y_LIM:
                     value = ''
-                ax.annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=9.5)
+                ax.annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=20)
 
 
         # Only for subplots operations

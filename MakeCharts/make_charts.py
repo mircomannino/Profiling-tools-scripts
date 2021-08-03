@@ -558,6 +558,12 @@ if __name__ == "__main__":
             'CYCLES-2-PORTS-UTILIZED',
             'CYCLES-3+-PORTS-UTILIZED'
         ], '%PipelineSlots', n_repetitions, 'VTune')
+        my_chart_creator.make_chart_stacked([
+            '',
+            'ALU-OPERATION-UTILIZATION',
+            'STORE-OPERATION-UTILIZATION',
+            'LOAD-OPERATION-UTILIZATION'
+        ], '%PipelineSlots', n_repetitions, 'VTune')
 
     if args.multiple_folders:
         # Execution time

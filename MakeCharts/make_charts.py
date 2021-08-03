@@ -72,10 +72,10 @@ class ChartsCreator:
 
             # Get only the column of interest
             for index, row in benchmarks_data.iterrows():
-                print(analysis_directory)
                 # Get info from dataframe
                 dimensions = row[0].replace('.txt', '')[:-4]     # benchmark_Naive_x_x_x_x_x_x.txt ---> benchmark_Naive_x_x_x_x
                 dimensions = dimensions.replace('benchmark_Compilers_', '')
+                print(row.keys())
                 value = row[parameter_to_plot]
                 # Store values
                 if n_analysis not in results.keys():

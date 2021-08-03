@@ -75,7 +75,7 @@ class ChartsCreator:
                 # Get info from dataframe
                 dimensions = row[0].replace('.txt', '')[:-4]     # benchmark_Naive_x_x_x_x_x_x.txt ---> benchmark_Naive_x_x_x_x
                 dimensions = dimensions.replace('benchmark_Compilers_', '')
-                print(row.keys())
+                print(benchmarks_data_path, row.keys())
                 value = row[parameter_to_plot]
                 # Store values
                 if n_analysis not in results.keys():

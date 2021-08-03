@@ -45,6 +45,8 @@ class AggregatorPerfData:
                         self.results[test_file_name]['L1-MISSES-COUNT'] = self.__get_L1_miss_count(line)
                     if(line.find("LLC-loads-misses") != -1):        # LLC DATA CACHE MISSES
                         self.results[test_file_name]['LLC-MISSES-COUNT'] = self.__get_LLC_miss_count(line)
+                    if(line.find('instructions') != -1):
+                        self.results[test_file_name]['N-INSTRUCTIONS'] = self.__get_N_instructions(line)
         # Show the final collected data
         print('Data grouped!')
         for file_name, parameters in self.results.items():
@@ -85,6 +87,13 @@ class AggregatorPerfData:
         return -1.0
 
     def __get_LLC_miss_count(self, line: str):
+        splitted_line = line.split()
+        LLC_misses_count = splitted_line[0].replace('.', '')
+        if self.__is_number(LLC_misses_count):
+            return float(LLC_misses_count)
+        return -1.0
+
+    def __get_N_instructions(self, line: str):
         splitted_line = line.split()
         LLC_misses_count = splitted_line[0].replace('.', '')
         if self.__is_number(LLC_misses_count):

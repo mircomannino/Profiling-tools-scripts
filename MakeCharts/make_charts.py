@@ -404,7 +404,7 @@ class ChartsCreator:
 
         positions = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)]
 
-        for i, dimensions_name in enumerate(sorted(list(result_dfs.keys()) ,key=lambda x: (int(x.split('_')[0]), int(x.split('_')[1])), reverse=False)):
+        for i, dimensions_name in enumerate(sorted(list(result_dfs.keys()) ,key=lambda x: (int(x.split('_')[0]), int(x.split('_')[3])), reverse=False)):
             result_df = result_dfs[dimensions_name]
             result_df.plot(kind='bar', stacked=True, ax=ax[positions[i]], alpha=0.7)
 

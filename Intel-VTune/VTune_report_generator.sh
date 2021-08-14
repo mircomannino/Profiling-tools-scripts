@@ -7,10 +7,16 @@
 #   $5: Depth of image
 #   $6: Size of kernels
 #   $7: Number of kernels
-#   $8: Order of for loops
-#   $9: Number of tests to do
+#   $8: Blocked input channel size
+#   $9: Blocked output channel size
+#   $10: Blocked output width size
+#   $11[8]: Order of for loops
+#   $12[9]: Number of tests to do
 
-if [ "$#" -ne 9 ]; then
+BIN_NAME=$(basename $1)
+BINARY_FILE=$1
+
+if [[ ${BINARY_FILE} = "./bin/benchmark_Naive" ]] && [[ "$#" -ne 9 ]]; then
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"
     echo "  2) Root data for VTune"
@@ -18,9 +24,23 @@ if [ "$#" -ne 9 ]; then
     echo "  4-9) Arguments of binary file. See documentation"
     exit 1
 fi
+if [[ ${BINARY_FILE} = "./bin/benchmark_MemoryBlocking" ]] && [[ "$#" -ne 12 ]]; then
+    echo "Insert the following arguments:"
+    echo "  1) Binary file to analyze"
+    echo "  2) Root data for VTune"
+    echo "  3) Output directory"
+    echo "  4-12) Arguments of binary file. See documentation"
+    exit 1
+fi
 
-BIN_NAME=$(basename $1)
-BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7_$8_$9
+if [ ${BINARY_FILE} = "./bin/benchmark_Naive" ]; then # Naive
+    BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7_$8_$9
+    ARGUMENTS="$4 $5 $6 $7 $8 $9"
+fi
+if [ ${BINARY_FILE} = "./bin/benchmark_MemoryBlocking" ]; then # MemoryBlocking
+    BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7_$8_$9_${10}_${11}_${12}
+    ARGUMENTS="$4 $5 $6 $7 $8 $9 ${10} ${11} ${12}"
+fi
 
 # VTune collect information - ROOT folder
 ROOT_VTUNE=$2
@@ -52,7 +72,7 @@ declare -a collect_types=(
 for TYPE in "${collect_types[@]}"
 do
         mkdir -p ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE}
-        vtune -collect $TYPE -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -- $1 $4 $5 $6 $7 $8 $9
+        vtune -collect $TYPE -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -- ${BINARY_FILE} ${ARGUMENTS}
 done
 
 # Create reports with vtune command

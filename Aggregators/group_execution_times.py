@@ -37,9 +37,11 @@ class AggregatorExecutionTime:
             self.results[test_file_name] = {}
             with open(os.path.join(os.getcwd(), test_file_name)) as test_file:
                 for line in test_file:
-                    if(line.find("Median") != -1):           # TIME-MEDIAN
+                    if(line.find('Median') != -1):           # TIME-MEDIAN
                         self.results[test_file_name]['TIME-MEDIAN'] = self.__get_time_info(line)
-                    if(line.find("Division") != -1):            # TIME-DIVISION
+                    if(line.find('Minimum') != -1):
+                        self.results[test_file_name]['TIME-MINIMUM'] = self.__get_time_info(line)
+                    if(line.find('Division') != -1):            # TIME-DIVISION
                         self.results[test_file_name]['TIME-DIVISION'] = self.__get_time_info(line)
         # Show the final collected data
         print('Data grouped!')

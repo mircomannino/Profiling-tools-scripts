@@ -73,14 +73,14 @@ class ChartsCreator:
             # Get only the column of interest
             for index, row in benchmarks_data.iterrows():
                 # Get info from dataframe
-                dimensions = row[0].replace('.txt', '')[:-4]     # benchmark_Naive_x_x_x_x_x_x.txt ---> benchmark_Naive_x_x_x_x
-                dimensions = dimensions.replace('benchmark_Compilers_', '')
+                dimensions = row[0].replace('.txt', '')[:-4]        # Remove extension and NTEST, LOOP_ORDER info
+                dimensions = '_'.join((dimensions.split('_')[2:]))  # Remove binary name prefix (Ex. benchmark_Naive)
                 value = row[parameter_to_plot]
                 # Store values
                 if n_analysis not in results.keys():
                     results[n_analysis] = {}
                 results[n_analysis][dimensions] = value
-
+                
         # Normalize
         if(normalize):
             N1_values = {dim: (val if val>0 else -1.) for (dim, val) in results['N1'].items()}

@@ -47,6 +47,8 @@ class AggregatorPerfData:
                         self.results[test_file_name]['LLC-MISSES-COUNT'] = self.__get_LLC_miss_count(line)
                     if(line.find('instructions') != -1):
                         self.results[test_file_name]['N-INSTRUCTIONS'] = self.__get_N_instructions(line)
+                    if(line.find('cache-misses') != -1):
+                        self.results[test_file_name]['CACHE-MISSES'] = self.__get_cache_miss(line)
         # Show the final collected data
         print('Data grouped!')
         for file_name, parameters in self.results.items():
@@ -64,7 +66,7 @@ class AggregatorPerfData:
 
     def __get_branch_info(self, line: str):
         splitted_line = line.split()
-        branch_misses_percentage = splitted_line[3]
+        branch_misses_percentage = splitted_line[3]N2
         branch_misses_percentage = branch_misses_percentage.replace('%', '')
         branch_misses_percentage = branch_misses_percentage.replace(',', '.')
         if self.__is_number(branch_misses_percentage):
@@ -98,6 +100,13 @@ class AggregatorPerfData:
         LLC_misses_count = splitted_line[0].replace('.', '')
         if self.__is_number(LLC_misses_count):
             return float(LLC_misses_count)
+        return -1.0
+
+    def __get_cache_miss(self, line: str):
+        splitted_line = line.split()
+        cache_misses = splitted_line[0].replace('.','')
+        if self.__is_number(cache_misses):
+            return float(cache_misses)
         return -1.0
 
     def __is_number(self, str):

@@ -48,7 +48,7 @@ class AggregatorPerfData:
                     if(line.find('instructions') != -1):
                         self.results[test_file_name]['N-INSTRUCTIONS'] = self.__get_N_instructions(line)
                     if(line.find('cache-misses') != -1):
-                        self.results[test_file_name]['CACHE-MISSES'] = self.__get_cache_miss(line)
+                        self.results[test_file_name]['CACHE-MISSES'] = self.__get_cache_miss_percentage(line)
         # Show the final collected data
         print('Data grouped!')
         for file_name, parameters in self.results.items():
@@ -102,9 +102,9 @@ class AggregatorPerfData:
             return float(LLC_misses_count)
         return -1.0
 
-    def __get_cache_miss(self, line: str):
+    def __get_cache_miss_percentage(self, line: str):
         splitted_line = line.split()
-        cache_misses = splitted_line[0].replace('.','')
+        cache_misses = splitted_line[3].replace(',','.')
         if self.__is_number(cache_misses):
             return float(cache_misses)
         return -1.0

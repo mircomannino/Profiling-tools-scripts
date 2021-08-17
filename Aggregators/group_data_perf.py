@@ -66,7 +66,7 @@ class AggregatorPerfData:
 
     def __get_branch_info(self, line: str):
         splitted_line = line.split()
-        branch_misses_percentage = splitted_line[3]N2
+        branch_misses_percentage = splitted_line[3]
         branch_misses_percentage = branch_misses_percentage.replace('%', '')
         branch_misses_percentage = branch_misses_percentage.replace(',', '.')
         if self.__is_number(branch_misses_percentage):

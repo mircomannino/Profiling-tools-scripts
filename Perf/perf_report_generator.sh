@@ -22,6 +22,13 @@ if [[ ${BINARY_FILE} = "./bin/benchmark_Naive" ]] && [[ "$#" -ne 8 ]]; then
     echo "  3-8) Arguments of binary file. See documentation"
     exit 1
 fi
+if [[ ${BINARY_FILE} = "./bin/benchmark_NaiveOptimised" ]] && [[ "$#" -ne 8 ]]; then
+    echo "Insert the following arguments:"
+    echo "  1) Binary file to analyze"
+    echo "  2) Output directory"
+    echo "  3-8) Arguments of binary file. See documentation"
+    exit 1
+fi
 if [[ ${BINARY_FILE} = "./bin/benchmark_MemoryBlocking" ]] && [[ "$#" -ne 11 ]]; then
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"
@@ -41,12 +48,18 @@ PERF_REPETITIONS=3
 if [ ${BINARY_FILE} = "./bin/benchmark_Naive" ]; then # Naive
     FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
 fi
+if [ ${BINARY_FILE} = "./bin/benchmark_NaiveOptimised" ]; then # Naive
+    FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
+fi
 if [ ${BINARY_FILE} = "./bin/benchmark_MemoryBlocking" ]; then # MemoryBlocking
     FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}.txt
 fi
 
 mkdir -p ${OUTPUT_DIR}
 if [ ${BINARY_FILE} = "./bin/benchmark_Naive" ]; then
+    perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${FILE_NAME} $3 $4 $5 $6 $7 $8
+fi
+if [ ${BINARY_FILE} = "./bin/benchmark_NaiveOptimised" ]; then
     perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${FILE_NAME} $3 $4 $5 $6 $7 $8
 fi
 if [ ${BINARY_FILE} = "./bin/benchmark_MemoryBlocking" ]; then

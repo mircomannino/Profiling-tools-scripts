@@ -80,7 +80,7 @@ class ChartsCreator:
                 if n_analysis not in results.keys():
                     results[n_analysis] = {}
                 results[n_analysis][dimensions] = value
-                
+
         # Normalize
         if(normalize):
             N1_values = {dim: (val if val>0 else -1.) for (dim, val) in results['N1'].items()}
@@ -162,6 +162,186 @@ class ChartsCreator:
         plt.legend(bbox_to_anchor=(1, 1), loc='upper left', fontsize=20)
         plt.tight_layout()
         # plt.show()
+
+        # Save the plot in a file with the appropriate name
+        plt.savefig(os.path.join(self.output_path, chart_name))
+        plt.clf() # Clear the figure
+        print(chart_name, ': Done')
+
+    def make_chart_mem_blocking(self, parameter_to_plot, measurement_unit, n_repetitions, tool, compute_best_order, min_is_best, log_scale, normalize, sub_plot=None, sub_title=None, y_lim=None, print_val=False):
+        '''
+        Args:
+            parameter_to_plot:      Name of the parameter to use in the charts
+            n_repetitions:          Number of repetitions used in the analysisfile_format
+            tool:                   Name of the tool from which the results come from [ExecutionTime, Perf, VTune]
+            compute_best_order:     Bool to say if you want the loop order that obtain best results
+            min_is_best:            Bool needed only if compute_best_order id True
+            log_scale:              Bool to say if the plot will be in logaritmic scale
+            normalize:              Bool to say if the results will be normalized respect to the first analysis
+            sub_plot:               Axes used to plot subplots, default: None
+            sub_title:              String with subtitle, default: None
+            y_lim:                  Float value of y axis limit, default: None
+            print_val:              Bool to say if you want values on the barchart
+        '''
+        # Get all the folders with analysis
+        analysis_directories = os.listdir()
+        analysis_directories = [analysis_directory for analysis_directory in analysis_directories if (
+            os.path.isdir(analysis_directory) and analysis_directory.find('analysis_N')!=-1)]
+
+
+        # Collect data from each analysis folder
+        results = {}
+        for analysis_directory in analysis_directories:
+            # Get Number of the analysis
+            n_analysis = analysis_directory.replace('analysis_', '')    # 'analysis_N1' ---> 'N1'
+            if n_analysis not in results.keys():
+                results[n_analysis] = {}
+
+            # Get data folder path
+            data_folder = tool + '_'
+            data_folder += analysis_directory + '_'
+            data_folder += str(n_repetitions) + '-repetitions'
+            data_folder = os.path.join(analysis_directory, data_folder, self.data_folder_by_tool[tool])
+
+            # Read the csv file in a DataFrame
+            benchmarks_data_path = [file_ for file_ in os.listdir(data_folder) if file_.endswith('.csv')][0]
+
+            benchmarks_data = pd.read_csv(os.path.join(data_folder, benchmarks_data_path))
+
+            # Get only the column of interest
+            for index, row in benchmarks_data.iterrows():
+                # Get info from dataframe
+                benchmark_info = row[0].replace('.txt', '')[:-4]        # Remove extension and NTEST, LOOP_ORDER info
+                dimensions = '_'.join(benchmark_info.split('_')[2:6])   # Get dimensions of tensors
+                if(row[0].split('_')[1] == 'Naive'):
+                    block_size = 'No-blocking'
+                else:   # Memory blocking
+                    block_size = '_'.join(benchmark_info.split('_')[6:])    # Get bloking size
+                value = row[parameter_to_plot]
+                # Store values
+                if dimensions not in results[n_analysis].keys():
+                    results[n_analysis][dimensions] = {}
+                results[n_analysis][dimensions][block_size] = value
+
+        # Normalize
+        if(normalize):
+            # Get values non-blocking (used to normalize)
+            non_blocking_values = {}
+            for n_analysis in results.keys():
+                if n_analysis not in non_blocking_values.keys():
+                    non_blocking_values[n_analysis] = {}
+                for dimensions in results[n_analysis].keys():
+                    non_blocking_values[n_analysis][dimensions] = results[n_analysis][dimensions]['No-blocking'] if results[n_analysis][dimensions]['No-blocking'] else 1.
+            # Apply the normalization
+            for n_analysis in results.keys():
+                for dimensions in results[n_analysis].keys():
+                    for block_size in results[n_analysis][dimensions].keys():
+                        results[n_analysis][dimensions][block_size] /= non_blocking_values['N2'][dimensions] # Normalize respect to N1 of non-blocking case (the worst)
+
+        # Order the name of dimensions (Order: Image size, Image depth, Kernel size, N Kernels)
+        # alex_net_dim = [
+        #     '227_3_11_96',
+        #     '27_96_5_256',
+        #     '13_256_3_384',
+        #     '13_384_3_384',
+        #     '13_384_3_256'
+        # ]
+        results_ordered = {}
+        for n_analysis in sorted(results.keys()):
+            results_ordered[n_analysis] = {}
+            for dimensions in sorted(list(results[n_analysis].keys()) ,key=lambda x: (int(x.split('_')[0]), int(x.split('_')[3])), reverse=False):
+                results_ordered[n_analysis][dimensions] = results[n_analysis][dimensions]
+        results = results_ordered
+        del results_ordered
+
+
+        # Plot parameters
+        if sub_plot == None:
+            plt.rcParams["figure.figsize"] = [70, 55] # [40,14] # [20, 9] # [width, height]
+            font = {'family' : 'DejaVu Sans',
+            # 'weight' : 'bold',
+            'size'   : 40}
+            plt.rc('font', **font)
+
+        # Title of the chart
+        chart_name = parameter_to_plot + '_' + str(n_repetitions) + '-repetitions_' + tool + ('_normalized_' if normalize else '') + self.file_format
+
+
+        # Plot results
+        result_dfs = {n_analysis_name: pd.DataFrame(n_analysis_dict)
+            for n_analysis_name, n_analysis_dict in results.items()}
+
+        N_ROWS = 7
+        N_COLS = 1
+        fig, ax = plt.subplots(nrows=N_ROWS, ncols=N_COLS)
+
+        positions = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1), (3, 0), (3, 1)]
+        positions = [0, 1, 2, 3, 4, 5, 6, 7]
+
+        # for i, n_analysis_name in enumerate(sorted(list(result_dfs.keys()) ,key=lambda x: (int(x.split('_')[0]), int(x.split('_')[3])), reverse=False)):
+        for i, n_analysis_name in enumerate(result_dfs.keys()):
+            result_df = result_dfs[n_analysis_name]
+            # Order by dimensions
+            ordered_columns_by_dimensions = sorted(result_df.columns.tolist(), key=lambda x: (int(x.split('_')[0]), int(x.split('_')[1])))
+            result_df = result_df[ordered_columns_by_dimensions]
+            # Order by block
+            result_df = result_df.T
+            columns_by_block = result_df.columns.tolist()
+            columns_by_block.remove('No-blocking')
+            ordered_columns_by_block = sorted(columns_by_block, reverse=False, key=lambda x: (int(x.split('_')[0])))
+            ordered_columns_by_block = ['No-blocking'] + ordered_columns_by_block
+            result_df = result_df[ordered_columns_by_block]
+            result_df.plot(kind='bar', ax=ax[positions[i]], alpha=0.7)
+
+            ax[positions[i]].set_title(label=('analysis : ' + n_analysis_name), fontdict={'fontsize': 70, 'fontweight': 'medium'})
+            ax[positions[i]].legend(bbox_to_anchor=(1, 1), loc='upper left', fontsize=40)
+            ax[positions[i]].set(xlabel='Dimensions', ylabel=str(measurement_unit))
+            ax[positions[i]].axhline(1.0, color="red", linewidth=2.)
+            for label in ax[positions[i]].get_xticklabels():
+                label.set_ha('center')
+                label.set_rotation(0)
+                label.set_fontsize(50)
+
+            ax[i].grid(axis='y')
+
+            # Print values on charts
+            if(normalize):
+                if(log_scale):
+                    ax[i].set_yscale('log')
+                    Y_LIM = 10**2
+                    ax[i].set_yticks(np.arange(10**(0), Y_LIM, 10))
+                else:
+                    Y_LIM = 1.5 if y_lim == None else y_lim
+                    ax[i].set_yticks(np.arange(0, Y_LIM, 0.25))
+                ax[i].set_ylim(top=Y_LIM)
+                for p in ax[i].patches:
+                    value = np.round(p.get_height(), decimals=2)
+                    if print_val:
+                        if value < Y_LIM:
+                            ax[i].annotate(str(value), (p.get_x() * 1.0005, p.get_height()*1.005), fontsize=30)
+                        else:
+                            ax[i].annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=30)
+                    elif value <= Y_LIM:
+                        value = ''
+                        ax[i].annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=30)
+            if(print_val):
+                Y_LIM = 1.5 if y_lim == None else y_lim
+                for p in ax[i].patches:
+                    value = np.round(p.get_height(), decimals=2)
+                    if print_val:
+                        if value < Y_LIM:
+                            ax[i].annotate(str(value), (p.get_x() * 1.0005, p.get_height()*1.005), fontsize=30)
+                        else:
+                            ax[i].annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=30)
+                    elif value <= Y_LIM:
+                        value = ''
+                        ax[i].annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=30)
+
+        # fig.delaxes(ax[positions[0]])
+
+
+
+        plt.tight_layout()
 
         # Save the plot in a file with the appropriate name
         plt.savefig(os.path.join(self.output_path, chart_name))
@@ -495,10 +675,63 @@ if __name__ == "__main__":
     parser.add_argument('--n-repetitions', '-n', type=int, default=5, help='Number of repetitions used in the benchmarks. default=5')
     parser.add_argument('--single-folder', '-s', action='store_true', help='Use it when you plot a single folder')
     parser.add_argument('--multiple-folders', '-m', action='store_true', help='Use it when you polot from different folders')
+    parser.add_argument('--memory-blocking', '-mem', action='store_true', help='Use it when you plot the memory blocking analysis')
     args = parser.parse_args()
 
     my_chart_creator = ChartsCreator(args.output_folder, file_format=args.output_type)
     n_repetitions = args.n_repetitions
+
+    if args.memory_blocking:
+        # Execution time
+        my_chart_creator.make_chart_mem_blocking('TIME-MEDIAN', 'Time (ms)', n_repetitions, 'ExecutionTime', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
+        my_chart_creator.make_chart_mem_blocking('TIME-MINIMUM', 'Time (ms)', n_repetitions, 'ExecutionTime', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True, print_val=True)
+        # #
+        # # Perf
+        # my_chart_creator.make_chart_mem_blocking('BRANCH-MISSES', '% of branches', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
+        # my_chart_creator.make_chart_mem_blocking('BRANCH-MISSES', '% of branches', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True, y_lim=4.)
+        # my_chart_creator.make_chart_mem_blocking('CPI', 'CPI', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False)
+        # my_chart_creator.make_chart_mem_blocking('L1-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('LLC-MISSES-COUNT', 'N. of Misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('N-INSTRUCTIONS', 'N. of instructions', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True, y_lim=1.)
+        my_chart_creator.make_chart_mem_blocking('CACHE-MISSES', '% of cache misses', n_repetitions, 'Perf', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True, print_val=True)
+        #
+        # # Vtune
+        my_chart_creator.make_chart_mem_blocking('CPI', 'CPI', n_repetitions, 'VTune', compute_best_order=True, min_is_best=True, log_scale=False, normalize=False, print_val=True)
+        my_chart_creator.make_chart_mem_blocking('CPI', 'CPI', n_repetitions, 'VTune', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True, print_val=True)
+        # my_chart_creator.make_chart_mem_blocking('SP_GFLOPS', 'SP_GFLOPS', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('FRONT-END-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=True, normalize=False)
+        # my_chart_creator.make_chart_mem_blocking('BACK-END-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('L1-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
+        # my_chart_creator.make_chart_mem_blocking('L1-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('L2-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
+        # my_chart_creator.make_chart_mem_blocking('L2-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('L3-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=False)
+        # my_chart_creator.make_chart_mem_blocking('L3-BOUND', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=True, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('DRAM-BOUND', '% of PipelineSlots', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('CACHE-BOUND', '% of PipelineSlots', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('MEMORY-BOUND', '% of PipelineSlots', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('VECTOR-CAPACITY-USAGE', 'Vector Capacity Usage', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=False)
+        # my_chart_creator.make_chart_mem_blocking('LLC-MISSES-COUNT', 'N. of Misses', n_repetitions, 'VTune', compute_best_order=True, min_is_best=True, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('CORE-BOUND', '% of PipelineSlots', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('MEMORY-LATENCY', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('LOAD-OPERATION-UTILIZATION', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True, y_lim=2.5)
+        # my_chart_creator.make_chart_mem_blocking('STORE-OPERATION-UTILIZATION', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True, y_lim=2.5)
+        # my_chart_creator.make_chart_mem_blocking('ALU-OPERATION-UTILIZATION', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True, y_lim=2.5)
+        # my_chart_creator.make_chart_mem_blocking('CYCLES-0-PORTS-UTILIZED', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('CYCLES-1-PORT-UTILIZED', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('CYCLES-2-PORTS-UTILIZED', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('CYCLES-3+-PORTS-UTILIZED', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('BAD-SPECULATION', '% of PipelineSlots', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('MACHINE-CLEARS', '% of PipelineSlots', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('RETIRING', '% of Clockticks', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('FP_OP-OVER-MEM_READ', 'FP / READ', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True, y_lim=3.25)
+        # my_chart_creator.make_chart_mem_blocking('FP_OP-OVER-MEM_WRITE', 'FP / WRITE', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True, y_lim=3.25)
+        # my_chart_creator.make_chart_mem_blocking('FP_OP-OVER-MEM_READ', 'FP / READ', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=False)
+        # my_chart_creator.make_chart_mem_blocking('FP_OP-OVER-MEM_WRITE', 'FP / WRITE', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=False)
+        # my_chart_creator.make_chart_mem_blocking('AVG-CPU-FREQUENCY(GHz)', 'GHz', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
+        # my_chart_creator.make_chart_mem_blocking('N-FP-ARITHMETIC', '% uOps', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True, y_lim=3.25)
+        # my_chart_creator.make_chart_mem_blocking('N-FP-ARITHMETIC', '% uOps', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=False, y_lim=3.25)
+
 
     if args.single_folder:
         # Execution time
@@ -549,8 +782,6 @@ if __name__ == "__main__":
         my_chart_creator.make_chart('AVG-CPU-FREQUENCY(GHz)', 'GHz', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True)
         my_chart_creator.make_chart('N-FP-ARITHMETIC', '% uOps', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=True, y_lim=3.25)
         my_chart_creator.make_chart('N-FP-ARITHMETIC', '% uOps', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=False, y_lim=3.25)
-
-
 
         # Double charts
         my_chart_creator.make_chart_double(

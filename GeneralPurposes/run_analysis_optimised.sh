@@ -12,7 +12,7 @@ declare -a arguments=( # (Image size, Image depth, Kernel size, N. Kernel)
     "13 256 3 384"
 )
 
-BINARY_FILE=./bin/benchmark_Naive
+BINARY_FILE=./bin/benchmark_NaiveOptimised
 
 for NUMBER_ANALYSYS in "${list_of_analysis[@]}"
 do

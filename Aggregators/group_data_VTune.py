@@ -88,6 +88,8 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['MEMORY-LATENCY'] = self.__to_float(line[2])
                             if(metric_name.find('Front-End Bound') != -1):
                                 self.results[subdirectory]['FRONT-END-BOUND'] = self.__to_float(line[2])
+                            if(metric_name.find('Front-End Bandwidth LSD') != -1):
+                                self.results[subdirectory]['FRONT-END-LSD-BANDWIDTH'] = self.__to_float(line[2])
                             if(metric_name.find('Back-End Bound') != -1):
                                 self.results[subdirectory]['BACK-END-BOUND'] = self.__to_float(line[2])
                             if(metric_name.find('Retiring') != -1):

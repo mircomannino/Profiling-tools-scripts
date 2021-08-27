@@ -15,14 +15,7 @@
 OUTPUT_DIR=$2
 BINARY_FILE=$1
 
-if [[ ${BINARY_FILE} = "./bin/benchmark_Naive" ]] && [[ "$#" -ne 8 ]]; then
-    echo "Insert the following arguments:"
-    echo "  1) Binary file to analyze"
-    echo "  2) Output directory"
-    echo "  3-8) Arguments of binary file. See documentation"
-    exit 1
-fi
-if [[ ${BINARY_FILE} = "./bin/benchmark_NaiveOptimised" ]] && [[ "$#" -ne 8 ]]; then
+if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]] && [[ "$#" -ne 8 ]]; then
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"
     echo "  2) Output directory"
@@ -41,27 +34,19 @@ fi
 # echo "0" | sudo tee /proc/sys/kernel/kptr_restrict
 # echo "0" | sudo tee /proc/sys/kernel/perf_event_paranoid
 
-EVENTS_TO_ANALYZE=("cache-misses,cache-references,branches,branch-misses,cycles,instructions,L1-dcache-loads-misses,LLC-loads-misses")
+EVENTS_TO_ANALYZE=("cache-misses,cache-references,branches,branch-misses,cycles,instructions,L1-dcache-loads-misses,LLC-loads-misses,fp_arith_inst_retired.128b_packed_single,fp_arith_inst_retired.256b_packed_single")
 PERF_REPETITIONS=3
 
 
-if [ ${BINARY_FILE} = "./bin/benchmark_Naive" ]; then # Naive
-    FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
-fi
-if [ ${BINARY_FILE} = "./bin/benchmark_NaiveOptimised" ]; then # Naive
-    FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
-fi
-if [ ${BINARY_FILE} = "./bin/benchmark_MemoryBlocking" ]; then # MemoryBlocking
+if [[ ${BINARY_FILE} = "./bin/benchmark_MemoryBlocking" ]]; then # MemoryBlocking
     FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}.txt
+else
+    FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
 fi
 
 mkdir -p ${OUTPUT_DIR}
-if [ ${BINARY_FILE} = "./bin/benchmark_Naive" ]; then
-    perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${FILE_NAME} $3 $4 $5 $6 $7 $8
-fi
-if [ ${BINARY_FILE} = "./bin/benchmark_NaiveOptimised" ]; then
-    perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${FILE_NAME} $3 $4 $5 $6 $7 $8
-fi
-if [ ${BINARY_FILE} = "./bin/benchmark_MemoryBlocking" ]; then
+if [[ ${BINARY_FILE} = "./bin/benchmark_MemoryBlocking" ]]; then
     perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${FILE_NAME} $3 $4 $5 $6 $7 $8 $9 ${10} ${11}
+elif
+    perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${FILE_NAME} $3 $4 $5 $6 $7 $8
 fi

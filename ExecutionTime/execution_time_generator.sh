@@ -40,7 +40,7 @@ fi
 
 
 mkdir -p ${OUTPUT_DIR}
-if [ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]; then
+if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then
     ${BINARY_FILE} $3 $4 $5 $6 $7 $8 | tee ${OUTPUT_DIR}/${FILE_NAME}
 fi
 if [ ${BINARY_FILE} = "./bin/benchmark_AlexNet" ]; then

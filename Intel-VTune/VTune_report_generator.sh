@@ -16,15 +16,7 @@
 BIN_NAME=$(basename $1)
 BINARY_FILE=$1
 
-if [[ ${BINARY_FILE} = "./bin/benchmark_Naive" ]] && [[ "$#" -ne 9 ]]; then
-    echo "Insert the following arguments:"
-    echo "  1) Binary file to analyze"
-    echo "  2) Root data for VTune"
-    echo "  3) Output directory"
-    echo "  4-9) Arguments of binary file. See documentation"
-    exit 1
-fi
-if [[ ${BINARY_FILE} = "./bin/benchmark_NaiveOptimised" ]] && [[ "$#" -ne 9 ]]; then
+if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]] && [[ "$#" -ne 9 ]]; then
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"
     echo "  2) Root data for VTune"
@@ -41,11 +33,7 @@ if [[ ${BINARY_FILE} = "./bin/benchmark_MemoryBlocking" ]] && [[ "$#" -ne 12 ]];
     exit 1
 fi
 
-if [ ${BINARY_FILE} = "./bin/benchmark_Naive" ]; then # Naive
-    BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7_$8_$9
-    ARGUMENTS="$4 $5 $6 $7 $8 $9"
-fi
-if [ ${BINARY_FILE} = "./bin/benchmark_NaiveOptimised" ]; then # Naive
+if [ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]; then # Naive
     BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7_$8_$9
     ARGUMENTS="$4 $5 $6 $7 $8 $9"
 fi

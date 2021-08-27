@@ -49,6 +49,10 @@ class AggregatorPerfData:
                         self.results[test_file_name]['N-INSTRUCTIONS'] = self.__get_N_instructions(line)
                     if(line.find('cache-misses') != -1):
                         self.results[test_file_name]['CACHE-MISSES'] = self.__get_cache_miss_percentage(line)
+                    if(line.find('fp_arith_inst_retired.128b_packed_single') != -1):
+                        self.results[test_file_name]['N-128b-PACKED-SINGLE'] = self.__get_128b_packed_single(line)
+                    if(line.find('fp_arith_inst_retired.256b_packed_single') != -1):
+                        self.results[test_file_name]['N-256b-PACKED-SINGLE'] = self.__get_256b_packed_single(line)
         # Show the final collected data
         print('Data grouped!')
         for file_name, parameters in self.results.items():
@@ -107,6 +111,20 @@ class AggregatorPerfData:
         cache_misses = splitted_line[3].replace(',','.')
         if self.__is_number(cache_misses):
             return float(cache_misses)
+        return -1.0
+
+    def __get_128b_packed_single(self, line: str):
+        splitted_line = line.split()
+        n_128b_packed_single = splitted_line[0].replace('.', '')
+        if self.__is_number(n_128b_packed_single):
+            return float(n_128b_packed_single)
+        return -1.0
+
+    def __get_256b_packed_single(self, line: str):
+        splitted_line = line.split()
+        n_256b_packed_single = splitted_line[0].replace('.', '')
+        if self.__is_number(n_256b_packed_single):
+            return float(n_256b_packed_single)
         return -1.0
 
     def __is_number(self, str):

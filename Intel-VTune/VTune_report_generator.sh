@@ -33,11 +33,11 @@ if [[ ${BINARY_FILE} = "./bin/benchmark_MemoryBlocking" ]] && [[ "$#" -ne 12 ]];
     exit 1
 fi
 
-if [ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]; then # Naive
+if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then # Naive
     BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7_$8_$9
     ARGUMENTS="$4 $5 $6 $7 $8 $9"
 fi
-if [ ${BINARY_FILE} = "./bin/benchmark_MemoryBlocking" ]; then # MemoryBlocking
+if [[ ${BINARY_FILE} = "./bin/benchmark_MemoryBlocking" ]]; then # MemoryBlocking
     BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7_$8_$9_${10}_${11}_${12}
     ARGUMENTS="$4 $5 $6 $7 $8 $9 ${10} ${11} ${12}"
 fi

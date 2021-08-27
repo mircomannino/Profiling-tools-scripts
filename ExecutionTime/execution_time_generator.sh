@@ -31,10 +31,10 @@ fi
 BINARY_FILE=$1
 OUTPUT_DIR=$2
 
-if [ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]; then # Naive
+if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then # Naive
     FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
 fi
-if [ ${BINARY_FILE} = "./bin/benchmark_MemoryBlocking" ]; then # MemoryBlocking
+if [[ ${BINARY_FILE} = "./bin/benchmark_MemoryBlocking" ]]; then # MemoryBlocking
     FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}.txt
 fi
 

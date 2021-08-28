@@ -1,6 +1,6 @@
 #!/bin/bash
 
-declare -a list_of_analysis=("1" "2" "3" "4" "5" "6" "7")
+declare -a list_of_analysis=("1" "2" "3" "4" "5")
 
 declare -a n_repetitions=("5")
 

@@ -1,25 +1,33 @@
 #!/bin/bash
 
-declare -a list_of_analysis=("1" "2" "3" "4" "5" "6" "7")
+declare -a list_of_analysis=("1" "2" "3" "4" "5")
 
 declare -a n_repetitions=("5")
 
 declare -a blocking_size=(
-    "-1 -1 -1"
-    "8 8 8"
-    "16 16 16"
-    "32 32 32"
+    "1 1 1"
+    "1 1 2"
+    "1 2 1"
+    "2 1 1"
 )
 
 declare -a arguments=( # (Image size, Image depth, Kernel size, N. Kernel, Cib size, Cob size, Wob size)
-    "227 3 11 96"
-    "27 96 5 256"
-    "13 384 3 384"
-    "13 384 3 256"
-    "13 256 3 384"
+    "229 3 7 64"
+    "112 64 1 64"
+    "112 64 3 64"
+    "56 64 1 256"
+    "56 256 1 128"
+    "56 128 3 128"
+    "28 128 1 512"
+    "28 512 1 256"
+    "28 256 3 256"
+    "14 256 1 1024"
+    "14 1024 1 512"
+    "14 512 3 512"
+    "7 512 1 2048"
 )
 
-BINARY_FILE_NAIVE=./bin/benchmark_Naive
+BINARY_FILE_NAIVE=./bin/benchmark_NaiveKernelNKernels
 BINARY_FILE_MEMBLOCKING=./bin/benchmark_MemoryBlocking
 
 for NUMBER_ANALYSYS in "${list_of_analysis[@]}"

@@ -72,7 +72,7 @@ declare -a collect_types=(
 for TYPE in "${collect_types[@]}"
 do
         mkdir -p ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE}
-        vtune -collect $TYPE -knob sampling-mode=hw -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -- ${BINARY_FILE} ${ARGUMENTS}
+        vtune -collect $TYPE -knob sampling-interval=0.5 -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -- ${BINARY_FILE} ${ARGUMENTS}
 done
 
 # Create reports with vtune command

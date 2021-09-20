@@ -48,7 +48,8 @@ class AggregatorPerfData:
                     if(line.find('instructions') != -1):
                         self.results[test_file_name]['N-INSTRUCTIONS'] = self.__get_N_instructions(line)
                     if(line.find('cache-misses') != -1):
-                        self.results[test_file_name]['CACHE-MISSES'] = self.__get_cache_miss_percentage(line)
+                        self.results[test_file_name]['CACHE-MISSES-PERCENTAGE'] = self.__get_cache_miss_percentage(line)
+                        self.results[test_file_name]['CACHE-MISSES-NUMBER'] = self.__get_cache_miss_number(line)
                     if(line.find('fp_arith_inst_retired.128b_packed_single') != -1):
                         self.results[test_file_name]['N-128b-PACKED-SINGLE'] = self.__get_128b_packed_single(line)
                     if(line.find('fp_arith_inst_retired.256b_packed_single') != -1):
@@ -109,9 +110,16 @@ class AggregatorPerfData:
 
     def __get_cache_miss_percentage(self, line: str):
         splitted_line = line.split()
-        cache_misses = splitted_line[3].replace(',','.')
-        if self.__is_number(cache_misses):
-            return float(cache_misses)
+        cache_misses_percentage = splitted_line[3].replace(',','.')
+        if self.__is_number(cache_misses_percentage):
+            return float(cache_misses_percentage)
+        return -1.0
+
+    def __get_cache_miss_number(self, line: str):
+        splitted_line = line.split()
+        cache_misses_number = splitted_line[0].replace(',','.')
+        if self.__is_number(cache_misses_number):
+            return float(cache_misses_number)
         return -1.0
 
     def __get_128b_packed_single(self, line: str):

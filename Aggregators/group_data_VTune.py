@@ -136,6 +136,8 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['DRAM-BOUND'] = self.__to_float(line[2])
                             if(metric_name.find('Memory Bound') != -1):
                                 self.results[subdirectory]['MEMORY-BOUND'] = self.__to_float(line[2])
+                            if(metric_name.find('Average Latency') != -1):
+                                self.results[subdirectory]['AVERAGE-LATENCY'] = self.__to_float(line[2])
 
         # Show the final collected data
         print('Data grouped!')

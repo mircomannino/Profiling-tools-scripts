@@ -50,6 +50,7 @@ class AggregatorPerfData:
                     if(line.find('cache-misses') != -1):
                         self.results[test_file_name]['CACHE-MISSES-PERCENTAGE'] = self.__get_cache_miss_percentage(line)
                         self.results[test_file_name]['CACHE-MISSES-NUMBER'] = self.__get_cache_miss_number(line)
+                        self.results[test_file_name]['CACHE-OVER-INSTRUCTIONS'] = float(self.self.results[test_file_name]['CACHE-MISSES-NUMBER']) / float(self.results[test_file_name]['N-INSTRUCTIONS'])
                     if(line.find('cache-references') != -1):
                         self.results[test_file_name]['CACHE-REF-NUMBER'] = self.__get_cache_ref_number(line)
                     if(line.find('fp_arith_inst_retired.128b_packed_single') != -1):

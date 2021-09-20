@@ -117,7 +117,7 @@ class AggregatorPerfData:
 
     def __get_cache_miss_number(self, line: str):
         splitted_line = line.split()
-        cache_misses_number = splitted_line[0].replace(',','.')
+        cache_misses_number = splitted_line[0].replace('.','')
         if self.__is_number(cache_misses_number):
             return float(cache_misses_number)
         return -1.0

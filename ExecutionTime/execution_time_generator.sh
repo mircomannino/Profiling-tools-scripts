@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Arguments table
 # =====================================================================================
 # Arg   |       Naive           | MemoryBlocking                | Parallel            |
@@ -41,29 +42,36 @@ fi
 BINARY_FILE=$1
 OUTPUT_DIR=$2
 
+# Setup binary name and arguments
 if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then # Naive
-    FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
+    OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
+    ARGUMENTS="$3 $4 $5 $6 $7 $8"
 fi
 if [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]]; then # MemoryBlocking
-    FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}.txt
+    OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}.txt
+    ARGUMENTS="$3 $4 $5 $6 $7 $8 $9 ${10} ${11}"
 fi
 if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then # Parallel
-    FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9.txt
+    OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9.txt
+    ARGUMENTS="$3 $4 $5 $6 $7 $8 $9"
 fi
 
+# Run the execution
 mkdir -p ${OUTPUT_DIR}
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then
-    ${BINARY_FILE} $3 $4 $5 $6 $7 $8 | tee ${OUTPUT_DIR}/${FILE_NAME}
-fi
-if [ ${BINARY_FILE} = "./bin/benchmark_AlexNet" ]; then
-    ${BINARY_FILE} $7 $8 | tee ${OUTPUT_DIR}/${FILE_NAME}
-fi
-if [ ${BINARY_FILE} = "./bin/benchmark_Compilers" ]; then
-    ${BINARY_FILE} $3 $4 $5 $6 $7 $8 | tee ${OUTPUT_DIR}/${FILE_NAME}
-fi
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]]; then
-    ${BINARY_FILE} $3 $4 $5 $6 $7 $8 $9 ${10} ${11} | tee ${OUTPUT_DIR}/${FILE_NAME}
-fi
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then
-    ${BINARY_FILE} $3 $4 $5 $6 $7 $8 $9 | tee ${OUTPUT_DIR}/${FILE_NAME}
-fi 
+${BIN_IDENTIFIER} ${ARGUMENTS} | tee ${OUTPUT_DIR}/${OUT_FILE_NAME}
+
+# if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then
+#     ${BINARY_FILE} $3 $4 $5 $6 $7 $8 | tee ${OUTPUT_DIR}/${FILE_NAME}
+# fi
+# if [ ${BINARY_FILE} = "./bin/benchmark_AlexNet" ]; then
+#     ${BINARY_FILE} $7 $8 | tee ${OUTPUT_DIR}/${FILE_NAME}
+# fi
+# if [ ${BINARY_FILE} = "./bin/benchmark_Compilers" ]; then
+#     ${BINARY_FILE} $3 $4 $5 $6 $7 $8 | tee ${OUTPUT_DIR}/${FILE_NAME}
+# fi
+# if [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]]; then
+#     ${BINARY_FILE} $3 $4 $5 $6 $7 $8 $9 ${10} ${11} | tee ${OUTPUT_DIR}/${FILE_NAME}
+# fi
+# if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then
+#     ${BINARY_FILE} $3 $4 $5 $6 $7 $8 $9 | tee ${OUTPUT_DIR}/${FILE_NAME}
+# fi

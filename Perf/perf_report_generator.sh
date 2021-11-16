@@ -49,24 +49,29 @@ fi
 EVENTS_TO_ANALYZE=("cache-misses,cache-references,branches,branch-misses,cycles,instructions,L1-dcache-loads-misses,LLC-loads-misses,fp_arith_inst_retired.128b_packed_single,fp_arith_inst_retired.256b_packed_single")
 PERF_REPETITIONS=3
 
-
+# Setup output folder and arguments
 if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then # Naive
-    FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
+    OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
+    ARGUMENTS="$3 $4 $5 $6 $7 $8"
 fi
 if [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]]; then # MemoryBlocking
-    FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}.txt
+    OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}.txt
+    ARGUMENTS="$3 $4 $5 $6 $7 $8 $9 ${10} ${11}"
 fi
 if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then # Parallel
-    FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9.txt
+    OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9.txt
+    ARGUMENTS="$3 $4 $5 $6 $7 $8"
 fi
 
+# Run the execution
 mkdir -p ${OUTPUT_DIR}
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then
-    perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${FILE_NAME} $3 $4 $5 $6 $7 $8
-fi
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]]; then
-    perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${FILE_NAME} $3 $4 $5 $6 $7 $8 $9 ${10} ${11}
-fi
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then
-    perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${FILE_NAME} $3 $4 $5 $6 $7 $8 $9
-fi
+perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${OUT_FILE_NAME} ${ARGUMENTS}
+# if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then
+#     perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${OUT_FILE_NAME} $3 $4 $5 $6 $7 $8
+# fi
+# if [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]]; then
+#     perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${OUT_FILE_NAME} $3 $4 $5 $6 $7 $8 $9 ${10} ${11}
+# fi
+# if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then
+#     perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${OUT_FILE_NAME} $3 $4 $5 $6 $7 $8 $9
+# fi

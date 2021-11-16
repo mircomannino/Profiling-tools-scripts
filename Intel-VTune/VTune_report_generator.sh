@@ -60,7 +60,7 @@ if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]] && [[ "$#" -ne 10 ]]; then
 fi
 
 
-# Setup binary name and arguments
+# Setup identifiers and arguments
 if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then # Naive
     BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7_$8_$9
     ARGUMENTS="$4 $5 $6 $7 $8 $9"

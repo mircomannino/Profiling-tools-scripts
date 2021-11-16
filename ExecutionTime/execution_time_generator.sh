@@ -42,7 +42,7 @@ fi
 BINARY_FILE=$1
 OUTPUT_DIR=$2
 
-# Setup binary name and arguments
+# Setup output folder and arguments
 if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then # Naive
     OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
     ARGUMENTS="$3 $4 $5 $6 $7 $8"

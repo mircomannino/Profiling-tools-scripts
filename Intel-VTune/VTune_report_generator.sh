@@ -72,6 +72,7 @@ fi
 if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then # Parallel
     BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7_$8_$9_${10}
     ARGUMENTS="$4 $5 $6 $7 $8 $9 ${10}"
+fi
 
 # VTune collect information - ROOT folder
 ROOT_VTUNE=$2
@@ -110,5 +111,4 @@ done
 for TYPE in "${collect_types[@]}"
 do
         vtune -report summary -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -format ${FORMAT} -report-output ${BIN_REPORTS_DIR}/summary_${TYPE}.${FORMAT}
-
 done

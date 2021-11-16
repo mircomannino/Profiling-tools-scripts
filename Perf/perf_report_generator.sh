@@ -66,5 +66,5 @@ if [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]]; then
     perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${FILE_NAME} $3 $4 $5 $6 $7 $8 $9 ${10} ${11}
 fi
 if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then
-    ${BINARY_FILE} $3 $4 $5 $6 $7 $8 $9 | tee ${OUTPUT_DIR}/${FILE_NAME}
+    perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${FILE_NAME} $3 $4 $5 $6 $7 $8 $9
 fi

@@ -66,3 +66,4 @@ if [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]]; then
 fi
 if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then
     ${BINARY_FILE} $3 $4 $5 $6 $7 $8 $9 | tee ${OUTPUT_DIR}/${FILE_NAME}
+fi 

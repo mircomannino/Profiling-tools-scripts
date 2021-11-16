@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # Arguements table
@@ -40,6 +39,7 @@ if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]] && [[ "$#" -ne 9 ]]; then
     echo "  1) Binary file to analyze"
     echo "  2) Output directory"
     echo "  3-9) Arguements of binary file. See documentation"
+    exit 1
 fi
 
 # Permissions
@@ -60,7 +60,7 @@ if [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]]; then # MemoryBlocki
 fi
 if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then # Parallel
     OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9.txt
-    ARGUMENTS="$3 $4 $5 $6 $7 $8"
+    ARGUMENTS="$3 $4 $5 $6 $7 $8 $9"
 fi
 
 # Run the execution

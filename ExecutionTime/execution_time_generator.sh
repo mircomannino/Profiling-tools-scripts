@@ -36,6 +36,7 @@ if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]] && [[ "$#" -ne 9 ]]; then
     echo "  1) Binary file to analyze"
     echo "  2) Output directory"
     echo "  3-9) Arguements of binary file. See documentation"
+    exit 1
 fi
 
 

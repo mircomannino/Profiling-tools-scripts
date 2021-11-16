@@ -65,7 +65,7 @@ fi
 
 # Run the execution
 mkdir -p ${OUTPUT_DIR}
-perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${OUT_FILE_NAME} ${ARGUMENTS}
+echo perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${OUT_FILE_NAME} ${ARGUMENTS}
 # if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then
 #     perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${OUT_FILE_NAME} $3 $4 $5 $6 $7 $8
 # fi

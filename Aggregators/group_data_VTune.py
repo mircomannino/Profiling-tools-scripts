@@ -35,7 +35,7 @@ class AggregatorVTuneData:
             return 0.
 
     def group_data(self):
-        print('\n===============================================================================')
+        print('\n\n===============================================================================')
         print('Grouping data of: ', self.output_path)
         # file to open for each test
         parameter_files = [
@@ -53,6 +53,7 @@ class AggregatorVTuneData:
         for subdirectory in subdirectories:
             self.results[subdirectory] = {}
             for parameter_file in parameter_files:
+                print('\t', parameter_file)
                 with open(os.path.join(os.getcwd(), subdirectory, parameter_file)) as test_file:
                     csv_reader = csv.reader(test_file, delimiter=',')
                     next(csv_reader)    # Skip header row
@@ -142,7 +143,7 @@ class AggregatorVTuneData:
                         if(parameter_file == 'summary_threading.csv'):
                             if(metric_name.find('Thread Oversubscription') != -1):
                                 print(metric_name, ': ', self.__to_float(line[2]))
-                            exit()
+                                a = input('Continue...')
 
         # Show the final collected data
         print('Data grouped!')

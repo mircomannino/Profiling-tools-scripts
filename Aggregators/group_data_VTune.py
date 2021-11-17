@@ -166,19 +166,16 @@ class AggregatorVTuneData:
 
     def __get_thread_oversubscription(self, line: str):
         splitted_line = line.split()
-        thread_oversubscription = line[2]
-        percentage = line.split()[1]    # ['0s', '(0.0%', 'of', 'CPU', 'Time'] -> '(0.0%'
+        percentage = splitted_line[1]    # ['0s', '(0.0%', 'of', 'CPU', 'Time'] -> '(0.0%'
         percentage = percentage.replace('(','')
         percentage = percentage.replace('%','')
         return self.__to_float(percentage)
 
     def __get_effective_CPU_utilization(self, line: str):
         splitted_line = line.split()
-        effective_CPU_utilization = line[2]
-        percentage = line.split()[1]    # ['0s', '(0.0%', 'of', 'CPU', 'Time'] -> '(0.0%'
-        percentage = percentage.replace('(','')
-        percentage = percentage.replace('%','')
-        return self.__to_float(percentage)
+        effective_CPU_utilization = splitted_line[0]    # ['21.4%' '(3.430' 'out' 'of' '16' 'logical' 'CPUs)'] -> 21.4
+        effective_CPU_utilization = effective_CPU_utilization.replace('%','')
+        return self.__to_float(effective_CPU_utilization)
 
 def create_parser():
     '''

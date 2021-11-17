@@ -60,8 +60,6 @@ class AggregatorVTuneData:
                             line = line[0].split('\t')  # ['Hierarchy level \t Metric Name \t Metric Value'] --> ['Hierarchy Level', 'Metric Name', 'Metric Value']
                         metric_name = line[1]
 
-                        # # TODO: change all the "if statements"
-
                         ### HPC PERFORMANCE ###
                         if(parameter_file == 'summary_hpc-performance.csv'):
                             if(metric_name.find('SP GFLOPS') != -1):
@@ -138,6 +136,10 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['MEMORY-BOUND'] = self.__to_float(line[2])
                             if(metric_name.find('Average Latency') != -1):
                                 self.results[subdirectory]['AVERAGE-LATENCY'] = self.__to_float(line[2])
+
+                        ### THREADING ###
+                        if(parameter_file == 'summary_threading.csv'):
+                            print(metric_name)
 
         # Show the final collected data
         print('Data grouped!')

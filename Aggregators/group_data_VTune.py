@@ -134,7 +134,7 @@ class AggregatorVTuneData:
                         ### THREADING ###
                         if(parameter_file == 'summary_threading.csv'):
                             if(metric_name.find('Thread Oversubscription') != -1):
-                                self.results[subdirectory]['THREAD-OVERSUBSCRIPTION'] = self.__get_thread_oversubscription(line)
+                                self.results[subdirectory]['THREAD-OVERSUBSCRIPTION'] = self.__get_thread_oversubscription(line[2])
 
                 # Output end of parameter file reading
                 print('\t', parameter_file, ": Done!")

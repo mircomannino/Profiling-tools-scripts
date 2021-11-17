@@ -135,6 +135,8 @@ class AggregatorVTuneData:
                         if(parameter_file == 'summary_threading.csv'):
                             if(metric_name.find('Thread Oversubscription') != -1):
                                 self.results[subdirectory]['THREAD-OVERSUBSCRIPTION'] = self.__get_thread_oversubscription(line[2])
+                            if(metric_name.find('Effective CPU Utilization') != -1):
+                                self.results[subdirectory]['EFFECTIVE-CPU-UTILIZATION'] = self.__get_effective_CPU_utilization(line[2])
 
                 # Output end of parameter file reading
                 print('\t', parameter_file, ": Done!")
@@ -173,6 +175,10 @@ class AggregatorVTuneData:
     def __get_effective_CPU_utilization(self, line: str):
         splitted_line = line.split()
         effective_CPU_utilization = line[2]
+        percentage = line.split()[1]    # ['0s', '(0.0%', 'of', 'CPU', 'Time'] -> '(0.0%'
+        percentage = percentage.replace('(','')
+        percentage = percentage.replace('%','')
+        return self.__to_float(percentage)
 
 def create_parser():
     '''

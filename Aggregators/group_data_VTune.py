@@ -41,7 +41,8 @@ class AggregatorVTuneData:
         parameter_files = [
             'summary_hpc-performance.csv',
             'summary_uarch-exploration.csv',
-            'summary_memory-access.csv'
+            'summary_memory-access.csv',
+            'summary_threading.csv',
         ]
         # Get all the files in the folder and sort them
         subdirectories = os.listdir()

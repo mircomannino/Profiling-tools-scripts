@@ -25,15 +25,6 @@ class AggregatorVTuneData:
         self.results = {}
         self.output_path = output_path + ".csv"
 
-    def __to_float(self, value):
-        '''
-        Returns the float value or 0.0 if the value is not valid
-        '''
-        try:
-            return float(value)
-        except ValueError:
-            return 0.
-
     def group_data(self):
         print('\n\n===============================================================================')
         print('Grouping data of: ', self.output_path)
@@ -56,11 +47,11 @@ class AggregatorVTuneData:
                 # Print that the parameter file is starting to read
                 print('\t', parameter_file, ": Starting...")
                 with open(os.path.join(os.getcwd(), subdirectory, parameter_file)) as test_file:
-                    csv_reader = csv.reader(test_file, delimiter=',')
+                    csv_reader = csv.reader(test_file, delimiter='\t')
                     next(csv_reader)    # Skip header row
                     for line in csv_reader:
-                        if len(line) == 1:
-                            line = line[0].split('\t')  # ['Hierarchy level \t Metric Name \t Metric Value'] --> ['Hierarchy Level', 'Metric Name', 'Metric Value']
+                        # if len(line) == 1:
+                        #     line = line[0].split('\t')  # ['Hierarchy level \t Metric Name \t Metric Value'] --> ['Hierarchy Level', 'Metric Name', 'Metric Value']
                         metric_name = line[1]
 
                         ### HPC PERFORMANCE ###
@@ -143,8 +134,7 @@ class AggregatorVTuneData:
                         ### THREADING ###
                         if(parameter_file == 'summary_threading.csv'):
                             if(metric_name.find('Thread Oversubscription') != -1):
-                                print(metric_name, ': ', self.__to_float(line[2]))
-                                a = input('Continue...')
+                                self.results[subdirectory]['THREAD-OVERSUBSCRIPTION'] = self.__get_thread_oversubscription(line)
 
                 # Output end of parameter file reading
                 print('\t', parameter_file, ": Done!")
@@ -161,6 +151,28 @@ class AggregatorVTuneData:
             df = pd.DataFrame(self.results)
             df = df.T # Transpose
             df.to_csv(self.output_path)
+
+
+    def __to_float(self, value):
+        '''
+        Returns the float value or 0.0 if the value is not valid
+        '''
+        try:
+            return float(value)
+        except ValueError:
+            return 0.
+
+    def __get_thread_oversubscription(self, line: str):
+        splitted_line = line.split()
+        thread_oversubscription = line[2]
+        percentage = line.split()[1]    # ['0s', '(0.0%', 'of', 'CPU', 'Time'] -> '(0.0%'
+        percentage = percentage.replace('(','')
+        percentage = percentage.replace('%','')
+        return self.__to_float(percentage)
+
+    def __get_effective_CPU_utilization(self, line: str):
+        splitted_line = line.split()
+        effective_CPU_utilization = line[2]
 
 def create_parser():
     '''

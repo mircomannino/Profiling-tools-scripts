@@ -107,10 +107,10 @@ do
         if [[ ${TYPE} = "threading" ]]; then
             KNOB_OPTION=""
         else
-            KNOB_OPTION="sampling-interval=0.5"
+            KNOB_OPTION="-knob sampling-interval=0.5"
         fi
         mkdir -p ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE}
-        vtune -collect $TYPE -knob ${KNOB_OPTION} -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -- ${BINARY_FILE} ${ARGUMENTS}
+        vtune -collect $TYPE ${KNOB_OPTION} -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -- ${BINARY_FILE} ${ARGUMENTS}
 done
 
 # Create reports with vtune command

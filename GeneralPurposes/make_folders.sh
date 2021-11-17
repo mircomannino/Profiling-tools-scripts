@@ -18,9 +18,9 @@ do
     for N_REPETITIONS in "${n_repetitions[@]}"
     do
         ### Make folders ###
-        mkdir ExecutionTime_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions    # Execution time
-        mkdir Perf_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions             # Perf
-        mkdir VTune_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions          # VTune
+        mkdir -p ExecutionTime_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions    # Execution time
+        mkdir -p Perf_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions             # Perf
+        mkdir -p VTune_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions          # VTune
 
         ### Copy the profiling scripts in the right folder ###
         cp ../Profiling-tools-scripts/ExecutionTime/execution_time_generator.sh ./ExecutionTime_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions

@@ -140,7 +140,9 @@ class AggregatorVTuneData:
 
                         ### THREADING ###
                         if(parameter_file == 'summary_threading.csv'):
-                            print(metric_name)
+                            if(metric_name.find('Thread Oversubscription') != -1):
+                                print(metric_name, ': ', self.__to_float(line[2]))
+                            exit()
 
         # Show the final collected data
         print('Data grouped!')

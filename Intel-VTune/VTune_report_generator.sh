@@ -111,7 +111,7 @@ fi
 for TYPE in "${collect_types[@]}"
 do
         mkdir -p ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE}
-        vtune -collect $TYPE ${KNOB_OPTION} -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -- ${BINARY_FILE} ${ARGUMENTS}
+        vtune -collect $TYPE -knob ${KNOB_OPTION} -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -- ${BINARY_FILE} ${ARGUMENTS}
 done
 
 # Create reports with vtune command

@@ -12,7 +12,7 @@ for NUMBER in "${list_of_analysis[@]}"
 do
     CURRENT_DIR=analysis_N${NUMBER}
     # Create the folder
-    mkdir ${CURRENT_DIR}
+    mkdir -p ${CURRENT_DIR}
     cd ${CURRENT_DIR}
     # Create a folder for each type of profiling analysis
     for N_REPETITIONS in "${n_repetitions[@]}"

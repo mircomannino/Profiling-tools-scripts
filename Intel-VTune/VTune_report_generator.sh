@@ -105,6 +105,7 @@ declare -a collect_types=(
 for TYPE in "${collect_types[@]}"
 do
         mkdir -p ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE}
+        echo "${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} created"
         vtune -collect $TYPE -knob sampling-interval=0.5 -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -- ${BINARY_FILE} ${ARGUMENTS}
 done
 

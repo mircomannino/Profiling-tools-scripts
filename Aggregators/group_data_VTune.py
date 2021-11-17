@@ -53,7 +53,8 @@ class AggregatorVTuneData:
         for subdirectory in subdirectories:
             self.results[subdirectory] = {}
             for parameter_file in parameter_files:
-                print('\t', parameter_file)
+                # Print that the parameter file is starting to read
+                print('\t', parameter_file, ": Starting...")
                 with open(os.path.join(os.getcwd(), subdirectory, parameter_file)) as test_file:
                     csv_reader = csv.reader(test_file, delimiter=',')
                     next(csv_reader)    # Skip header row
@@ -144,6 +145,9 @@ class AggregatorVTuneData:
                             if(metric_name.find('Thread Oversubscription') != -1):
                                 print(metric_name, ': ', self.__to_float(line[2]))
                                 a = input('Continue...')
+
+                # Output end of parameter file reading
+                print('\t', parameter_file, ": Done!")
 
         # Show the final collected data
         print('Data grouped!')

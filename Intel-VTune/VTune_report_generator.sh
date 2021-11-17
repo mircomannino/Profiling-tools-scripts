@@ -100,13 +100,18 @@ declare -a collect_types=(
         "threading"
 )
 
+# Manage knob option
+if [[ TYPE = "threading" ]]; then
+    KNOB_OPTION=""
+else
+    KNOB_OPTION="sampling-interval=0.5"
+fi
 
 # Collect data with vtune command
 for TYPE in "${collect_types[@]}"
 do
         mkdir -p ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE}
-        echo "${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} created"
-        vtune -collect $TYPE -knob sampling-interval=0.5 -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -- ${BINARY_FILE} ${ARGUMENTS}
+        vtune -collect $TYPE ${KNOB_OPTION} -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -- ${BINARY_FILE} ${ARGUMENTS}
 done
 
 # Create reports with vtune command

@@ -97,6 +97,7 @@ declare -a collect_types=(
         "hpc-performance"
         "uarch-exploration"
         "memory-access"
+        "threading"
 )
 
 

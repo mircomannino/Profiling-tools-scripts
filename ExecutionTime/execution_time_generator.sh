@@ -21,7 +21,7 @@
 BINARY_FILE=$1
 OUTPUT_DIR=$2
 
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_ParallelMemoryBlocking" ]] && [[ "$#" -ne 12 ]]; then
+if [[ ${BINARY_FILE} =~ "./bin/benchmark_Complete" ]] && [[ "$#" -ne 12 ]]; then
     echo "Detect Parallel + Memory blocking version with wrong arguments"
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"

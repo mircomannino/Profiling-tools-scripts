@@ -1,44 +1,49 @@
 #!/bin/bash
 
-# Arguements table
-# =====================================================================================
-# Arg   |       Naive           | MemoryBlocking                | Parallel            |
-# =====================================================================================
-# $1    |                   binary file to profile                                    |
-# $2    |                   output directory                                          |
-# $3    |                   Size of the image (H and W)                               |
-# $4    |                   Depth of the image                                        |
-# $5    |                   Size of the kernel (H and W)                              |
-# $6    |                   Depth of the kernel                                       |
-# $7    |   Order of loops      | Blocked input channel size    |   Number of threads |
-# $8    |   Number of tests     | Blocked output channel size   |   Order of loops    |
-# $9    |                       | Blocked output width size     |   Number of tests   |
-# $10   |                       | Order of loopa                |                     |
-# $11   |                       | Number of tests                                     |
-# =====================================================================================
+# Arguments table
+# ===================================================================================================================
+# Arg   |       Naive           | MemoryBlocking                | Parallel            | Parallel + Memory blocking  |
+# ===================================================================================================================
+# $1    |                   binary file to profile                                                                  |
+# $2    |                   output directory                                                                        |
+# $3    |                   Size of the image (H and W)                                                             |
+# $4    |                   Depth of the image                                                                      |
+# $5    |                   Size of the kernel (H and W)                                                            |
+# $6    |                   Depth of the kernel                                                                     |
+# $7    |   Order of loops      | Blocked input channel size    |   Number of threads | Blocked input channel size  |
+# $8    |   Number of tests     | Blocked output channel size   |   Order of loops    | Blocked output channel size |
+# $9    |                       | Blocked output width size     |   Number of tests   | Blocked output width size   |
+# $10   |                       | Order of loops                |                     | Number of threads           |
+# $11   |                       | Number of tests               |                     | Order of the loops          |
+# $12   |                       |                               |                     | Number of tests             |
+# ===================================================================================================================
 
 OUTPUT_DIR=$2
 BINARY_FILE=$1
 
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]] && [[ "$#" -ne 8 ]]; then
+if [[ ${BINARY_FILE} =~ "./bin/benchmark_ParallelMemoryBlocking" ]] && [[ "$#" -ne 12 ]]; then
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"
     echo "  2) Output directory"
-    echo "  3-8) Arguments of binary file. See documentation"
+    echo "  3-12) Arguements of binary file. See documentation"
     exit 1
-fi
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]] && [[ "$#" -ne 11 ]]; then
+elif [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]] && [[ "$#" -ne 9 ]]; then
+    echo "Insert the following arguments:"
+    echo "  1) Binary file to analyze"
+    echo "  2) Output directory"
+    echo "  3-9) Arguements of binary file. See documentation"
+    exit 1
+elif [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]] && [[ "$#" -ne 11 ]]; then
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"
     echo "  2) Output directory"
     echo "  3-11) Arguments of binary file. See documentation"
     exit 1
-fi
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]] && [[ "$#" -ne 9 ]]; then
+elif [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]] && [[ "$#" -ne 8 ]]; then
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"
     echo "  2) Output directory"
-    echo "  3-9) Arguements of binary file. See documentation"
+    echo "  3-8) Arguments of binary file. See documentation"
     exit 1
 fi
 
@@ -50,28 +55,20 @@ EVENTS_TO_ANALYZE=("cache-misses,cache-references,branches,branch-misses,cycles,
 PERF_REPETITIONS=3
 
 # Setup output folder and arguments
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then # Naive
+if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then # Parallel + Memory blocking 
     OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
     ARGUMENTS="$3 $4 $5 $6 $7 $8"
-fi
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]]; then # MemoryBlocking
-    OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}.txt
-    ARGUMENTS="$3 $4 $5 $6 $7 $8 $9 ${10} ${11}"
-fi
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then # Parallel
+elif [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then # Parallel
     OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9.txt
     ARGUMENTS="$3 $4 $5 $6 $7 $8 $9"
+elif [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]]; then # MemoryBlocking
+    OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}.txt
+    ARGUMENTS="$3 $4 $5 $6 $7 $8 $9 ${10} ${11}"
+elif [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then # Naive
+    OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
+    ARGUMENTS="$3 $4 $5 $6 $7 $8"
 fi
 
 # Run the execution
 mkdir -p ${OUTPUT_DIR}
 perf stat -o ${OUTPUT_DIR}/${OUT_FILE_NAME} -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} ${ARGUMENTS}
-# if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then
-#     perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${OUT_FILE_NAME} $3 $4 $5 $6 $7 $8
-# fi
-# if [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]]; then
-#     perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${OUT_FILE_NAME} $3 $4 $5 $6 $7 $8 $9 ${10} ${11}
-# fi
-# if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then
-#     perf stat -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} 2> ${OUTPUT_DIR}/${OUT_FILE_NAME} $3 $4 $5 $6 $7 $8 $9
-# fi

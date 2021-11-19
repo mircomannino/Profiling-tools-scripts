@@ -27,14 +27,14 @@ if [[ ${BINARY_FILE} == ./bin/benchmark_ParallelMemoryBlocking ]] && [[ "$#" -ne
     echo "  1) Binary file to analyze"
     echo "  2) Output directory"
     echo "  3-12) Arguements of binary file. See documentation"
-
+    exit 1
 elif [[ ${BINARY_FILE} == ./bin/benchmark_Parallel ]] && [[ "$#" -ne 9 ]]; then
     echo "Detect Parallel version with wrong arguments"
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"
     echo "  2) Output directory"
     echo "  3-9) Arguements of binary file. See documentation"
-
+    exit 1
 elif [[ ${BINARY_FILE} =~ ./bin/benchmark_MemoryBlocking ]] && [[ "$#" -ne 11 ]]; then
     echo "Detect Memory blocking version with wrong arguments"
     echo "Insert the following arguments:"
@@ -48,7 +48,7 @@ elif [[ ${BINARY_FILE} =~ ./bin/benchmark_Naive ]] && [[ "$#" -ne 8 ]]; then
     echo "  1) Binary file to analyze"
     echo "  2) Output directory"
     echo "  3-8) Arguments of binary file. See documentation"
-
+    exit 1
 fi
 
 

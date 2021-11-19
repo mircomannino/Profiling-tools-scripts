@@ -21,28 +21,28 @@
 BINARY_FILE=$1
 OUTPUT_DIR=$2
 
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_ParallelMemoryBlocking" ]] && [[ "$#" -ne 12 ]]; then
+if [[ ${BINARY_FILE} == ./bin/benchmark_ParallelMemoryBlocking ]] && [[ "$#" -ne 12 ]]; then
     echo "Detect Parallel + Memory blocking version with wrong arguments"
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"
     echo "  2) Output directory"
     echo "  3-12) Arguements of binary file. See documentation"
     exit 1
-elif [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]] && [[ "$#" -ne 9 ]]; then
+elif [[ ${BINARY_FILE} == ./bin/benchmark_Parallel ]] && [[ "$#" -ne 9 ]]; then
     echo "Detect Parallel version with wrong arguments"
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"
     echo "  2) Output directory"
     echo "  3-9) Arguements of binary file. See documentation"
     exit 1
-elif [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]] && [[ "$#" -ne 11 ]]; then
+elif [[ ${BINARY_FILE} =~ ./bin/benchmark_MemoryBlocking ]] && [[ "$#" -ne 11 ]]; then
     echo "Detect Memory blocking version with wrong arguments"
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"
     echo "  2) Output directory"
     echo "  3-11) Arguments of binary file. See documentation"
-    exit 1
-elif [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]] && [[ "$#" -ne 8 ]]; then
+
+elif [[ ${BINARY_FILE} =~ ./bin/benchmark_Naive ]] && [[ "$#" -ne 8 ]]; then
     echo "Detect Naive version with wrong arguments"
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"

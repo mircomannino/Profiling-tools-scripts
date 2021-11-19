@@ -21,7 +21,7 @@ declare -a arguments=( # (Image size, Image depth, Kernel size, N. Kernel, Cib s
 )
 
 BINARY_FILE_NAIVE=./bin/benchmark_NaiveKernelNKernels
-BINARY_FILE_PARALLEL=./bin/benchmark_ParallelNaiveKernelNKernels
+BINARY_FILE_PARALLEL=./bin/benchmark_ParallelMemoryBlockingSoft
 
 for NUMBER_ANALYSYS in "${list_of_analysis[@]}"
 do

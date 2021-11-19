@@ -29,7 +29,7 @@ declare -a arguments=( # (Image size, Image depth, Kernel size, N. Kernel, Cib s
 )
 
 BINARY_FILE_NAIVE=./bin/benchmark_NaiveKernelNKernels
-BINARY_FILE_PARALLEL=./bin/benchmark_ParallelNaiveKernelNKernels
+BINARY_FILE_PARALLEL_MEM_BLOCKING=./bin/benchmark_ParallelMemoryBlockingSoft
 
 for NUMBER_ANALYSYS in "${list_of_analysis[@]}"
 do
@@ -66,18 +66,18 @@ do
                     # Execution time
                     OUT_DIR_TIME=${CURRENT_DIR}/ExecutionTime_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/execution_times
                     ./analysis_N${NUMBER_ANALYSYS}/ExecutionTime_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/execution_time_generator.sh \
-                    ${BINARY_FILE_PARALLEL} ${OUT_DIR_TIME} ${ARGUMENT} ${BLOCKING_SIZE} ${N_THREADS} ${LOOP_ORDER} ${N_REPETITIONS}
+                    ${BINARY_FILE_PARALLEL_MEM_BLOCKING} ${OUT_DIR_TIME} ${ARGUMENT} ${BLOCKING_SIZE} ${N_THREADS} ${LOOP_ORDER} ${N_REPETITIONS}
 
                     # Perf
                     OUT_DIR_PERF=${CURRENT_DIR}/Perf_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/perf_reports
                     ./analysis_N${NUMBER_ANALYSYS}/Perf_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/perf_report_generator.sh \
-                    ${BINARY_FILE_PARALLEL} ${OUT_DIR_PERF} ${ARGUMENT} ${BLOCKING_SIZE} ${N_THREADS} ${LOOP_ORDER} ${N_REPETITIONS}
+                    ${BINARY_FILE_PARALLEL_MEM_BLOCKING} ${OUT_DIR_PERF} ${ARGUMENT} ${BLOCKING_SIZE} ${N_THREADS} ${LOOP_ORDER} ${N_REPETITIONS}
 
                     # VTune
                     ROOT_VTUNE=${CURRENT_DIR}/VTune_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/vtune_data
                     OUT_DIR_VTUNE=${CURRENT_DIR}/VTune_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/reports
                     ./analysis_N${NUMBER_ANALYSYS}/VTune_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/VTune_report_generator.sh \
-                    ${BINARY_FILE_PARALLEL} ${ROOT_VTUNE} ${OUT_DIR_VTUNE} ${ARGUMENT} ${BLOCKING_SIZE} ${N_THREADS} ${LOOP_ORDER} ${N_REPETITIONS}
+                    ${BINARY_FILE_PARALLEL_MEM_BLOCKING} ${ROOT_VTUNE} ${OUT_DIR_VTUNE} ${ARGUMENT} ${BLOCKING_SIZE} ${N_THREADS} ${LOOP_ORDER} ${N_REPETITIONS}
                     rm -rf ${ROOT_VTUNE}/* # Clean tmp data
                 done
             done

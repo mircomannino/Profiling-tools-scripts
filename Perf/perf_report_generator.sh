@@ -60,9 +60,9 @@ EVENTS_TO_ANALYZE=("cache-misses,cache-references,branches,branch-misses,cycles,
 PERF_REPETITIONS=3
 
 # Setup output folder and arguments
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then # Parallel + Memory blocking 
-    OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
-    ARGUMENTS="$3 $4 $5 $6 $7 $8"
+if [[ ${BINARY_FILE} =~ "./bin/benchmark_ParallelMemoryBlocking" ]]; then # Parallel + Memory blocking
+    OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}_${12}.txt
+    ARGUMENTS="$3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12}"
 elif [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then # Parallel
     OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9.txt
     ARGUMENTS="$3 $4 $5 $6 $7 $8 $9"

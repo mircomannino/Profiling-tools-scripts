@@ -71,16 +71,13 @@ fi
 if [[ ${BINARY_FILE} =~ "./bin/benchmark_ParallelMemoryBlocking" ]]; then # Parallel
     BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7_$8_$9_${10}_${11}_${12}_${13}
     ARGUMENTS="$4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}"
-fi
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then # Parallel
+elif [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then # Parallel
     BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7_$8_$9_${10}
     ARGUMENTS="$4 $5 $6 $7 $8 $9 ${10}"
-fi
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]]; then # MemoryBlocking
+elif [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]]; then # MemoryBlocking
     BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7_$8_$9_${10}_${11}_${12}
     ARGUMENTS="$4 $5 $6 $7 $8 $9 ${10} ${11} ${12}"
-fi
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then # Naive
+elif [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then # Naive
     BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7_$8_$9
     ARGUMENTS="$4 $5 $6 $7 $8 $9"
 fi

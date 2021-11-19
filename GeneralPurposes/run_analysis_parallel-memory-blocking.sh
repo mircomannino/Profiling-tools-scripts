@@ -15,9 +15,9 @@ declare -a blocking_size=(
     "-1 16 -1"
     "-1 32 -1"
     "-1 64 -1"
-    "16 -1, -1"
-    "32, -1, -1"
-    "64, -1, -1"
+    "16 -1 -1"
+    "32, -1 -1"
+    "64, -1 -1"
 )
 
 declare -a arguments=( # (Image size, Image depth, Kernel size, N. Kernel, Cib size, Cob size, Wob size)

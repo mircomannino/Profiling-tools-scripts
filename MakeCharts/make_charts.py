@@ -910,192 +910,190 @@ class ChartsCreator:
         plt.savefig(os.path.join(self.output_path, title))
         print(str(parameters_to_plot), ': Done')
 
-    def make_chart_double_from_different_folders_vec_no_vec(self, parameter_to_plot, measurement_unit, n_repetitions, tool, compute_best_order, min_is_best, log_scale, normalize, sub_plot=None, sub_title=None, y_lim=None, print_val=False, custom_name=None):
-        '''
-        Args:
-            parameter_to_plot:      Name of the parameter to use in the charts
-            n_repetitions:          Number of repetitions used in the analysisfile_format
-            tool:                   Name of the tool from which the results come from [ExecutionTime, Perf, VTune]
-            compute_best_order:     Bool to say if you want the loop order that obtain best results
-            min_is_best:            Bool needed only if compute_best_order id True
-            log_scale:              Bool to say if the plot will be in logaritmic scale
-            normalize:              Bool to say if the results will be normalized respect to the first analysis
-            sub_plot:               Axes used to plot subplots, default: None
-            sub_title:              String with subtitle, default: None
-            y_lim:                  Float value of y axis limit, default: None
-            print_val:              Bool to say if you want values on the barchart
-            custom_name:            Name of the chart
-        '''
-        # Get all all type of compilers
-        selected_compiler = 'ICC'
-        compiler_dirs = [dir for dir in os.listdir() if os.path.isdir(dir) and dir.find(selected_compiler)!=-1]
-        # compiler_dirs = [dir for dir in os.listdir() if os.path.isdir(dir)]
+     def make_chart_double_from_different_folders_vec_no_vec(self, parameter_to_plot, measurement_unit, n_repetitions, tool, log_scale, normalize, sub_plot=None, sub_title=None, y_lim=None, print_val=False, selected_compilers=None, normalize_compiler=None, custom_name=None):
+            '''
+            Args:
+                parameter_to_plot:      Name of the parameter to use in the charts
+                n_repetitions:          Number of repetitions used in the analysisfile_format
+                tool:                   Name of the tool from which the results come from [ExecutionTime, Perf, VTune]
+                log_scale:              Bool to say if the plot will be in logaritmic scale
+                normalize:              Bool to say if the results will be normalized respect to the first analysis
+                sub_plot:               Axes used to plot subplots, default: None
+                sub_title:              String with subtitle, default: None
+                y_lim:                  Float value of y axis limit, default: None
+                print_val:              Bool to say if you want values on the barchart
+                selected_compilers:     List that specified from which compilers you want the plot, if None all compilers are used
+                normalize_compiler:     String with the compiler used to normalize the results
+                custom_name:            Name of the chart
+            '''
+            # Private function used to check if a dir is related to an interesting compiler
+            def _is_compiler_dir(dir, selected_compilers):
+                import re
+                splitted_dir = re.split(r'[-_]', dir)
+                for word in splitted_dir:
+                    if word in selected_compilers:
+                        return True
+                return False
 
-        results = {}
-        for compiler_dir in compiler_dirs:
-            os.chdir(compiler_dir)
-            analysis_directories = os.listdir()
-            analysis_directories = [analysis_directory for analysis_directory in analysis_directories if (
-                os.path.isdir(analysis_directory) and analysis_directory.find('analysis_N')!=-1)]
-            name_of_compiler = compiler_dir.split('_')[-1]
+            # Get all all type of compilers
+            selected_compilers = ['GCC', 'ICC', 'POLLY'] if selected_compilers==None else selected_compilers
 
-            # Collect data from each analysis folder
-            for analysis_directory in analysis_directories:
-                # Get Number of the analysis
-                n_analysis = analysis_directory.replace('analysis_', '')    # 'analysis_N1' ---> 'N1'
-                if n_analysis not in results.keys():
-                    results[n_analysis] = {}
+            compiler_dirs = [dir for dir in os.listdir() if os.path.isdir(dir) and _is_compiler_dir(dir, selected_compilers)]
 
-                # Get data folder path
-                data_folder = tool + '_'
-                data_folder += analysis_directory + '_'
-                data_folder += str(n_repetitions) + '-repetitions'
-                data_folder = os.path.join(analysis_directory, data_folder, self.data_folder_by_tool[tool])
+            results = {}
+            for compiler_dir in compiler_dirs:
+                os.chdir(compiler_dir)
+                analysis_directories = os.listdir()
+                analysis_directories = [analysis_directory for analysis_directory in analysis_directories if (
+                    os.path.isdir(analysis_directory) and analysis_directory.find('analysis_N')!=-1)]
+                name_of_compiler = compiler_dir.split('_')[-1]
 
-                # Read the csv file in a DataFrame
-                benchmarks_data_path = [file_ for file_ in os.listdir(data_folder) if file_.endswith('.csv')][0]
+                # Collect data from each analysis folder
+                for analysis_directory in analysis_directories:
+                    # Get Number of the analysis
+                    n_analysis = analysis_directory.replace('analysis_', '')    # 'analysis_N1' ---> 'N1'
+                    if n_analysis not in results.keys():
+                        results[n_analysis] = {}
 
-                benchmarks_data = pd.read_csv(os.path.join(data_folder, benchmarks_data_path))
+                    # Get data folder path
+                    data_folder = tool + '_'
+                    data_folder += analysis_directory + '_'
+                    data_folder += str(n_repetitions) + '-repetitions'
+                    data_folder = os.path.join(analysis_directory, data_folder, self.data_folder_by_tool[tool])
 
-                # Get only the column of interest
-                for index, row in benchmarks_data.iterrows():
-                    # Get info from dataframe
-                    benchmark_info = row[0].replace('.txt', '')[:-4]        # Remove extension and NTEST, LOOP_ORDER info
-                    dimensions = '_'.join(benchmark_info.split('_')[2:6])   # Get dimensions of tensors
-                    if dimensions not in DIMENSIONS_TO_ID: continue
-                    dimensions = DIMENSIONS_TO_ID[dimensions] if (dimensions in DIMENSIONS_TO_ID) else '-1'
-                    if(row[0].split('_')[1] == 'NaiveKernelNKernels'):
-                        allocation_type = name_of_compiler + '_NKernels'
-                    elif(row[0].split('_')[1] == 'NaiveKernelNChannels'):
-                        allocation_type = name_of_compiler + '_NChannels'
-                    else:
-                        allocation_type = 'Nan'
-                    value = row[parameter_to_plot]
-                    # Store values
-                    if dimensions not in results[n_analysis].keys():
-                        results[n_analysis][dimensions] = {}
-                    if True:#allocation_type.find('GCC-novec') != -1:
-                        results[n_analysis][dimensions][allocation_type] = value
-            os.chdir('..')
+                    # Read the csv file in a DataFrame
+                    benchmarks_data_path = [file_ for file_ in os.listdir(data_folder) if file_.endswith('.csv')][0]
 
+                    benchmarks_data = pd.read_csv(os.path.join(data_folder, benchmarks_data_path))
 
-        # Normalize
-        if(normalize):
-            # Get values of non-vec NKernels (to normalize)
-            non_vec_NKernels_values = {}
-            for n_analysis in results.keys():
-                if n_analysis not in non_vec_NKernels_values.keys():
-                    non_vec_NKernels_values[n_analysis] = {}
-                for dimensions in results[n_analysis].keys():
-                    allocation_type_normalize = selected_compiler + '-novec_NKernels'
-                    non_vec_NKernels_values[n_analysis][dimensions] = results[n_analysis][dimensions][allocation_type_normalize] if results[n_analysis][dimensions][allocation_type_normalize] else -1.
-            # Apply the normalization
-            for n_analysis in results.keys():
-                for dimensions in results[n_analysis].keys():
-                    for allocation_type in results[n_analysis][dimensions].keys():
-                        results[n_analysis][dimensions][allocation_type] /= non_vec_NKernels_values['N2'][dimensions] # Normalize respect to N1 of non-vec case (the worst)
-
-        # Order the name of dimensions (Order: Image size, Image depth, Kernel size, N Kernels)
-        # alex_net_dim = [
-        #     '227_3_11_96',
-        #     '27_96_5_256',
-        #     '13_256_3_384',
-        #     '13_384_3_384',
-        #     '13_384_3_256'
-        # ]
-        results_ordered = {}
-        for n_analysis in sorted(results.keys()):
-            results_ordered[n_analysis] = {}
-            for dimensions in sorted(list(results[n_analysis].keys()) ,key=lambda x: int(x), reverse=True):
-                results_ordered[n_analysis][dimensions] = results[n_analysis][dimensions]
-        results = results_ordered
-        del results_ordered
+                    # Get only the column of interest
+                    for index, row in benchmarks_data.iterrows():
+                        # Get info from dataframe
+                        benchmark_info = row[0].replace('.txt', '')[:-4]        # Remove extension and NTEST, LOOP_ORDER info
+                        dimensions = '_'.join(benchmark_info.split('_')[2:6])   # Get dimensions of tensors
+                        if dimensions not in DIMENSIONS_TO_ID: continue
+                        dimensions = DIMENSIONS_TO_ID[dimensions] if (dimensions in DIMENSIONS_TO_ID) else '-1'
+                        if(row[0].split('_')[1] == 'NaiveKernelNKernels'):
+                            allocation_type = name_of_compiler + '_NKernels'
+                        elif(row[0].split('_')[1] == 'NaiveKernelNChannels'):
+                            allocation_type = name_of_compiler + '_NChannels'
+                        else:
+                            allocation_type = 'Nan'
+                        value = row[parameter_to_plot]
+                        # Store values
+                        if dimensions not in results[n_analysis].keys():
+                            results[n_analysis][dimensions] = {}
+                        if True:#allocation_type.find('GCC-novec') != -1:
+                            results[n_analysis][dimensions][allocation_type] = value
+                os.chdir('..')
 
 
-        # Plot parameters
-        if sub_plot == None:
-            plt.rcParams["figure.figsize"] =  [30, 30] # [40,14] # [20, 9] # [width, height]
-            font = {'family' : 'DejaVu Sans',
-            # 'weight' : 'bold',
-            # 'size'   : 20
-            }
-            plt.rc('font', **font)
-
-        # Title of the chart
-        chart_name = parameter_to_plot + '_' + str(n_repetitions) + '-repetitions_' + tool + ('_normalized_' if normalize else '') + self.file_format
-
-
-        # Plot results
-        result_dfs = {n_analysis_name: pd.DataFrame(n_analysis_dict)
-            for n_analysis_name, n_analysis_dict in results.items()}
-
-        N_ROWS = len(result_dfs)
-        N_COLS = 1
-        fig, ax = plt.subplots(nrows=N_ROWS, ncols=N_COLS)
-
-        positions = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1), (3, 0), (3, 1)]
-        positions = [0, 1, 2, 3, 4, 5, 6, 7]
-
-        for i, n_analysis_name in enumerate(result_dfs.keys()):
-            result_df = result_dfs[n_analysis_name]
-            # Order by dimensions
-            # ordered_columns_by_dimensions = sorted(result_df.columns.tolist(), key=lambda x: (int(x.split('_')[0]), int(x.split('_')[1])), reverse=True) # Old ordering with dimensions
-            ordered_columns_by_dimensions = sorted(result_df.columns.tolist(), key=lambda x: int(x), reverse=False)
-            result_df = result_df[ordered_columns_by_dimensions]
-            # Order by Compiler
-            result_df = result_df.T
-            # columns_by_compiler = [el for el in result_df.columns.tolist() if el.find('novec') != -1] # Remove vec compiler
-            columns_by_compiler = result_df.columns.tolist()
-            ordered_columns_by_compiler = sorted(columns_by_compiler, reverse=False, key=lambda x: (x.split('_')[1], x.split('_')[0]))
-            result_df = result_df[ordered_columns_by_compiler]
-            result_df.plot(kind='bar', ax=ax[positions[i]], alpha=0.7, width=0.8, edgecolor='black', linewidth=2,)
-
-            ax[positions[i]].set_title(label=('Order : ' + n_analysis_name), fontdict={'fontsize': 40, 'fontweight': 'medium'})
-            # ax[positions[i]].legend(bbox_to_anchor=(0.3,1.24), fontsize=35, ncol=2, loc='upper center')
-            ax[positions[i]].legend(bbox_to_anchor=(-0.03,1.4), fontsize=28, ncol=2, loc='lower left')
-            if(i!=0):
-                ax[positions[i]].get_legend().remove()
-            # ax[positions[i]].set_xlabel('Dimensions. X_Z_Y_V: X=Height,Width input; Y=N.Channels input; Z:Height,Width kernel; V: N.Elements kernel', fontsize=30)
-            ax[positions[i]].set_xlabel('Layer ID', fontsize=35)
-            ax[positions[i]].set_ylabel(ylabel=str(measurement_unit), fontsize=30)
-            if normalize:
-                ax[positions[i]].axhline(1.0, linestyle='dashed',color="black", linewidth=1.)
-            for label in ax[positions[i]].get_xticklabels():
-                label.set_ha('center')
-                label.set_rotation(0)
-                label.set_fontsize(25)
-            for label in ax[positions[i]].get_yticklabels():
-                label.set_fontsize(20)
-
-            ax[i].grid(axis='y')
-
-            # Print values on charts
-            FONT_SIZE_VALUES = 18
-            STRIDE = 0.25
-            ROTATION = 270
-            Y_LIM = y_lim if y_lim != None else 1.25
-            ax[i].set_ylim(top=y_lim)
+            # Normalize
             if(normalize):
-                if(log_scale):
-                    ax[i].set_yscale('log')
-                    Y_LIM = 10**2
-                    ax[i].set_yticks(np.arange(10**(0), Y_LIM, 10))
-                else:
-                    Y_LIM = 1.5 if y_lim == None else y_lim
-                    ax[i].set_yticks(np.arange(0, Y_LIM, STRIDE))
-                ax[i].set_ylim(top=Y_LIM)
-            for p in ax[i].patches:
-                value = np.round(p.get_height(), decimals=2)
-                if print_val:
-                    if value < Y_LIM:
-                        ax[i].annotate(str(value), (p.get_x() * 1.0005, p.get_height()*1.005), fontsize=FONT_SIZE_VALUES, rotation=ROTATION)
+                # Get values of non-vec NKernels (to normalize)
+                non_vec_NKernels_values = {}
+                normalize_compiler = 'ICC' if normalize_compiler==None else normalize_compiler
+                for n_analysis in results.keys():
+                    if n_analysis not in non_vec_NKernels_values.keys():
+                        non_vec_NKernels_values[n_analysis] = {}
+                    for dimensions in results[n_analysis].keys():
+                        allocation_type_normalize = normalize_compiler + '-vec_NKernels'
+                        non_vec_NKernels_values[n_analysis][dimensions] = results[n_analysis][dimensions][allocation_type_normalize] if results[n_analysis][dimensions][allocation_type_normalize] else -1.
+                # Apply the normalization
+                for n_analysis in results.keys():
+                    for dimensions in results[n_analysis].keys():
+                        for allocation_type in results[n_analysis][dimensions].keys():
+                            results[n_analysis][dimensions][allocation_type] /= non_vec_NKernels_values['N2'][dimensions] # Normalize respect to N1 of non-vec case (the worst)
+
+            # Order the name of dimensions (Order: Image size, Image depth, Kernel size, N Kernels)
+            # alex_net_dim = [
+            #     '227_3_11_96',
+            #     '27_96_5_256',
+            #     '13_256_3_384',
+            #     '13_384_3_384',
+            #     '13_384_3_256'
+            # ]
+            results_ordered = {}
+            for n_analysis in sorted(results.keys()):
+                results_ordered[n_analysis] = {}
+                for dimensions in sorted(list(results[n_analysis].keys()) ,key=lambda x: int(x), reverse=True):
+                    results_ordered[n_analysis][dimensions] = results[n_analysis][dimensions]
+            results = results_ordered
+            del results_ordered
+
+
+            # Plot parameters
+            if sub_plot == None:
+                plt.rcParams["figure.figsize"] =  [30, 30] # [40,14] # [20, 9] # [width, height]
+                font = {'family' : 'DejaVu Sans',
+                # 'weight' : 'bold',
+                # 'size'   : 20
+                }
+                plt.rc('font', **font)
+
+            # Title of the chart
+            chart_name = parameter_to_plot + '_' + str(n_repetitions) + '-repetitions_' + tool + ('_normalized_' if normalize else '') + self.file_format
+
+
+            # Plot results
+            result_dfs = {n_analysis_name: pd.DataFrame(n_analysis_dict)
+                for n_analysis_name, n_analysis_dict in results.items()}
+
+            N_ROWS = len(result_dfs)
+            N_COLS = 1
+            fig, ax = plt.subplots(nrows=N_ROWS, ncols=N_COLS)
+
+            positions = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1), (3, 0), (3, 1)]
+            positions = [0, 1, 2, 3, 4, 5, 6, 7]
+
+            for i, n_analysis_name in enumerate(result_dfs.keys()):
+                result_df = result_dfs[n_analysis_name]
+                # Order by dimensions
+                # ordered_columns_by_dimensions = sorted(result_df.columns.tolist(), key=lambda x: (int(x.split('_')[0]), int(x.split('_')[1])), reverse=True) # Old ordering with dimensions
+                ordered_columns_by_dimensions = sorted(result_df.columns.tolist(), key=lambda x: int(x), reverse=False)
+                result_df = result_df[ordered_columns_by_dimensions]
+                # Order by Compiler
+                result_df = result_df.T
+                # columns_by_compiler = [el for el in result_df.columns.tolist() if el.find('novec') != -1] # Remove vec compiler
+                columns_by_compiler = result_df.columns.tolist()
+                ordered_columns_by_compiler = sorted(columns_by_compiler, reverse=False, key=lambda x: (x.split('_')[1], x.split('_')[0]))
+                result_df = result_df[ordered_columns_by_compiler]
+                result_df.plot(kind='bar', ax=ax[positions[i]], alpha=0.7, width=0.8, edgecolor='black', linewidth=2,)
+
+                ax[positions[i]].set_title(label=('Order : ' + n_analysis_name), fontdict={'fontsize': 40, 'fontweight': 'medium'})
+                # ax[positions[i]].legend(bbox_to_anchor=(0.3,1.24), fontsize=35, ncol=2, loc='upper center')
+                ax[positions[i]].legend(bbox_to_anchor=(-0.03,1.4), fontsize=28, ncol=len(selected_compilers)+1, loc='lower left')
+                if(i!=0):
+                    ax[positions[i]].get_legend().remove()
+                # ax[positions[i]].set_xlabel('Dimensions. X_Z_Y_V: X=Height,Width input; Y=N.Channels input; Z:Height,Width kernel; V: N.Elements kernel', fontsize=30)
+                ax[positions[i]].set_xlabel('Layer ID', fontsize=35)
+                ax[positions[i]].set_ylabel(ylabel=str(measurement_unit), fontsize=30)
+                if normalize:
+                    ax[positions[i]].axhline(1.0, linestyle='dashed',color="black", linewidth=1.)
+                for label in ax[positions[i]].get_xticklabels():
+                    label.set_ha('center')
+                    label.set_rotation(0)
+                    label.set_fontsize(25)
+                for label in ax[positions[i]].get_yticklabels():
+                    label.set_fontsize(20)
+
+                ax[i].grid(axis='y')
+
+                # Print values on charts
+                FONT_SIZE_VALUES = 18
+                STRIDE = 0.25
+                ROTATION = 270
+                Y_LIM = y_lim if y_lim != None else 1.25
+                ax[i].set_ylim(top=y_lim)
+                if(normalize):
+                    if(log_scale):
+                        ax[i].set_yscale('log')
+                        Y_LIM = 10**2
+                        ax[i].set_yticks(np.arange(10**(0), Y_LIM, 10))
                     else:
-                        ax[i].annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=FONT_SIZE_VALUES, rotation=ROTATION)
-                elif value <= (Y_LIM):
-                    value = ''
-                ax[i].annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=FONT_SIZE_VALUES, rotation=ROTATION)
-            if(print_val and not normalize):
-                Y_LIM = 1.5 if y_lim == None else y_lim
+                        Y_LIM = 1.5 if y_lim == None else y_lim
+                        ax[i].set_yticks(np.arange(0, Y_LIM, STRIDE))
+                    ax[i].set_ylim(top=Y_LIM)
                 for p in ax[i].patches:
                     value = np.round(p.get_height(), decimals=2)
                     if print_val:
@@ -1103,23 +1101,34 @@ class ChartsCreator:
                             ax[i].annotate(str(value), (p.get_x() * 1.0005, p.get_height()*1.005), fontsize=FONT_SIZE_VALUES, rotation=ROTATION)
                         else:
                             ax[i].annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=FONT_SIZE_VALUES, rotation=ROTATION)
-                    elif value <= Y_LIM:
+                    elif value <= (Y_LIM):
                         value = ''
-                        ax[i].annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=FONT_SIZE_VALUES, rotation=ROTATION)
+                    ax[i].annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=FONT_SIZE_VALUES, rotation=ROTATION)
+                if(print_val and not normalize):
+                    Y_LIM = 1.5 if y_lim == None else y_lim
+                    for p in ax[i].patches:
+                        value = np.round(p.get_height(), decimals=2)
+                        if print_val:
+                            if value < Y_LIM:
+                                ax[i].annotate(str(value), (p.get_x() * 1.0005, p.get_height()*1.005), fontsize=FONT_SIZE_VALUES, rotation=ROTATION)
+                            else:
+                                ax[i].annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=FONT_SIZE_VALUES, rotation=ROTATION)
+                        elif value <= Y_LIM:
+                            value = ''
+                            ax[i].annotate(str(value), (p.get_x() * 1.0005, Y_LIM * 0.7), fontsize=FONT_SIZE_VALUES, rotation=ROTATION)
 
 
-        plt.tight_layout()
+            plt.tight_layout()
 
-        # Save the plot in a file with the appropriate name
-        plt.text(x=0.5, y=0.97, s=chart_name if custom_name==None else custom_name, fontsize=50, ha="center", transform=fig.transFigure)
-        if (normalize):
-            plt.text(x=0.5, y=0.95, s='Normalized respect to N2 KernelNKernels no-vectorized', fontsize=35, color='grey', ha="center", transform=fig.transFigure)
-        # fig.suptitle(chart_name+subtitle if custom_name==None else custom_name+subtitle, fontsize=50)
-        fig.subplots_adjust(top=0.85, hspace = 1)
-        plt.savefig(os.path.join(self.output_path, chart_name))
-        plt.clf() # Clear the figure
-        print(chart_name, ': Done')
-
+            # Save the plot in a file with the appropriate name
+            plt.text(x=0.5, y=0.97, s=chart_name if custom_name==None else custom_name, fontsize=50, ha="center", transform=fig.transFigure)
+            if (normalize):
+                plt.text(x=0.5, y=0.95, s='Normalized respect to N2 KernelNKernels vectorized', fontsize=35, color='grey', ha="center", transform=fig.transFigure)
+            # fig.suptitle(chart_name+subtitle if custom_name==None else custom_name+subtitle, fontsize=50)
+            fig.subplots_adjust(top=0.85, hspace = 1)
+            plt.savefig(os.path.join(self.output_path, chart_name))
+            plt.clf() # Clear the figure
+            print(chart_name, ': Done')
 
 
 
@@ -1140,8 +1149,11 @@ if __name__ == "__main__":
     n_repetitions = args.n_repetitions
 
     if args.vec_no_vec:
-        prefix='ICC: '
-        my_chart_creator.make_chart_double_from_different_folders_vec_no_vec('AVERAGE-LATENCY', 'Vector Capacity Usage', n_repetitions, 'VTune', compute_best_order=False, min_is_best=False, log_scale=False, normalize=False)
+        prefix='ICC POLLY'
+        my_chart_creator.make_chart_double_from_different_folders_vec_no_vec('TIME-MINIMUM', 'Execution time', n_repetitions, 'ExecutionTime',
+        log_scale=False, normalize=True, print_val=False, y_lim=2., selected_compilers=list(prefix.split(' ')), custom_name=prefix+'Execution time')
+        my_chart_creator.make_chart_double_from_different_folders_vec_no_vec('N-256b-PACKED-SINGLE-OVER-N-INSTRUCTIONS', 'N. 256b packed \n / \n N. instructions', n_repetitions, 'Perf',
+        log_scale=False, normalize=False, print_val=False, y_lim=0.5, selected_compilers=list(prefix.split(' ')), custom_name=prefix+'N. 256b packed instructions / N. instructions')
 
     if args.parallel:
         prefix = 'ICC'

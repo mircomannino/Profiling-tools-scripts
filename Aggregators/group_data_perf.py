@@ -117,7 +117,7 @@ class AggregatorPerfData:
         cache_misses_percentage = splitted_line[3].replace(',','.')
         print(cache_misses_percentage)
         if self.__is_number(cache_misses_percentage):
-            print(float(' | ', cache_misses_percentage))
+            print(' | ', float(cache_misses_percentage))
             return float(cache_misses_percentage)
         return -1.0
 

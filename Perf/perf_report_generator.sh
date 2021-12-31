@@ -51,13 +51,18 @@ elif [[ ${BINARY_FILE} =~ ./bin/benchmark_Naive ]] && [[ "$#" -ne 8 ]]; then
     exit 1
 fi
 
+echo "\n-------------- Perf analysis "${@}": START --------------"
+
 
 # Permissions
 # echo "0" | sudo tee /proc/sys/kernel/kptr_restrict
 # echo "0" | sudo tee /proc/sys/kernel/perf_event_paranoid
 
-EVENTS_TO_ANALYZE=("cache-misses,cache-references,branches,branch-misses,cycles,instructions,L1-dcache-loads-misses,LLC-loads-misses,fp_arith_inst_retired.128b_packed_single,fp_arith_inst_retired.256b_packed_single")
-PERF_REPETITIONS=3
+# Set the events to measure
+MEMORY_EVENTS=("cache-misses,cache-references,LLC-loads-misses,LLC-loads")
+MEMORY_REPETITIONS=3
+GENERAL_PURPOSE_EVENTS=("branches,branch-misses,cycles,instructions,fp_arith_inst_retired.128b_packed_single,fp_arith_inst_retired.256b_packed_single")
+GENERAL_PURPOSE_REPETITIONS=1
 
 # Setup output folder and arguments
 if [[ ${BINARY_FILE} =~ "./bin/benchmark_ParallelMemoryBlocking" ]]; then # Parallel + Memory blocking
@@ -76,4 +81,9 @@ fi
 
 # Run the execution
 mkdir -p ${OUTPUT_DIR}
-perf stat -o ${OUTPUT_DIR}/${OUT_FILE_NAME} -r ${PERF_REPETITIONS} -e ${EVENTS_TO_ANALYZE} ${BINARY_FILE} ${ARGUMENTS}
+# General purpose analysis
+perf stat -o ${OUTPUT_DIR}/${OUT_FILE_NAME}_generalPurpose -r ${GENERAL_PURPOSE_REPETITIONS} -e ${GENERAL_PURPOSE_EVENTS} ${BINARY_FILE} ${ARGUMENTS}
+# Memory analysis
+perf stat -o ${OUTPUT_DIR}/${OUT_FILE_NAME}_memory -r ${MEMORY_REPETITIONS} -e ${MEMORY_EVENTS} ${BINARY_FILE} ${ARGUMENTS}
+
+echo "\n-------------- Perf analysis "${@}": END --------------"

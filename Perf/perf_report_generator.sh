@@ -51,7 +51,7 @@ elif [[ ${BINARY_FILE} =~ ./bin/benchmark_Naive ]] && [[ "$#" -ne 8 ]]; then
     exit 1
 fi
 
-echo "\n"
+echo # New line
 echo "-------------- [Perf analysis: START] "${@}" --------------"
 
 
@@ -87,5 +87,5 @@ perf stat -o ${OUTPUT_DIR}/${OUT_FILE_NAME}_generalPurpose -r ${GENERAL_PURPOSE_
 # Memory analysis
 perf stat -o ${OUTPUT_DIR}/${OUT_FILE_NAME}_memory -r ${MEMORY_REPETITIONS} -e ${MEMORY_EVENTS} ${BINARY_FILE} ${ARGUMENTS}
 
-echo "\n"
+echo # New line
 echo "-------------- [Perf analysis: END] "${@}" --------------"

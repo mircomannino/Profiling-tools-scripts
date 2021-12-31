@@ -67,25 +67,29 @@ GENERAL_PURPOSE_REPETITIONS=1
 
 # Setup output folder and arguments
 if [[ ${BINARY_FILE} =~ "./bin/benchmark_ParallelMemoryBlocking" ]]; then # Parallel + Memory blocking
-    OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}_${12}.txt
+    GENERAL_PURPOSE_OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}_${12}_generalPurpose.txt
+    MEMORY_OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}_${12}_memory.txt
     ARGUMENTS="$3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12}"
 elif [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then # Parallel
-    OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9.txt
+    GENERAL_PURPOSE_OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_generalPurpose.txt
+    MEMORY_OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_memory.txt
     ARGUMENTS="$3 $4 $5 $6 $7 $8 $9"
 elif [[ ${BINARY_FILE} =~ "./bin/benchmark_MemoryBlocking" ]]; then # MemoryBlocking
-    OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}.txt
+    GENERAL_PURPOSE_OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}_generalPurpose.txt
+    MEMORY_OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}_memory.txt
     ARGUMENTS="$3 $4 $5 $6 $7 $8 $9 ${10} ${11}"
 elif [[ ${BINARY_FILE} =~ "./bin/benchmark_Naive" ]]; then # Naive
-    OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8.txt
+    GENERAL_PURPOSE_OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_generalPurpose.txt
+    MEMORY_OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_memory.txt
     ARGUMENTS="$3 $4 $5 $6 $7 $8"
 fi
 
 # Run the execution
 mkdir -p ${OUTPUT_DIR}
 # General purpose analysis
-perf stat -o ${OUTPUT_DIR}/${OUT_FILE_NAME}_generalPurpose -r ${GENERAL_PURPOSE_REPETITIONS} -e ${GENERAL_PURPOSE_EVENTS} ${BINARY_FILE} ${ARGUMENTS}
+perf stat -o ${OUTPUT_DIR}/${GENERAL_PURPOSE_OUT_FILE_NAME} -r ${GENERAL_PURPOSE_REPETITIONS} -e ${GENERAL_PURPOSE_EVENTS} ${BINARY_FILE} ${ARGUMENTS}
 # Memory analysis
-perf stat -o ${OUTPUT_DIR}/${OUT_FILE_NAME}_memory -r ${MEMORY_REPETITIONS} -e ${MEMORY_EVENTS} ${BINARY_FILE} ${ARGUMENTS}
+perf stat -o ${OUTPUT_DIR}/${MEMORY_OUT_FILE_NAME} -r ${MEMORY_REPETITIONS} -e ${MEMORY_EVENTS} ${BINARY_FILE} ${ARGUMENTS}
 
 echo # New line
 echo "-------------- [Perf analysis: END] "${@}" --------------"

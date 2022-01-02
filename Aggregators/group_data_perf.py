@@ -61,6 +61,8 @@ class AggregatorPerfData:
                     if(line.find('fp_arith_inst_retired.256b_packed_single') != -1):
                         self.results[test_file_name_key]['N-256b-PACKED-SINGLE'] = self.__get_256b_packed_single(line)
                 self.results[test_file_name_key]['N-256b-PACKED-SINGLE-OVER-N-INSTRUCTIONS'] = float(self.results[test_file_name_key]['N-256b-PACKED-SINGLE'] / self.results[test_file_name_key]['N-INSTRUCTIONS'])
+                print(self.results[test_file_name_key])
+                exit()
                 self.results[test_file_name_key]['CACHE-OVER-INSTRUCTIONS'] = float(self.results[test_file_name_key]['CACHE-MISSES-NUMBER']) / float(self.results[test_file_name_key]['N-INSTRUCTIONS'])
         # Show the final collected data
         print('Data grouped!')

@@ -48,7 +48,7 @@ class AggregatorPerfData:
                 analysis_files.append(test_file_name_key.replace('.txt','') + '_memory' + '.txt')
                 analysis_files.append(test_file_name_key.replace('.txt','') + '_memory' + '.txt')
             else:
-                analysis_files.append(test_file)
+                analysis_files.append(test_file_name_key)
 
             self.results[test_file_name_key] = {}
 

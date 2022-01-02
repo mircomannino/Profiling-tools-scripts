@@ -38,6 +38,7 @@ class AggregatorPerfData:
             test_file_name_key = test_file_name.replace('_memory','')
             test_file_name_key = test_file_name_key.replace('_generalPurpose','')
             self.results[test_file_name_key] = {}
+
             with open(os.path.join(os.getcwd(), test_file_name)) as test_file:
                 for line in test_file:
                     if(line.find("branch-misses") != -1):           # BRANCH-MISSES
@@ -59,14 +60,12 @@ class AggregatorPerfData:
                     if(line.find('fp_arith_inst_retired.128b_packed_single') != -1):
                         self.results[test_file_name_key]['N-128b-PACKED-SINGLE'] = self.__get_128b_packed_single(line)
                     if(line.find('fp_arith_inst_retired.256b_packed_single') != -1):
-                        self.results[test_file_name_key]['N-256b-PACKED-SINGLE'] = self.__get_256b_packed_single(line)
+                        self.results[test_file_name_key]['N-256b-PACKED-SINGLE'] = self.__get_256b_packed_single(line) 
         
-        # Make the "composed metric"
-        for test_file_name_key in self.results: 
-            print(test_file_name_key, ': ', self.results[test_file_name_key].keys())
-            a = input('cazzooooooo')
-            self.results[test_file_name_key]['N-256b-PACKED-SINGLE-OVER-N-INSTRUCTIONS'] = float(self.results[test_file_name_key]['N-256b-PACKED-SINGLE'] / self.results[test_file_name_key]['N-INSTRUCTIONS'])
-            self.results[test_file_name_key]['CACHE-OVER-INSTRUCTIONS'] = float(self.results[test_file_name_key]['CACHE-MISSES-NUMBER']) / float(self.results[test_file_name_key]['N-INSTRUCTIONS'])
+        # # Make the "composed metric"
+        # for test_file_name_key in self.results: 
+        #     self.results[test_file_name_key]['N-256b-PACKED-SINGLE-OVER-N-INSTRUCTIONS'] = float(self.results[test_file_name_key]['N-256b-PACKED-SINGLE'] / self.results[test_file_name_key]['N-INSTRUCTIONS'])
+        #     self.results[test_file_name_key]['CACHE-OVER-INSTRUCTIONS'] = float(self.results[test_file_name_key]['CACHE-MISSES-NUMBER']) / float(self.results[test_file_name_key]['N-INSTRUCTIONS'])
         # Show the final collected data
         print('Data grouped!')
         for file_name, parameters in self.results.items():

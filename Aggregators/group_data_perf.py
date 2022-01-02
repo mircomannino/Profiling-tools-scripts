@@ -66,12 +66,14 @@ class AggregatorPerfData:
         # for test_file_name_key in self.results: 
         #     self.results[test_file_name_key]['N-256b-PACKED-SINGLE-OVER-N-INSTRUCTIONS'] = float(self.results[test_file_name_key]['N-256b-PACKED-SINGLE'] / self.results[test_file_name_key]['N-INSTRUCTIONS'])
         #     self.results[test_file_name_key]['CACHE-OVER-INSTRUCTIONS'] = float(self.results[test_file_name_key]['CACHE-MISSES-NUMBER']) / float(self.results[test_file_name_key]['N-INSTRUCTIONS'])
+        
         # Show the final collected data
         print('Data grouped!')
         for file_name, parameters in self.results.items():
             print(file_name)
             for parameter, val in parameters.items():
                 print('\t', parameter, ': ', val, sep='')
+        a = input('-----------------------')
 
     def save_data_to_csv(self):
         if(len(self.results) != 0):

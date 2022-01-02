@@ -87,7 +87,6 @@ class AggregatorPerfData:
             print(file_name)
             for parameter, val in parameters.items():
                 print('\t', parameter, ': ', val, sep='')
-        a = input('-----------------------')
 
     def save_data_to_csv(self):
         if(len(self.results) != 0):

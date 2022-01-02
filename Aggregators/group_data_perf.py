@@ -62,6 +62,8 @@ class AggregatorPerfData:
                         self.results[test_file_name_key]['N-256b-PACKED-SINGLE'] = self.__get_256b_packed_single(line)
         
         # Make the "composed metric"
+        print(self.results.keys())
+        a = input('cazzooooooo')
         for test_file_name_key in self.results: 
             self.results[test_file_name_key]['N-256b-PACKED-SINGLE-OVER-N-INSTRUCTIONS'] = float(self.results[test_file_name_key]['N-256b-PACKED-SINGLE'] / self.results[test_file_name_key]['N-INSTRUCTIONS'])
             self.results[test_file_name_key]['CACHE-OVER-INSTRUCTIONS'] = float(self.results[test_file_name_key]['CACHE-MISSES-NUMBER']) / float(self.results[test_file_name_key]['N-INSTRUCTIONS'])

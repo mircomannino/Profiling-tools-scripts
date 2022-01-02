@@ -46,7 +46,7 @@ class AggregatorPerfData:
             analysis_files = []
             if SEPARATED_ANALYSIS:
                 analysis_files.append(test_file_name_key.replace('.txt','') + '_memory' + '.txt')
-                analysis_files.append(test_file_name_key.replace('.txt','') + '_memory' + '.txt')
+                analysis_files.append(test_file_name_key.replace('.txt','') + '_generalPurpose' + '.txt')
             else:
                 analysis_files.append(test_file_name_key)
 

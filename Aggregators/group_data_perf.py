@@ -50,9 +50,6 @@ class AggregatorPerfData:
             else:
                 analysis_files.append(test_file_name_key)
 
-            print(analysis_files)
-            ss = input('-----')
-
             self.results[test_file_name_key] = {}
 
             for analysis_file in analysis_files:

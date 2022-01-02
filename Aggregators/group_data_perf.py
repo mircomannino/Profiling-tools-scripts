@@ -35,7 +35,9 @@ class AggregatorPerfData:
         # Iterate all the file of the current folder
         for test_file_name in file_in_folder:
             # Remove event suffix
-            test_file_name_key = test_file_name.replace('_memory','').replace('_generalPurpose','')
+            test_file_name_key = test_file_name
+            test_file_name_key = test_file_name_key.replace('_memory','')
+            test_file_name_key = test_file_name_key.replace('_generalPurpose','')
             self.results[test_file_name_key] = {}
             with open(os.path.join(os.getcwd(), test_file_name)) as test_file:
                 for line in test_file:

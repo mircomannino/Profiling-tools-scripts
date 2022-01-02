@@ -32,15 +32,12 @@ class AggregatorPerfData:
         file_in_folder = os.listdir()
         file_in_folder = [file_name for file_name in file_in_folder if file_name.endswith('.txt')]
         file_in_folder.sort(key = lambda x : int(x.split('_')[2].split('.')[0]))
-        print('Perf file in folder:',file_in_folder)
-        exit
         # Iterate all the file of the current folder
         for test_file_name in file_in_folder:
             # Remove event suffix
             test_file_name_key = test_file_name.replace('_memory','')
             test_file_name_key = test_file_name.replace('_generalPurpose','')
-            print(test_file_name, test_file_name_key)
-            exit()
+            print(test_file_name, test_file_name_key, '\n\n\n\n')
             self.results[test_file_name_key] = {}
             with open(os.path.join(os.getcwd(), test_file_name)) as test_file:
                 for line in test_file:

@@ -34,7 +34,7 @@ class AggregatorPerfData:
         file_in_folder.sort(key = lambda x : int(x.split('_')[2].split('.')[0]))
         # Iterate all the file of the current folder
         for test_file_name in file_in_folder:
-            # Remove event suffix
+            # Remove events suffix
             test_file_name_key = test_file_name.replace('_memory','')
             test_file_name_key = test_file_name_key.replace('_generalPurpose','')
             self.results[test_file_name_key] = {}
@@ -60,10 +60,11 @@ class AggregatorPerfData:
                         self.results[test_file_name_key]['N-128b-PACKED-SINGLE'] = self.__get_128b_packed_single(line)
                     if(line.find('fp_arith_inst_retired.256b_packed_single') != -1):
                         self.results[test_file_name_key]['N-256b-PACKED-SINGLE'] = self.__get_256b_packed_single(line)
-                self.results[test_file_name_key]['N-256b-PACKED-SINGLE-OVER-N-INSTRUCTIONS'] = float(self.results[test_file_name_key]['N-256b-PACKED-SINGLE'] / self.results[test_file_name_key]['N-INSTRUCTIONS'])
-                print(self.results[test_file_name_key])
-                exit()
-                self.results[test_file_name_key]['CACHE-OVER-INSTRUCTIONS'] = float(self.results[test_file_name_key]['CACHE-MISSES-NUMBER']) / float(self.results[test_file_name_key]['N-INSTRUCTIONS'])
+        
+        # Make the "composed metric"
+        for test_file_name_key in self.results: 
+            self.results[test_file_name_key]['N-256b-PACKED-SINGLE-OVER-N-INSTRUCTIONS'] = float(self.results[test_file_name_key]['N-256b-PACKED-SINGLE'] / self.results[test_file_name_key]['N-INSTRUCTIONS'])
+            self.results[test_file_name_key]['CACHE-OVER-INSTRUCTIONS'] = float(self.results[test_file_name_key]['CACHE-MISSES-NUMBER']) / float(self.results[test_file_name_key]['N-INSTRUCTIONS'])
         # Show the final collected data
         print('Data grouped!')
         for file_name, parameters in self.results.items():

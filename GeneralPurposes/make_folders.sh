@@ -18,19 +18,22 @@ do
     for N_REPETITIONS in "${n_repetitions[@]}"
     do
         ### Make folders ###
-        mkdir -p ExecutionTime_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions    # Execution time
-        mkdir -p Perf_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions             # Perf
-        mkdir -p VTune_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions          # VTune
+        mkdir -p ExecutionTime_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions     # Execution time
+        mkdir -p Perf_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions              # Perf
+        mkdir -p VTune_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions             # VTune
+        mkdir -p Roofline_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions          # Roofline
 
         ### Copy the profiling scripts in the right folder ###
         cp ../Profiling-tools-scripts/ExecutionTime/execution_time_generator.sh ./ExecutionTime_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions
         cp ../Profiling-tools-scripts/Perf/perf_report_generator.sh ./Perf_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions
         cp ../Profiling-tools-scripts/Intel-VTune/VTune_report_generator.sh ./VTune_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions
+        cp ../Profiling-tools-scripts/Roofline/Roofline_report_generator.sh ./Roofline_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions
 
         ### Permissions ###
         chmod u+x ./ExecutionTime_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions/*.sh
         chmod u+x ./Perf_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions/*.sh
         chmod u+x ./VTune_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions/*.sh
+        chmod u+x ./Roofline_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions/*.sh 
 
     done
     # Return to root folder

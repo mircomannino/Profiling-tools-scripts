@@ -75,7 +75,8 @@ declare -a arguments=( # (Image size, Image depth, Kernel size, N. Kernel)
     "7 2048 3 2048"
 )
 
-BINARY_FILE=./bin/benchmark_Naive
+
+BINARY_FILE=./bin/benchmark_SequentialAlexNetFULL
 
 for NUMBER_ANALYSYS in "${list_of_analysis[@]}"
 do
@@ -85,28 +86,29 @@ do
     do
         for N_REPETITIONS in "${n_repetitions[@]}"
         do
-            # Execution time
-            OUT_DIR_TIME=${CURRENT_DIR}/ExecutionTime_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/execution_times
-            ./analysis_N${NUMBER_ANALYSYS}/ExecutionTime_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/execution_time_generator.sh \
-            ${BINARY_FILE} ${OUT_DIR_TIME} ${ARGUMENT} ${LOOP_ORDER} ${N_REPETITIONS}
+            # # Execution time
+            # OUT_DIR_TIME=${CURRENT_DIR}/ExecutionTime_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/execution_times
+            # ./analysis_N${NUMBER_ANALYSYS}/ExecutionTime_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/execution_time_generator.sh \
+            # ${BINARY_FILE} ${OUT_DIR_TIME} ${ARGUMENT} ${LOOP_ORDER} ${N_REPETITIONS}
 
-            # Perf
-            OUT_DIR_PERF=${CURRENT_DIR}/Perf_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/perf_reports
-            ./analysis_N${NUMBER_ANALYSYS}/Perf_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/perf_report_generator.sh \
-            ${BINARY_FILE} ${OUT_DIR_PERF} ${ARGUMENT} ${LOOP_ORDER} ${N_REPETITIONS}
+            # # Perf
+            # OUT_DIR_PERF=${CURRENT_DIR}/Perf_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/perf_reports
+            # ./analysis_N${NUMBER_ANALYSYS}/Perf_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/perf_report_generator.sh \
+            # ${BINARY_FILE} ${OUT_DIR_PERF} ${ARGUMENT} ${LOOP_ORDER} ${N_REPETITIONS}
 
-            # VTune
-            ROOT_VTUNE=${CURRENT_DIR}/VTune_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/vtune_data
-            OUT_DIR_VTUNE=${CURRENT_DIR}/VTune_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/reports
-            ./analysis_N${NUMBER_ANALYSYS}/VTune_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/VTune_report_generator.sh \
-            ${BINARY_FILE} ${ROOT_VTUNE} ${OUT_DIR_VTUNE} ${ARGUMENT} ${LOOP_ORDER} ${N_REPETITIONS}
-            rm -rf ${ROOT_VTUNE}/* # Clean tmp data
+            # # VTune
+            # ROOT_VTUNE=${CURRENT_DIR}/VTune_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/vtune_data
+            # OUT_DIR_VTUNE=${CURRENT_DIR}/VTune_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/reports
+            # ./analysis_N${NUMBER_ANALYSYS}/VTune_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/VTune_report_generator.sh \
+            # ${BINARY_FILE} ${ROOT_VTUNE} ${OUT_DIR_VTUNE} ${ARGUMENT} ${LOOP_ORDER} ${N_REPETITIONS}
+            # rm -rf ${ROOT_VTUNE}/* # Clean tmp data
 
             # Roofline
             ROOT_DATA_ANALYSIS=${CURRENT_DIR}/Roofline_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/roofline-data
             OUT_DIR_ROOFLINE=${CURRENT_DIR}/Roofline_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/roofline-reports
             ./analysis_N${NUMBER_ANALYSYS}/Roofline_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/roofline_report_generator.sh \
             ${BINARY_FILE} ${ROOT_DATA_ANALYSIS} ${OUT_DIR_ROOFLINE} ${LOOP_ORDER} ${N_REPETITIONS}
+            rm -rf ${ROOT_DATA_ANALYSIS}/*
         done
 
     done

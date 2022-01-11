@@ -27,7 +27,7 @@ do
         cp ../Profiling-tools-scripts/ExecutionTime/execution_time_generator.sh ./ExecutionTime_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions
         cp ../Profiling-tools-scripts/Perf/perf_report_generator.sh ./Perf_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions
         cp ../Profiling-tools-scripts/Intel-VTune/VTune_report_generator.sh ./VTune_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions
-        cp ../Profiling-tools-scripts/Roofline/Roofline_report_generator.sh ./Roofline_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions
+        cp ../Profiling-tools-scripts/Roofline/roofline_report_generator.sh ./Roofline_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions
 
         ### Permissions ###
         chmod u+x ./ExecutionTime_analysis_N${NUMBER}_${N_REPETITIONS}-repetitions/*.sh

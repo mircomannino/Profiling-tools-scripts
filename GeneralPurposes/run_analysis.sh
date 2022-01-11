@@ -101,6 +101,12 @@ do
             ./analysis_N${NUMBER_ANALYSYS}/VTune_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/VTune_report_generator.sh \
             ${BINARY_FILE} ${ROOT_VTUNE} ${OUT_DIR_VTUNE} ${ARGUMENT} ${LOOP_ORDER} ${N_REPETITIONS}
             rm -rf ${ROOT_VTUNE}/* # Clean tmp data
+
+            # Roofline
+            ROOT_DATA_ANALYSIS=${CURRENT_DIR}/Roofline_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/roofline-data
+            OUT_DIR_ROOFLINE=${CURRENT_DIR}/Roofline_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/roofline-reports
+            ./analysis_N${NUMBER_ANALYSYS}/Roofline_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/roofline_report_generator.sh \
+            ${BINARY_FILE} ${ROOT_DATA_ANALYSIS} ${OUT_DIR_ROOFLINE} ${LOOP_ORDER} ${N_REPETITIONS}
         done
 
     done

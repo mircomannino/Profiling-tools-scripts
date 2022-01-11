@@ -92,7 +92,7 @@ mkdir -p ${OUTPUT_DIR}
 # Collect data
 advixe-cl -collect roofline -project-dir ${ROOT_DATA_ANALYSIS} -- ${BINARY_FILE} ${ARGUMENTS}
 # Make the report 
-advixe-cl --report=roofline --project-dir=${ROOT_DATA_ANALYSIS} --report-output=${OUTPUT_DIR}/OUT_FILE_NAME
+advixe-cl --report=roofline --project-dir=${ROOT_DATA_ANALYSIS} --report-output=${OUTPUT_DIR}/${OUT_FILE_NAME}
 
 echo # New line
 echo "-------------- [Roofline analysis: END] "${@}" --------------"

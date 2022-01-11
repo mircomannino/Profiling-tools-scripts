@@ -112,6 +112,6 @@ do
         OUT_DIR_ROOFLINE=${CURRENT_DIR}/Roofline_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/roofline-reports
         ./analysis_N${NUMBER_ANALYSYS}/Roofline_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/roofline_report_generator.sh \
         ${BINARY_FILE} ${ROOT_DATA_ANALYSIS} ${OUT_DIR_ROOFLINE} ${LOOP_ORDER} ${N_REPETITIONS}
-        rm -rf ${ROOT_DATA_ANALYSIS}/*
+        rm -rf ${ROOT_DATA_ANALYSIS}/* # Clean tmp data
     done
 done

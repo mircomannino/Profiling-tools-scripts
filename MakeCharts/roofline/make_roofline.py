@@ -3,11 +3,20 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from machines_specs import INTEL_CORE_i9_9900K
+from CNNs_results import ALEX_NET_27A, ALEX_NET_27B
 
 PERFORMANCE_COLORS = {
     'SCALAR_GFLOPS_s': 'purple',
     'SP_VECTOR_GFLOPS_s': 'blue',
     'SP_FMA_GFLOPS_s': 'orange'
+}
+
+ORDER_COLORS = {
+    'order-1': 'blue',
+    'order-2': 'orange',
+    'order-3': 'green',
+    'order-4': 'red',
+    'order-5': 'purple'
 }
 
 class RooflineCreator:
@@ -45,12 +54,20 @@ class RooflineCreator:
     def __plot_bandwidth_peack(self, ax, bandwidth_name, bandwidth_peack, x_min, x_max):
         x_values = list(np.linspace(x_min, x_max, 2))
         y_values = [x*bandwidth_peack for x in x_values]
-        ax.plot(x_values, y_values, label=bandwidth_name)
+        ax.plot(x_values, y_values, label=bandwidth_name, linewidth=1, alpha=0.7, color='black')   
+        # Plot label near the line
+        # label_on_plot = bandwidth_name.replace('_GB_s','') + ' bandwidth peack: ' + str(bandwidth_peack) + 'GB/s'
+        # middle_x = 0.1
+        # ax.text(middle_x, (bandwidth_peack*middle_x*1.2), label_on_plot, rotation=45)
 
     def __plot_performance_peack(self, ax, performance_name, performance_peack, x_min, x_max):
         x_values = list(np.linspace(x_min, x_max, 2))
         y_values = [performance_peack]*2
-        ax.plot(x_values, y_values, label=performance_name, color=PERFORMANCE_COLORS[performance_name])
+        # ax.plot(x_values, y_values, label=performance_name, color=PERFORMANCE_COLORS[performance_name], linewidth=2)
+        ax.plot(x_values, y_values, label=performance_name, linewidth=1, alpha=0.7, color='black')
+        # Plot label near the line
+        label_on_plot = performance_name.replace('GFLOPS_s','') + 'performance peack: ' + str(performance_peack) + 'GFLOPs/s'
+        ax.text(x_max*0.2, performance_peack*1.05, label_on_plot, color=PERFORMANCE_COLORS[performance_name], horizontalalignment='left')
 
     def make_roofline_model(self, ax, show_ridge_points=True):
         # Set the plot
@@ -66,7 +83,7 @@ class RooflineCreator:
                 for performance_name, OI_ridge_point in bandwidth_OI_ridge_points.items():
                     x = OI_ridge_point
                     y = self.performance_peacks[performance_name]
-                    ax.scatter(x, y, s=80, marker='x', color=PERFORMANCE_COLORS[performance_name])
+                    ax.scatter(x, y, s=100, marker='x', color=PERFORMANCE_COLORS[performance_name])
 
 
         # Plot bandwidth lines
@@ -95,36 +112,47 @@ class RooflineCreator:
             )
 
 
-        # # Plot the main line of the model
-        # x_values, y_values = self.__get_roofline_function_values(0, 100, 1000)
-        # ax.plot(x_values, y_values, 'b')
-        #
-        # self.peack_GFLOP_s = 800
-        # x_values = list(np.linspace(0, 100, 1000))
-        # y_values = [min(self.peack_GFLOP_s, x*self.peack_GB_s) for x in x_values]
-        # ax.plot(x_values, y_values, 'r')
-
         return fig, ax
 
-    def add_measurements(self, ax, name, OI, GFLOPS_s):
-        ax.scatter(OI, GFLOPS_s, label=name, s=100)
+    def add_measurements(self, ax, name, OI, GFLOPS_s, color, marker):
+        ax.scatter(OI, GFLOPS_s, label=name, s=100, color=color, marker=marker)
 
 
 if __name__=="__main__":
 
-    my_roofline_creator_8CORES = RooflineCreator(
-        INTEL_CORE_i9_9900K['8-cores']['performance']['SCALAR_GFLOPS_s'],
-        INTEL_CORE_i9_9900K['8-cores']['performance']['SP_VECTOR_GFLOPS_s'],
-        INTEL_CORE_i9_9900K['8-cores']['performance']['SP_FMA_GFLOPS_s'],
-        INTEL_CORE_i9_9900K['8-cores']['bandwidth']['L1_GB_s'],
-        INTEL_CORE_i9_9900K['8-cores']['bandwidth']['L2_GB_s'],
-        INTEL_CORE_i9_9900K['8-cores']['bandwidth']['L3_GB_s'],
-        INTEL_CORE_i9_9900K['8-cores']['bandwidth']['DRAM_GB_s'],
+    my_roofline_creator_1CORES = RooflineCreator(
+        INTEL_CORE_i9_9900K['1-cores']['performance']['SCALAR_GFLOPS_s'],
+        INTEL_CORE_i9_9900K['1-cores']['performance']['SP_VECTOR_GFLOPS_s'],
+        INTEL_CORE_i9_9900K['1-cores']['performance']['SP_FMA_GFLOPS_s'],
+        INTEL_CORE_i9_9900K['1-cores']['bandwidth']['L1_GB_s'],
+        INTEL_CORE_i9_9900K['1-cores']['bandwidth']['L2_GB_s'],
+        INTEL_CORE_i9_9900K['1-cores']['bandwidth']['L3_GB_s'],
+        INTEL_CORE_i9_9900K['1-cores']['bandwidth']['DRAM_GB_s'],
     )
 
     fig, ax = plt.subplots()
-    my_roofline_creator_8CORES.make_roofline_model(ax)
-    my_roofline_creator_8CORES.add_measurements(ax, 'ICC-Parallel-order2', 0.01, 10)
+    my_roofline_creator_1CORES.make_roofline_model(ax, show_ridge_points=False)
+
+    # Add AlexNet ICC vec benchmark
+    for order_number, order_benchmark in ALEX_NET_27A['results'].items():
+        my_roofline_creator_1CORES.add_measurements(
+            ax, 
+            order_number, 
+            order_benchmark['OI'], 
+            order_benchmark['GFLOPS_s'],
+            color = ORDER_COLORS[order_number], 
+            marker = 's'
+        )
+    
+     # Add AlexNet ICC no-vec benchmark
+    for order_number, order_benchmark in ALEX_NET_27B['results'].items():
+        my_roofline_creator_1CORES.add_measurements(
+            ax, 
+            order_number, 
+            order_benchmark['OI'], 
+            order_benchmark['GFLOPS_s'],
+            color = ORDER_COLORS[order_number], 
+            marker = 'x')
 
     plt.legend()
     plt.show()

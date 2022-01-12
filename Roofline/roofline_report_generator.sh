@@ -57,7 +57,7 @@ elif [[ ${BINARY_FILE} =~ ./bin/benchmark_Naive ]] && [[ "$#" -ne 9 ]]; then
     echo "  1) Binary file to analyze"
     echo "  2) Root to store analysis data"
     echo "  3) Output directory"
-    echo "  4-9) Arguments of binary file. See documentation"  
+    echo "  4-9) Arguments of binary file. See documentation"
     exit 1
 fi
 
@@ -65,8 +65,8 @@ echo # New line
 echo "-------------- [Roofline analysis: START] "${@}" --------------"
 
 # Setup output folder and arguments
-if [[ ${BINARY_FILE} =~ ./bin/benchmark_Sequential[a-zA-Z]+FULL$ ]] && [[ "$#" -ne 4 ]]; then
-    OUT_FILE_NAME=$(basename $1)_$3_$4.html
+if [[ ${BINARY_FILE} =~ ./bin/benchmark_Sequential[a-zA-Z]+FULL$ ]]; then
+    OUT_FILE_NAME=$(basename $1)_$4_$5.html
     ARGUMENTS="$4 $5"
 elif [[ ${BINARY_FILE} =~ "./bin/benchmark_ParallelMemoryBlocking" ]]; then # Parallel
     OUT_FILE_NAME=$(basename $1)_$4_$5_$6_$7_$8_$9_${10}_${11}_${12}_${13}
@@ -91,7 +91,7 @@ mkdir -p ${OUTPUT_DIR}
 
 # Collect data
 advixe-cl -collect roofline -project-dir ${ROOT_DATA_ANALYSIS} -- ${BINARY_FILE} ${ARGUMENTS}
-# Make the report 
+# Make the report
 advixe-cl --report=roofline --project-dir=${ROOT_DATA_ANALYSIS} --report-output=${OUTPUT_DIR}/${OUT_FILE_NAME}
 
 echo # New line

@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from machines_specs import INTEL_CORE_i9_9900K
-from CNNs_results import ALEX_NET_27A, ALEX_NET_27B
+from CNNs_results import ALEX_NET_27A, ALEX_NET_27B, ALEX_NET_27C
 
 PERFORMANCE_COLORS = {
     'SCALAR_GFLOPS_s': 'purple',
@@ -54,7 +54,7 @@ class RooflineCreator:
     def __plot_bandwidth_peack(self, ax, bandwidth_name, bandwidth_peack, x_min, x_max):
         x_values = list(np.linspace(x_min, x_max, 2))
         y_values = [x*bandwidth_peack for x in x_values]
-        ax.plot(x_values, y_values, label=bandwidth_name, linewidth=1, alpha=0.7, color='black')   
+        ax.plot(x_values, y_values, label=bandwidth_name, linewidth=1, alpha=0.7, color='black')
         # Plot label near the line
         # label_on_plot = bandwidth_name.replace('_GB_s','') + ' bandwidth peack: ' + str(bandwidth_peack) + 'GB/s'
         # middle_x = 0.1
@@ -136,23 +136,33 @@ if __name__=="__main__":
     # Add AlexNet ICC vec benchmark
     for order_number, order_benchmark in ALEX_NET_27A['results'].items():
         my_roofline_creator_1CORES.add_measurements(
-            ax, 
-            order_number, 
-            order_benchmark['OI'], 
+            ax,
+            order_number,
+            order_benchmark['OI'],
             order_benchmark['GFLOPS_s'],
-            color = ORDER_COLORS[order_number], 
+            color = ORDER_COLORS[order_number],
             marker = 's'
         )
-    
+
      # Add AlexNet ICC no-vec benchmark
     for order_number, order_benchmark in ALEX_NET_27B['results'].items():
         my_roofline_creator_1CORES.add_measurements(
-            ax, 
-            order_number, 
-            order_benchmark['OI'], 
+            ax,
+            order_number,
+            order_benchmark['OI'],
             order_benchmark['GFLOPS_s'],
-            color = ORDER_COLORS[order_number], 
+            color = ORDER_COLORS[order_number],
             marker = 'x')
+
+     # Add AlexNet POLLY benchmark
+    for order_number, order_benchmark in ALEX_NET_27C['results'].items():
+        my_roofline_creator_1CORES.add_measurements(
+            ax,
+            order_number,
+            order_benchmark['OI'],
+            order_benchmark['GFLOPS_s'],
+            color = ORDER_COLORS[order_number],
+            marker = '*')
 
     plt.legend()
     plt.show()

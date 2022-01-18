@@ -74,7 +74,7 @@ echo "-------------- [Roofline analysis: START] "${@}" --------------"
 
 # Setup output folder and arguments
 if [[ ${BINARY_FILE} =~ ./bin/benchmark_Parallel[a-zA-Z]+FULL$ ]]; then
-    OUT_FILE_NAME=$(basename $1)_$4_$5.html
+    OUT_FILE_NAME=$(basename $1)_$4_$5_$6.html
     ARGUMENTS="$4 $5 $6"
 elif [[ ${BINARY_FILE} =~ ./bin/benchmark_Sequential[a-zA-Z]+FULL$ ]]; then
     OUT_FILE_NAME=$(basename $1)_$4_$5.html

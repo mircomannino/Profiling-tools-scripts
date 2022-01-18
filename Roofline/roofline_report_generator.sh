@@ -22,7 +22,15 @@
 
 BINARY_FILE=$1
 
-if [[ ${BINARY_FILE} =~ ./bin/benchmark_Sequential[a-zA-Z]+FULL$ ]] && [[ "$#" -ne 5 ]]; then # Enter if name is benchmark_Sequential[NetworkName]FULL
+if [[ ${BINARY_FILE} =~ ./bin/benchmark_Parallel[a-zA-Z]+FULL$ ]] && [[ "$#" -ne 6 ]]; then # Enter if name is benchmark_Parallel[NetworkName]FULL
+    echo "Detect Parallel + Memory blocking version with wrong arguments"
+    echo "Insert the following arguments:"
+    echo "  1) Binary file to analyze"
+    echo "  2) Root to store analysis data"
+    echo "  3) Output directory"
+    echo "  4-6) Arguements of binary file. See documentation"
+    exit 1
+elif [[ ${BINARY_FILE} =~ ./bin/benchmark_Sequential[a-zA-Z]+FULL$ ]] && [[ "$#" -ne 5 ]]; then # Enter if name is benchmark_Sequential[NetworkName]FULL
     echo "Detect Parallel + Memory blocking version with wrong arguments"
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"
@@ -65,7 +73,10 @@ echo # New line
 echo "-------------- [Roofline analysis: START] "${@}" --------------"
 
 # Setup output folder and arguments
-if [[ ${BINARY_FILE} =~ ./bin/benchmark_Sequential[a-zA-Z]+FULL$ ]]; then
+if [[ ${BINARY_FILE} =~ ./bin/benchmark_Parallel[a-zA-Z]+FULL$ ]]; then
+    OUT_FILE_NAME=$(basename $1)_$4_$5.html
+    ARGUMENTS="$4 $5 $6"
+elif [[ ${BINARY_FILE} =~ ./bin/benchmark_Sequential[a-zA-Z]+FULL$ ]]; then
     OUT_FILE_NAME=$(basename $1)_$4_$5.html
     ARGUMENTS="$4 $5"
 elif [[ ${BINARY_FILE} =~ "./bin/benchmark_ParallelMemoryBlocking" ]]; then # Parallel

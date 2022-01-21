@@ -29,13 +29,29 @@
 # $10   |                       | Blocked output width size     |   Number of tests   | Blocked output width size   |
 # $11   |                       | Order of loops                |                     | Number of threads           |
 # $12   |                       | Number of tests               |                     | Order of loops              |
-# $13   |                       |                               |                     | Number of tests             |   
+# $13   |                       |                               |                     | Number of tests             |
 # ===================================================================================================================
 
 BIN_NAME=$(basename $1)
 BINARY_FILE=$1
 
-if [[ ${BINARY_FILE} == ./bin/benchmark_ParallelMemoryBlocking ]] && [[ "$#" -ne 13 ]]; then
+if [[ ${BINARY_FILE} =~ ./bin/benchmark_Parallel[a-zA-Z]+FULL$ ]] && [[ "$#" -ne 6 ]]; then
+    echo "Detect Parallel + AlexNet FULL version with wrong arguments"
+    echo "Insert the following arguments:"
+    echo "  1) Binary file to analyze"
+    echo "  2) Root data for VTune"
+    echo "  3) Output directory"
+    echo "  4-6) Arguements of binary file. See documentation"
+    exit 1
+elif [[ ${BINARY_FILE} =~ ./bin/benchmark_Sequential[a-zA-Z]+FULL$ ]] && [[ "$#" -ne 5 ]]; then
+    echo "Detect Parallel + AlexNet FULL version with wrong arguments"
+    echo "Insert the following arguments:"
+    echo "  1) Binary file to analyze"
+    echo "  2) Root data for VTune"
+    echo "  3) Output directory"
+    echo "  4-5) Arguements of binary file. See documentation"
+    exit 1
+elif [[ ${BINARY_FILE} == ./bin/benchmark_ParallelMemoryBlocking ]] && [[ "$#" -ne 13 ]]; then
     echo "Detect Parallel + Memory blocking version with wrong arguments"
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"
@@ -62,13 +78,18 @@ elif [[ ${BINARY_FILE} =~ ./bin/benchmark_Naive ]] && [[ "$#" -ne 9 ]]; then
     echo "  1) Binary file to analyze"
     echo "  2) Root data for VTune"
     echo "  3) Output directory"
-    echo "  4-9) Arguments of binary file. See documentation"  
+    echo "  4-9) Arguments of binary file. See documentation"
     exit 1
 fi
 
-
 # Setup identifiers and arguments
-if [[ ${BINARY_FILE} =~ "./bin/benchmark_ParallelMemoryBlocking" ]]; then # Parallel
+if [[ ${BINARY_FILE} =~ ./bin/benchmark_Parallel[a-zA-Z]+FULL$ ]]; then # Parallel
+    BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6
+    ARGUMENTS="$4 $5 $6"
+elif [[ ${BINARY_FILE} =~ ./bin/benchmark_Sequential[a-zA-Z]+FULL$ ]]; then # Parallel
+    BIN_IDENTIFIER=${BIN_NAME}_$4_$5
+    ARGUMENTS="$4 $5"
+elif [[ ${BINARY_FILE} =~ "./bin/benchmark_ParallelMemoryBlocking" ]]; then # Parallel
     BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7_$8_$9_${10}_${11}_${12}_${13}
     ARGUMENTS="$4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13}"
 elif [[ ${BINARY_FILE} =~ "./bin/benchmark_Parallel" ]]; then # Parallel

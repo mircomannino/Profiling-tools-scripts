@@ -136,7 +136,7 @@ do
         if [[ ${TYPE} = "threading" ]]; then
             KNOB_OPTION=""
         else
-            KNOB_OPTION="-knob sampling-interval=0.5"
+            KNOB_OPTION="-knob sampling-interval=0.01"
         fi
         mkdir -p ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE}
         vtune -collect $TYPE ${KNOB_OPTION} -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -- ${BINARY_FILE} ${ARGUMENTS}

@@ -124,9 +124,9 @@ mkdir -p ${BIN_REPORTS_DIR}
 # Add list of collection options
 declare -a collect_types=(
         "hpc-performance"
-        "uarch-exploration"
-        "memory-access"
-        "threading"
+        # "uarch-exploration"
+        # "memory-access"
+        # "threading"
 )
 
 # Collect data with vtune command

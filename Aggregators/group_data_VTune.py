@@ -181,7 +181,7 @@ class AggregatorVTuneData:
     
     def __get_effective_CPU_utilization_ncores(self, line: str):
         splitted_line = line.split()
-        effective_CPU_utilization_ncores = splitted_line[0]    # ['21.4%' '(3.430' 'out' 'of' '8' 'physical' 'CPUs)'] -> '(3.430'
+        effective_CPU_utilization_ncores = splitted_line[1]    # ['21.4%' '(3.430' 'out' 'of' '8' 'physical' 'CPUs)'] -> '(3.430'
         effective_CPU_utilization_ncores = effective_CPU_utilization_ncores.replace('(','')
         print(splitted_line, '-> ', effective_CPU_utilization_ncores)
         a = input()

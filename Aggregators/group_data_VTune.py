@@ -1,4 +1,5 @@
 # Python script used to group data from the single txt file in the folder
+import math
 import os
 import shutil
 import pandas as pd
@@ -183,7 +184,8 @@ class AggregatorVTuneData:
         splitted_line = line.split()
         effective_CPU_utilization_ncores = splitted_line[1]    # ['21.4%' '(3.430' 'out' 'of' '8' 'physical' 'CPUs)'] -> '(3.430'
         effective_CPU_utilization_ncores = effective_CPU_utilization_ncores.replace('(','')
-        print(splitted_line, '-> ', effective_CPU_utilization_ncores)
+        a = math.ceil(int(effective_CPU_utilization_ncores))
+        print(splitted_line, '-> ', effective_CPU_utilization_ncores, a)
         a = input()
         return self.__to_float(effective_CPU_utilization_ncores)
 

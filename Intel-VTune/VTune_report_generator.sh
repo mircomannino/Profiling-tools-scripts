@@ -125,8 +125,8 @@ mkdir -p ${BIN_REPORTS_DIR}
 declare -a collect_types=(
         "hpc-performance"
         "uarch-exploration"
-        "memory-access"
-        "threading"
+        # "memory-access"
+        # "threading"
 )
 
 # Collect data with vtune command
@@ -145,5 +145,8 @@ done
 # Create reports with vtune command
 for TYPE in "${collect_types[@]}"
 do
-        vtune -report summary -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -format ${FORMAT} -report-output ${BIN_REPORTS_DIR}/summary_${TYPE}.${FORMAT}
+        # csv
+        vtune -report summary -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -format csv -report-output ${BIN_REPORTS_DIR}/summary_${TYPE}.csv
+        # html
+        vtune -report summary -result-dir ${BIN_VTUNE_DIR}/${BIN_IDENTIFIER}_${TYPE} -format html -report-output ${BIN_REPORTS_DIR}/summary_${TYPE}.html
 done

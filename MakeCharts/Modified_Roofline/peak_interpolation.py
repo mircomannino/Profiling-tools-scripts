@@ -48,7 +48,6 @@ class BlackYeti:
             self.max_OI['L3'][n_cores] = L3[n_cores] * self.OI
             self.max_OI['DRAM'][n_cores] = DRAM[n_cores] * self.OI
         
-        print(self.max_OI)
 
     def L1_interpolation(self, n_cores):
         x_val = np.array([1, 2, 4, 6, 8]) # Number of cores

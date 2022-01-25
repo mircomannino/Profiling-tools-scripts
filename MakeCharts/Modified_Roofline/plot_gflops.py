@@ -21,7 +21,7 @@ if __name__=='__main__':
 
 
     # Plot subplots
-    fig, ax = plt.subplots(len(ORDERS), 1, sharey=True, figsize=(13,15))
+    fig, ax = plt.subplots(len(ORDERS), 1, sharey=False, figsize=(13,15))
     
 
     for i, order_name in enumerate(ORDERS):
@@ -37,31 +37,31 @@ if __name__=='__main__':
         ax[i].grid(axis='y')
         ax[i].set_title('Order ' + order_name)
 
-        blackyeti_perf = BlackYeti()
-        # Max Performance L1
-        max_performance_L1 = {k:blackyeti_perf.L1_interpolation(v['n-cores']) for k,v in ANALYSIS[selected_analysis][order_name].items()}
-        x_val = [(k-1) for k,v in max_performance_L1.items()]
-        y_val = [v for k,v in max_performance_L1.items()]
-        ax[i].plot(x_val, y_val, 'd-', c='green', linewidth=2, markersize=4, label='L1 Roof', zorder=3)
-        # Max Performance L2
-        max_performance_L2 = {k:blackyeti_perf.L2_interpolation(v['n-cores']) for k,v in ANALYSIS[selected_analysis][order_name].items()}
-        x_val = [(k-1) for k,v in max_performance_L2.items()]
-        y_val = [v for k,v in max_performance_L2.items()]
-        ax[i].plot(x_val, y_val, 'd-', c='yellow', linewidth=2, markersize=4, label='L2 Roof', zorder=3)
-        # Max Performance L3
-        max_performance_L3 = {k:blackyeti_perf.L3_interpolation(v['n-cores']) for k,v in ANALYSIS[selected_analysis][order_name].items()}
-        x_val = [(k-1) for k,v in max_performance_L3.items()]
-        y_val = [v for k,v in max_performance_L3.items()]
-        ax[i].plot(x_val, y_val, 'd-', c='orange', linewidth=2, markersize=4, label='L3 Roof', zorder=3)
-        # Max Performance DRAM
-        max_performance_DRAM = {k:blackyeti_perf.DRAM_interpolation(v['n-cores']) for k,v in ANALYSIS[selected_analysis][order_name].items()}
-        x_val = [(k-1) for k,v in max_performance_DRAM.items()]
-        y_val = [v for k,v in max_performance_DRAM.items()]
-        ax[i].plot(x_val, y_val, 'd-', c='red', linewidth=2, markersize=4, label='DRAM Roof', zorder=3)
+        # blackyeti_perf = BlackYeti()
+        # # Max Performance L1
+        # max_performance_L1 = {k:blackyeti_perf.L1_interpolation(v['n-cores']) for k,v in ANALYSIS[selected_analysis][order_name].items()}
+        # x_val = [(k-1) for k,v in max_performance_L1.items()]
+        # y_val = [v for k,v in max_performance_L1.items()]
+        # ax[i].plot(x_val, y_val, 'd-', c='green', linewidth=2, markersize=4, label='L1 Roof', zorder=3)
+        # # Max Performance L2
+        # max_performance_L2 = {k:blackyeti_perf.L2_interpolation(v['n-cores']) for k,v in ANALYSIS[selected_analysis][order_name].items()}
+        # x_val = [(k-1) for k,v in max_performance_L2.items()]
+        # y_val = [v for k,v in max_performance_L2.items()]
+        # ax[i].plot(x_val, y_val, 'd-', c='yellow', linewidth=2, markersize=4, label='L2 Roof', zorder=3)
+        # # Max Performance L3
+        # max_performance_L3 = {k:blackyeti_perf.L3_interpolation(v['n-cores']) for k,v in ANALYSIS[selected_analysis][order_name].items()}
+        # x_val = [(k-1) for k,v in max_performance_L3.items()]
+        # y_val = [v for k,v in max_performance_L3.items()]
+        # ax[i].plot(x_val, y_val, 'd-', c='orange', linewidth=2, markersize=4, label='L3 Roof', zorder=3)
+        # # Max Performance DRAM
+        # max_performance_DRAM = {k:blackyeti_perf.DRAM_interpolation(v['n-cores']) for k,v in ANALYSIS[selected_analysis][order_name].items()}
+        # x_val = [(k-1) for k,v in max_performance_DRAM.items()]
+        # y_val = [v for k,v in max_performance_DRAM.items()]
+        # ax[i].plot(x_val, y_val, 'd-', c='red', linewidth=2, markersize=4, label='DRAM Roof', zorder=3)
 
 
         # Set y range
-        ax[i].set_yticks(np.arange(0, 350, 50))
+        # ax[i].set_yticks(np.arange(0, 350, 50))
         # Print values
         for p in ax[i].patches:
             value = np.round(p.get_height(), decimals=2)

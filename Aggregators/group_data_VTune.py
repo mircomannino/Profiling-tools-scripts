@@ -47,7 +47,11 @@ class AggregatorVTuneData:
             for parameter_file in parameter_files:
                 # Print that the parameter file is starting to read
                 print('\t', parameter_file, ": Starting...")
-                with open(os.path.join(os.getcwd(), subdirectory, parameter_file)) as test_file:
+                file_path = os.path.join(os.getcwd(), subdirectory, parameter_file)
+                if not os.path.exists(file_path):
+                    print(file_path, ' does not exist!')
+                    continue
+                with open(file_path) as test_file:
                     csv_reader = csv.reader(test_file, delimiter='\t')
                     next(csv_reader)    # Skip header row
                     for line in csv_reader:

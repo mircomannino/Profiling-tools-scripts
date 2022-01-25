@@ -74,7 +74,9 @@ class AggregatorVTuneData:
                             if(metric_name.find('Average CPU Frequency') != -1):
                                 self.results[subdirectory]['AVG-CPU-FREQUENCY(GHz)'] = self.__to_float(line[2])
                             if(metric_name.find('Effective Physical Core Utilization') != -1):
-                                self.results[subdirectory]['EFFECTIVE-PHY-CORE-UTILIZATON'] = self.__get_effective_CPU_utilization_ncores(line[2])
+                                self.results[subdirectory]['EFFECTIVE-PHY-CORE-NCORES'] = self.__get_effective_CPU_utilization_ncores(line[2])
+                            if(metric_name.find('Effective Logical Core Utilization') != -1):
+                                self.results[subdirectory]['EFFECTIVE-LOG-CORE-NCORES'] = self.__get_effective_CPU_utilization_ncores(line[2])
 
 
                         ### UARCH EXPLORATION ###

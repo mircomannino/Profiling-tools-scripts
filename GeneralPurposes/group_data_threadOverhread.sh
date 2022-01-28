@@ -10,7 +10,7 @@ ROOT_FOLDER=$(pwd)
 RESULT_FOLDER=${ROOT_FOLDER}/results_threadEmpty
 if [ -d  "$RESULT_FOLDER" ]; then
     cd ${RESULT_FOLDER}
-    CSV_NAME=$(basename `pwd`)
+    CSV_NAME=test_threadOverheadEmpty
     # Copy the python script
     cp ${ROOT_FOLDER}/Profiling-tools-scripts/Aggregators/group_thread_overhead.py ./
     # Run the python script

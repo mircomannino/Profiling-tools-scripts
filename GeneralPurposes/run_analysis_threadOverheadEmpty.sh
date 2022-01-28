@@ -5,7 +5,7 @@ declare -a n_threads=("1" "2" "3" "4" "5" "6" "7" "8")
 
 BINARY_FILE=./bin/test_threadOverheadEmpty
 
-OUTPUT_DIR=./results
+OUTPUT_DIR=./results_threadEmpty
 mkdir -p ${OUTPUT_DIR}
 
 for N_THREADS in "${n_threads[@]}"

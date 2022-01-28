@@ -44,6 +44,8 @@ class AggregatorThreadOverheadEmpty:
                         self.results[test_file_name]['TIME-MEDIAN'] = self.__get_time_info(line)
                     if(line.find('Minimum') != -1):     # TIME-MINIMUM
                         self.results[test_file_name]['TIME-MINIMUM'] = self.__get_time_info(line)
+                    if(line.find('Maximum') != -1):     # TIME-MAXIMUM
+                        self.results[test_file_name]['TIME-MAXIMUM'] = self.__get_time_info(line)
         # Show the final collected data
         print('Data grouped!')
         for file_name, parameters in self.results.items():

@@ -1,4 +1,5 @@
 # Python script used to group data from the single txt file in the folder
+import math
 import os
 import shutil
 import pandas as pd
@@ -46,7 +47,11 @@ class AggregatorVTuneData:
             for parameter_file in parameter_files:
                 # Print that the parameter file is starting to read
                 print('\t', parameter_file, ": Starting...")
-                with open(os.path.join(os.getcwd(), subdirectory, parameter_file)) as test_file:
+                file_path = os.path.join(os.getcwd(), subdirectory, parameter_file)
+                if not os.path.exists(file_path):
+                    print(file_path, ' does not exist!')
+                    continue
+                with open(file_path) as test_file:
                     csv_reader = csv.reader(test_file, delimiter='\t')
                     next(csv_reader)    # Skip header row
                     for line in csv_reader:
@@ -68,6 +73,10 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['CACHE-BOUND'] = self.__to_float(line[2])
                             if(metric_name.find('Average CPU Frequency') != -1):
                                 self.results[subdirectory]['AVG-CPU-FREQUENCY(GHz)'] = self.__to_float(line[2])
+                            if(metric_name.find('Effective Physical Core Utilization') != -1):
+                                self.results[subdirectory]['EFFECTIVE-PHY-CORE-NCORES'] = self.__get_effective_CPU_utilization_ncores(line[2])
+                            if(metric_name.find('Effective Logical Core Utilization') != -1):
+                                self.results[subdirectory]['EFFECTIVE-LOG-CORE-NCORES'] = self.__get_effective_CPU_utilization_ncores(line[2])
 
 
                         ### UARCH EXPLORATION ###
@@ -136,7 +145,7 @@ class AggregatorVTuneData:
                             if(metric_name.find('Thread Oversubscription') != -1):
                                 self.results[subdirectory]['THREAD-OVERSUBSCRIPTION'] = self.__get_thread_oversubscription(line[2])
                             if(metric_name.find('Effective CPU Utilization') != -1):
-                                self.results[subdirectory]['EFFECTIVE-CPU-UTILIZATION'] = self.__get_effective_CPU_utilization(line[2])
+                                self.results[subdirectory]['EFFECTIVE-CPU-UTILIZATION'] = self.__get_effective_CPU_utilization_percentage(line[2])
 
                 # Output end of parameter file reading
                 print('\t', parameter_file, ": Done!")
@@ -171,11 +180,18 @@ class AggregatorVTuneData:
         percentage = percentage.replace('%','')
         return self.__to_float(percentage)
 
-    def __get_effective_CPU_utilization(self, line: str):
+    def __get_effective_CPU_utilization_percentage(self, line: str):
         splitted_line = line.split()
-        effective_CPU_utilization = splitted_line[0]    # ['21.4%' '(3.430' 'out' 'of' '16' 'logical' 'CPUs)'] -> 21.4
-        effective_CPU_utilization = effective_CPU_utilization.replace('%','')
-        return self.__to_float(effective_CPU_utilization)
+        effective_CPU_utilization_percentage = splitted_line[0]    # ['21.4%' '(3.430' 'out' 'of' '16' 'logical' 'CPUs)'] -> '21.4%'
+        effective_CPU_utilization_percentage = effective_CPU_utilization_percentage.replace('%','')
+        return self.__to_float(effective_CPU_utilization_percentage)
+    
+    def __get_effective_CPU_utilization_ncores(self, line: str):
+        splitted_line = line.split()
+        effective_CPU_utilization_ncores = splitted_line[1]    # ['21.4%' '(3.430' 'out' 'of' '8' 'physical' 'CPUs)'] -> '(3.430'
+        effective_CPU_utilization_ncores = effective_CPU_utilization_ncores.replace('(','')
+        effective_CPU_utilization_ncores_rounded = math.ceil(self.__to_float(effective_CPU_utilization_ncores))
+        return self.__to_float(effective_CPU_utilization_ncores_rounded)
 
 def create_parser():
     '''

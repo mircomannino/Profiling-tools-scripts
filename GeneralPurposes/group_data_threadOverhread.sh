@@ -14,10 +14,10 @@ if [ -d  "$RESULT_FOLDER" ]; then
     # Copy the python script
     cp ${ROOT_FOLDER}/Profiling-tools-scripts/Aggregators/group_thread_overhead.py ./
     # Run the python script
-    THREAD_TEST_OPTION="-empty"
+    THREAD_TEST_OPTION="--empty"
     python3 ./group_thread_overhead.py ${THREAD_TEST_OPTION} -o ${CSV_NAME}
     # Clean the directory and back to ROOT_FOLDER
-    rm ./group_thread_overhead
+    rm ./group_thread_overhead.py
     cd ..
 fi
 

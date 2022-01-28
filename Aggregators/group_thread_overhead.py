@@ -37,7 +37,7 @@ class AggregatorThreadOverheadEmpty:
             with open(os.path.join(os.getcwd(), test_file_name)) as test_file:
                 for line in test_file:
                     if(line.find('Mean') != -1):        # TIME-MEAN
-                        self.results[test_file_name]['TIME-MEDIAN'] = self.__get_time_info(line)
+                        self.results[test_file_name]['TIME-MEAN'] = self.__get_time_info(line)
                     if(line.find('deviation') != -1):   # TIME-STD-DEV
                         self.results[test_file_name]['TIME-STD-DEV'] = self.__get_time_info(line)
                     if(line.find('Median') != -1):      # TIME-MEDIAN

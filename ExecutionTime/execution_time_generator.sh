@@ -21,6 +21,9 @@
 BINARY_FILE=$1
 OUTPUT_DIR=$2
 
+echo ${OUTPUT_DIR}
+exit 1
+
 if [[ ${BINARY_FILE} =~ ./bin/benchmark_Parallel[a-zA-Z]+FULL$ ]] && [[ "$#" -ne 7 ]]; then # Enter if name is benchmark_Parallel[NetworkName]FULL
     echo "Detect Parallel + Memory blocking version with wrong arguments"
     echo "Insert the following arguments:"
@@ -62,7 +65,7 @@ fi
 
 # Setup output folder and arguments
 if [[ ${BINARY_FILE} =~ ./bin/benchmark_Parallel[a-zA-Z]+FULL$ ]]; then
-    OUT_FILE_NAME=$(basename $1)_$4_$5_$6_$7.html
+    OUT_FILE_NAME=$(basename $1)_$4_$5_$6_$7.txt
     ARGUMENTS="$4 $5 $6 $7"
 elif [[ ${BINARY_FILE} =~ "./bin/benchmark_ParallelMemoryBlocking" ]]; then # Parallel + Memory blocking
     OUT_FILE_NAME=$(basename $1)_$3_$4_$5_$6_$7_$8_$9_${10}_${11}_${12}.txt

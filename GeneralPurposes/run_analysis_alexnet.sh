@@ -20,10 +20,7 @@ do
             # Execution time
             OUT_DIR_TIME=${CURRENT_DIR}/ExecutionTime_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/execution_times
             ./analysis_N${NUMBER_ANALYSYS}/ExecutionTime_analysis_N${NUMBER_ANALYSYS}_${N_REPETITIONS}-repetitions/execution_time_generator.sh \
-            ${BINARY_FILE_PARALLEL} ${OUT_DIR_TIME} ${ARGUMENT} ${N_THREADS} ${LOOP_ORDER} ${N_REPETITIONS} ${CORE_TYPE_ALLOCATION}
+            ${BINARY_FILE} ${OUT_DIR_TIME} ${N_THREADS} ${LOOP_ORDER} ${N_REPETITIONS} ${CORE_TYPE_ALLOCATION}
         done
-
-    done
-
     done
 done

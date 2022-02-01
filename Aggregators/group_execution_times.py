@@ -99,7 +99,7 @@ class AggregatorExecutionTimeFULL:
         for test_file_name in file_in_folder:
             with open(os.path.join(os.getcwd(), test_file_name)) as test_file:
                 for layer in range(self.nLayers['AlexNet']):
-                    key_name = test_file_name + '_LAYER' + layer
+                    key_name = test_file_name + '_LAYER' + str(layer)
                     self.results[key_name] = {}
                     layer_prefix = str(layer) + ":"
                     for line in test_file:

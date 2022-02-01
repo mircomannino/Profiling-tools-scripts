@@ -137,7 +137,7 @@ def create_parser():
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('--output_path', '-o', type=str, required=True,
                         help='Output path))')
-    parser.add_argument('--full-network', action='store true'
+    parser.add_argument('--full-network', action='store true',
                         help='Use this flag when data is from a FULL network analysis')
     return parser.parse_args()
 

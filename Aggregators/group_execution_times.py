@@ -97,8 +97,8 @@ class AggregatorExecutionTimeFULL:
         file_in_folder.sort(key = lambda x : int(x.split('_')[2].split('.')[0]))
         # Iterate all the file of the current folder
         for test_file_name in file_in_folder:
-            with open(os.path.join(os.getcwd(), test_file_name)) as test_file:
-                for layer in range(self.nLayers['AlexNet']):
+            for layer in range(self.nLayers['AlexNet']):
+                with open(os.path.join(os.getcwd(), test_file_name)) as test_file:
                     key_name = test_file_name + '_LAYER' + str(layer)
                     self.results[key_name] = {}
                     layer_prefix = str(layer) + ":"

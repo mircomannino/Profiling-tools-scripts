@@ -21,9 +21,6 @@
 BINARY_FILE=$1
 OUTPUT_DIR=$2
 
-echo ${OUTPUT_DIR}
-exit 1
-
 if [[ ${BINARY_FILE} =~ ./bin/benchmark_Parallel[a-zA-Z]+FULL$ ]] && [[ "$#" -ne 6 ]]; then # Enter if name is benchmark_Parallel[NetworkName]FULL
     echo "Detect Parallel + Memory blocking version with wrong arguments"
     echo "Insert the following arguments:"

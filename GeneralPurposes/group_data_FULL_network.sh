@@ -5,7 +5,6 @@ rm -rf Profiling-tools-scripts
 git clone https://github.com/mircomannino/Profiling-tools-scripts.git
 
 ROOT_FOLDER=$(pwd)
-ALL_ROOFLINES_FOLDER=$(pwd)/roofline-models
 
 for ANALYSIS_FOLDER in ./analysis_N*
 do

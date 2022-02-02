@@ -61,7 +61,8 @@ fi
 
 # Setup output folder and arguments
 if [[ ${BINARY_FILE} =~ ./bin/benchmark_Parallel[a-zA-Z]+FULL$ ]]; then
-    CORE_ALLOC_TYPE_NAME=${$6//[_]/-}
+    CORE_ALLOC_TYPE=$6
+    CORE_ALLOC_TYPE_NAME=${CORE_ALLOC_TYPE//[_]/-}
     OUT_FILE_NAME=$(basename $1)_$3_$4_$5_${CORE_ALLOC_TYPE_NAME}.txt
     ARGUMENTS="$3 $4 $5 $6"
 elif [[ ${BINARY_FILE} =~ "./bin/benchmark_ParallelMemoryBlocking" ]]; then # Parallel + Memory blocking

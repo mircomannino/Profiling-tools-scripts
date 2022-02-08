@@ -1,10 +1,19 @@
 # Python script used to create bar charts from previous analysis    
+from matplotlib import markers
 import pandas as pd
 import numpy as np
 import os
 import argparse
-import json
 import matplotlib.pyplot as plt
+
+##### FONT SIZES #####
+FONTSIZE = {
+    'REGULAR': 24,
+    'TITLE': 30,
+    'SUBTITLE': 27,
+    'LEGEND': 20,
+    'ANNOTATIONS': 18
+}
 
 class ChartsCreator:
     '''
@@ -47,9 +56,13 @@ class ChartsCreator:
 
         # Collect data from each analysis folder
         results = {}
+        SELECTED_ANALYSIS=['N2', 'N3', 'N4']
         for analysis_directory in analysis_directories:
             # Get Number of the analysis
             n_analysis = analysis_directory.replace('analysis_', '')    # 'analysis_N1' ---> 'N1'
+
+            if n_analysis not in SELECTED_ANALYSIS:
+                continue
 
             if n_analysis not in results.keys():
                 results[n_analysis] = {}
@@ -81,6 +94,7 @@ class ChartsCreator:
             for layer_name, layer_dict in analysis_dict.items():
                 results_normalized[analisys_name][layer_name] = {}
                 reference_value = layer_dict['1']  # The reference value the one for one thread
+                reference_value = results['N2'][layer_name]['1']
                 for n_thread_name, n_thread_value in layer_dict.items():
                     results_normalized[analisys_name][layer_name][n_thread_name] = results[analisys_name][layer_name][n_thread_name] / reference_value
 
@@ -99,36 +113,50 @@ class ChartsCreator:
         # Prepare the plot
         N_ROWS = len(results.keys()) # One row for each analysis: N1, N2, ...
         N_COLS = 1
-        fig, ax = plt.subplots(nrows=N_ROWS, ncols=N_COLS, figsize=(15,14))
+        fig, ax = plt.subplots(nrows=N_ROWS, ncols=N_COLS, figsize=(25,23))
 
         # Plot
         for i, (n_analysis_name,result_df) in enumerate(results_df.items()):
-            result_df.T.plot(ax=ax[i], kind='bar', rot=0, legend=False, width=0.8)
+            result_df.T.plot(ax=ax[i], kind='bar', rot=0, legend=False, width=0.9, colormap='tab20', edgecolor='black'),
 
             # Setup subplots
             ax[i].grid('y')
-            ax[i].set_title('Order: '+n_analysis_name)
-            ax[i].set_ylabel(measurements_unit)
-            ax[i].set_xlabel('Layer ID')
+            ax[i].set_title('Order: '+n_analysis_name, fontsize=FONTSIZE['REGULAR'])
+            ax[i].set_ylabel(measurements_unit, fontsize=FONTSIZE['REGULAR'])
+            ax[i].set_xlabel('Layer ID', fontsize=FONTSIZE['REGULAR'])
+            ax[i].tick_params(labelsize=FONTSIZE['REGULAR'])
+            ax[i].set_ylim([0,1.6])
+
+            # Horizontal line
+            if normalize:
+                ax[i].axhline(1.0, linestyle='dashed', linewidth=5.0, color='black')
 
             # Get all 1-thread times
             thread1_times = [results[n_analysis_name][layer_id]['1'] for layer_id in results[n_analysis_name].keys()]
             j = 0
             for p in ax[i].patches: # Print value of first bar (1-thread)
                 if p.get_height()==1:
-                    ax[i].annotate( '{:.2f} ms'.format(thread1_times[j]), (p.get_x()+0.05, p.get_height()*0.9))
+                    ax[i].annotate('Effective time 1-thread:',(p.get_x()+0.07, p.get_height()*0.9), fontsize=FONTSIZE['ANNOTATIONS'])
+                    ax[i].annotate('{:.2f} ms'.format(thread1_times[j]), (p.get_x()+0.07, p.get_height()*0.85), fontsize=FONTSIZE['ANNOTATIONS'])
                     j += 1
+    
+        plt.tight_layout()
 
         # Adjust subplots
-        ax[0].legend(fontsize=9, ncol=16//2, loc='upper left', bbox_to_anchor=(0, 1.65), title='Number of threads')
+        plt.rcParams['legend.title_fontsize'] = FONTSIZE['LEGEND']
+        if len(SELECTED_ANALYSIS) == 5:
+            ax[0].legend(fontsize=FONTSIZE['LEGEND'], ncol=16//2, loc='upper left', bbox_to_anchor=(0, 1.68), title='Number of threads')
+            fig.subplots_adjust(top=0.85, hspace = .6)
+        if len(SELECTED_ANALYSIS) == 3:
+            ax[0].legend(fontsize=FONTSIZE['LEGEND'], ncol=16//2, loc='upper left', bbox_to_anchor=(0, 1.38), title='Number of threads')
+            fig.subplots_adjust(top=0.86, hspace = .3)
 
         # Finalization 
         chart_name = parameter_to_plot + '_' + str(n_repetitions) + '-repetitions_' + tool + '_' + alloc_type + self.file_format
-        plt.text(x=0.5, y=0.98, s=title, ha="center", transform=fig.transFigure)
-        plt.text(x=0.5, y=0.97, s='Normalized with respect to 1-thread version', color='grey', ha="center", transform=fig.transFigure)
-        plt.text(x=0.5, y=0.96, s='Cores utilization: '+alloc_type, color='grey', ha="center", transform=fig.transFigure)
-        fig.subplots_adjust(top=0.88, hspace = .5)
-        plt.tight_layout()
+        plt.text(x=0.5, y=0.98, s=title, ha="center", transform=fig.transFigure, fontsize=FONTSIZE['TITLE'])
+        plt.text(x=0.5, y=0.96, s='Normalized with respect to order N2 (1-thread version)', color='darkgrey', ha="center", transform=fig.transFigure, fontsize=FONTSIZE['SUBTITLE'])
+        plt.text(x=0.5, y=0.945, s='Affinity type: '+alloc_type, color='darkgrey', ha="center", transform=fig.transFigure, fontsize=FONTSIZE['SUBTITLE'])
+        
         plt.savefig(os.path.join(self.output_path, chart_name))
         print(chart_name, ': Done')
 

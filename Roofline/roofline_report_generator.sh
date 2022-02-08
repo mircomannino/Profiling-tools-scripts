@@ -100,10 +100,10 @@ OUTPUT_DIR=$3
 mkdir -p ${ROOT_DATA_ANALYSIS}
 mkdir -p ${OUTPUT_DIR}
 
-# Mapping the memory system
-advixe-cl --collect=map --project-dir=${ROOT_DATA_ANALYSIS} -- ${BINARY_FILE} ${ARGUMENTS}
+SAMPLING_INTERVAL=1 #ms
+
 # Collect data
-advixe-cl --collect=roofline --interval=5 --project-dir=${ROOT_DATA_ANALYSIS} -- ${BINARY_FILE} ${ARGUMENTS}
+advixe-cl --collect=roofline --interval=${SAMPLING_INTERVAL} --project-dir=${ROOT_DATA_ANALYSIS} -- ${BINARY_FILE} ${ARGUMENTS}
 # Make the report
 advixe-cl --report=roofline --project-dir=${ROOT_DATA_ANALYSIS} --report-output=${OUTPUT_DIR}/${OUT_FILE_NAME}
 

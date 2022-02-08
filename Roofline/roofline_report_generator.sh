@@ -102,8 +102,12 @@ mkdir -p ${OUTPUT_DIR}
 
 SAMPLING_INTERVAL=1 #ms
 
-# Collect data
+/opt/intel/oneapi/advisor/2022.0.0/bin64/advisor -collect tripcounts -no-trip-counts -flop -project-dir /home/mirco/Scrivania/roofline-test --app-working-dir=/home/mirco/Scrivania/roofline-test/bin -- /home/mirco/Scrivania/roofline-test/bin/benchmark_ParallelAlexNetFULL 4 2 10 PHYCORE1_THREAD1
+
+# Collect Survey
 advixe-cl --collect=roofline --interval=${SAMPLING_INTERVAL} --project-dir=${ROOT_DATA_ANALYSIS} -- ${BINARY_FILE} ${ARGUMENTS}
+# Collect Tripcounts
+advice-cl -collect tripcounts -no-trip-counts -flop --project-dir=${ROOT_DATA_ANALYSIS} -- ${BINARY_FILE} ${ARGUMENTS}
 # Make the report
 advixe-cl --report=roofline --project-dir=${ROOT_DATA_ANALYSIS} --report-output=${OUTPUT_DIR}/${OUT_FILE_NAME}
 

@@ -1,4 +1,4 @@
-# Python script used to create bar charts from previous analysis
+# Python script used to create bar charts from previous analysis    
 import pandas as pd
 import numpy as np
 import os
@@ -73,20 +73,28 @@ class ChartsCreator:
                     results[n_analysis][layer_id] = {}
                 
                 results[n_analysis][layer_id][n_threads] = row[parameter_to_plot]
-
+ 
         # Normalize
         results_normalized = {}
         for analisys_name, analysis_dict in results.items():
             results_normalized[analisys_name] = {}
             for layer_name, layer_dict in analysis_dict.items():
                 results_normalized[analisys_name][layer_name] = {}
-                reference_value = layer_dict['1']   # The reference value the one for one thread
+                reference_value = layer_dict['1']  # The reference value the one for one thread
                 for n_thread_name, n_thread_value in layer_dict.items():
                     results_normalized[analisys_name][layer_name][n_thread_name] = results[analisys_name][layer_name][n_thread_name] / reference_value
-        results = results_normalized
 
         # Create the DataFrames
-        results_df = {n_analysis_name: pd.DataFrame(n_analysis_dict) for n_analysis_name, n_analysis_dict in results.items()}
+        normalize = True
+        if normalize:
+            results_df = {n_analysis_name: pd.DataFrame(n_analysis_dict) for n_analysis_name, n_analysis_dict in results_normalized.items()}
+        else:
+            results_df = {n_analysis_name: pd.DataFrame(n_analysis_dict) for n_analysis_name, n_analysis_dict in results.items()}
+
+
+
+        # Order by analysis
+        results_df = {n_analysis_name: results_df[n_analysis_name] for n_analysis_name in sorted(results_df.keys())}
 
         # Prepare the plot
         N_ROWS = len(results.keys()) # One row for each analysis: N1, N2, ...
@@ -94,24 +102,32 @@ class ChartsCreator:
         fig, ax = plt.subplots(nrows=N_ROWS, ncols=N_COLS, figsize=(15,14))
 
         # Plot
-        for i, (n_analysis,result_df) in enumerate(results_df.items()):
-            result_df.T.plot(ax=ax[i], kind='bar', rot=0, legend=False)
-            
+        for i, (n_analysis_name,result_df) in enumerate(results_df.items()):
+            result_df.T.plot(ax=ax[i], kind='bar', rot=0, legend=False, width=0.8)
+
             # Setup subplots
             ax[i].grid('y')
-            ax[i].set_title('Order: '+n_analysis)
+            ax[i].set_title('Order: '+n_analysis_name)
             ax[i].set_ylabel(measurements_unit)
             ax[i].set_xlabel('Layer ID')
 
+            # Get all 1-thread times
+            thread1_times = [results[n_analysis_name][layer_id]['1'] for layer_id in results[n_analysis_name].keys()]
+            j = 0
+            for p in ax[i].patches: # Print value of first bar (1-thread)
+                if p.get_height()==1:
+                    ax[i].annotate( '{:.2f} ms'.format(thread1_times[j]), (p.get_x()+0.05, p.get_height()*0.9))
+                    j += 1
+
         # Adjust subplots
-        ax[0].legend(fontsize=10, ncol=16, loc='upper left', bbox_to_anchor=(0, 1.35))
+        ax[0].legend(fontsize=9, ncol=16//2, loc='upper left', bbox_to_anchor=(0, 1.65), title='Number of threads')
 
         # Finalization 
-        chart_name = parameter_to_plot + '_' + str(n_repetitions) + '-repetitions_' + tool + self.file_format
-        plt.text(x=0.5, y=0.96, s=title, ha="center", transform=fig.transFigure)
-        plt.text(x=0.5, y=0.95, s='Normalized with respect to 1-thread version', color='grey', ha="center", transform=fig.transFigure)
-        plt.text(x=0.5, y=0.94, s='Cores utilization: '+alloc_type, color='grey', ha="center", transform=fig.transFigure)
-        fig.subplots_adjust(top=0.9, hspace = .5)
+        chart_name = parameter_to_plot + '_' + str(n_repetitions) + '-repetitions_' + tool + '_' + alloc_type + self.file_format
+        plt.text(x=0.5, y=0.98, s=title, ha="center", transform=fig.transFigure)
+        plt.text(x=0.5, y=0.97, s='Normalized with respect to 1-thread version', color='grey', ha="center", transform=fig.transFigure)
+        plt.text(x=0.5, y=0.96, s='Cores utilization: '+alloc_type, color='grey', ha="center", transform=fig.transFigure)
+        fig.subplots_adjust(top=0.88, hspace = .5)
         plt.tight_layout()
         plt.savefig(os.path.join(self.output_path, chart_name))
         print(chart_name, ': Done')
@@ -122,10 +138,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Make charts.')
     parser.add_argument('--output-folder', '-o', type=str, default='./charts', help='destination folder. default: ./charts')
     parser.add_argument('--output-type', '-t', type=str, default='pdf', help='format of output charts [png, pdf]. default: èdf')
-    parser.add_argument('--n-repetitions', '-n', type=int, default=5, help='Number of repetitions used in the benchmarks. default=5')
+    parser.add_argument('--n-repetitions', '-n', type=int, default=10, help='Number of repetitions used in the benchmarks. default=5')
     args = parser.parse_args()
 
     my_chart_creator = ChartsCreator(args.output_folder, file_format=args.output_type)
     n_repetitions = args.n_repetitions
 
-    my_chart_creator.make_chart('TIME-MEDIAN', 'Time [ms]', n_repetitions, 'ExecutionTime', title="TIME-MEDIAN AlexNet layers [1 to 16 threads]", alloc_type='DEFAULT')
+    my_chart_creator.make_chart('TIME-MEDIAN', 'Time [ms]', n_repetitions, 'ExecutionTime', title="TIME-MEDIAN AlexNet layers [1 to 16 threads]", alloc_type='PHYCORE1_THREAD1')

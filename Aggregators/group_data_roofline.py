@@ -46,7 +46,8 @@ class AggregatorRoofline:
                 N_REPETITIONS = float(test_file_name.split('_')[4]) # benchmark_ParallelAlexNetFULL_1_2_10_PHYCORE1_THREAD1.csv -> 10
                 reader = csv.reader(test_file)
                 # Skip first 6 rows
-                for i in range(6): reader.__next__()
+                for i in range(5): reader.__next__()
+                print(reader.__next__())
                 for line in reader:
                     if(len(line)>1 and line[1].find('convolve') != -1): # Enter only in function results (es. convolveThread)
                         if line[20] != '' and float(line[20].replace(',','.')) != 0.:

@@ -74,7 +74,7 @@ echo "-------------- [Roofline analysis: START] "${@}" --------------"
 
 # Setup output folder and arguments
 if [[ ${BINARY_FILE} =~ ./bin/benchmark_Parallel[a-zA-Z]+FULL$ ]]; then
-    OUT_FILE_NAME=$(basename $1)_$4_$5_$6_$7.html
+    OUT_FILE_NAME=$(basename $1)_$4_$5_$6_$7
     ARGUMENTS="$4 $5 $6 $7"
 elif [[ ${BINARY_FILE} =~ ./bin/benchmark_Sequential[a-zA-Z]+FULL$ ]]; then
     OUT_FILE_NAME=$(basename $1)_$4_$5.html
@@ -96,20 +96,20 @@ fi
 ROOT_DATA_ANALYSIS=$2
 OUTPUT_DIR=$3
 
-# Run the execution
+# Setup the run
 mkdir -p ${ROOT_DATA_ANALYSIS}
 mkdir -p ${OUTPUT_DIR}
-
 SAMPLING_INTERVAL=1 #ms
 
-/opt/intel/oneapi/advisor/2022.0.0/bin64/advisor -collect tripcounts -no-trip-counts -flop -project-dir /home/mirco/Scrivania/roofline-test --app-working-dir=/home/mirco/Scrivania/roofline-test/bin -- /home/mirco/Scrivania/roofline-test/bin/benchmark_ParallelAlexNetFULL 4 2 10 PHYCORE1_THREAD1
 
 # Collect Survey
 advixe-cl --collect=roofline --interval=${SAMPLING_INTERVAL} --project-dir=${ROOT_DATA_ANALYSIS} -- ${BINARY_FILE} ${ARGUMENTS}
 # Collect Tripcounts
 advice-cl -collect tripcounts -no-trip-counts -flop --project-dir=${ROOT_DATA_ANALYSIS} -- ${BINARY_FILE} ${ARGUMENTS}
-# Make the report
-advixe-cl --report=roofline --project-dir=${ROOT_DATA_ANALYSIS} --report-output=${OUTPUT_DIR}/${OUT_FILE_NAME}
+# Make the report CSV
+advixe-cl --report=roofline --project-dir=${ROOT_DATA_ANALYSIS} --format=csv --report-output=${OUTPUT_DIR}/${OUT_FILE_NAME}.csv
+# Make the report HTML
+advixe-cl --report=roofline --project-dir=${ROOT_DATA_ANALYSIS} --format=html --report-output=${OUTPUT_DIR}/${OUT_FILE_NAME}.html
 
 echo # New line
 echo "-------------- [Roofline analysis: END] "${@}" --------------"

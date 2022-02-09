@@ -53,9 +53,11 @@ class AggregatorRoofline:
                 for line in reader:
                     if(len(line)>1 and line[1].find('convolve') != -1): # Enter only in function results (es. convolveThread)
                         if line[20] != '' and float(line[20].replace(',','.')) != 0.:
-                            gflops = float(line[20].replace(',','.')) / self.nLayers['AlexNet'] / N_REPETITIONS / N_THREADS
-                            self.results[test_file_name]['GFLOPS'] = gflops
-                            self.results[test_file_name]['Debug'] = float(line[20].replace(',','.'))
+                            total_gflops = float(line[20].replace(',','.'))
+                            self.results[test_file_name]['GFLOPS'] = total_gflops
+                            self.results[test_file_name]['AVG-TRIPCOUNT'] = line[31]
+                            self.results[test_file_name]['MIN-TRIPCOUNT'] = line[32]
+                            self.results[test_file_name]['MAX-TRIPCOUNT'] = line[33]
 
         # Show the final collected data
         print('Data grouped!')

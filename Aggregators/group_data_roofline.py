@@ -46,18 +46,14 @@ class AggregatorRoofline:
                 N_REPETITIONS = float(test_file_name.split('_')[4]) # benchmark_ParallelAlexNetFULL_1_2_10_PHYCORE1_THREAD1.csv -> 10
                 reader = csv.reader(test_file)
                 # Skip first 6 rows
-                for i in range(5): reader.__next__()
-                header = reader.__next__()
-                for i, h in enumerate(header):
-                    print(i, h)
+                for i in range(6): reader.__next__()
                 for line in reader:
                     if(len(line)>1 and line[1].find('convolve') != -1): # Enter only in function results (es. convolveThread)
                         if line[20] != '' and float(line[20].replace(',','.')) != 0.:
                             total_gflops = float(line[20].replace(',','.'))
-                            self.results[test_file_name]['GFLOPS'] = total_gflops
-                            self.results[test_file_name]['AVG-TRIPCOUNT'] = line[31]
-                            self.results[test_file_name]['MIN-TRIPCOUNT'] = line[32]
-                            self.results[test_file_name]['MAX-TRIPCOUNT'] = line[33]
+                            avg_trip_counts = float(line[31]) if float(line[31]) != 0 else 1.0  # Available if tripcounts were collected
+                            self.results[test_file_name]['GFLOPS'] = total_gflops / avg_trip_counts
+                            self.results[test_file_name]['AVG-TRIPCOUNT'] = avg_trip_counts
 
         # Show the final collected data
         print('Data grouped!')

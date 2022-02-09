@@ -109,7 +109,7 @@ advice-cl -collect tripcounts -no-trip-counts -flop --project-dir=${ROOT_DATA_AN
 # Make the report CSV
 advixe-cl --report=roofline --project-dir=${ROOT_DATA_ANALYSIS} --format=csv --report-output=${OUTPUT_DIR}/${OUT_FILE_NAME}.csv
 # Make the report HTML
-advixe-cl --report=roofline --project-dir=${ROOT_DATA_ANALYSIS} --format=html --report-output=${OUTPUT_DIR}/${OUT_FILE_NAME}.html
+advixe-cl --report=roofline --project-dir=${ROOT_DATA_ANALYSIS} --report-output=${OUTPUT_DIR}/${OUT_FILE_NAME}.html
 
 echo # New line
 echo "-------------- [Roofline analysis: END] "${@}" --------------"

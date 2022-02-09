@@ -104,6 +104,8 @@ SAMPLING_INTERVAL=1 #ms
 
 # Collect Survey
 advixe-cl --collect=roofline --interval=${SAMPLING_INTERVAL} --project-dir=${ROOT_DATA_ANALYSIS} -- ${BINARY_FILE} ${ARGUMENTS}
+# Collect trip count
+advixe-cl --collect=tripcounts -flop --interval=${SAMPLING_INTERVAL} --project-dir=${ROOT_DATA_ANALYSIS} -- ${BINARY_FILE} ${ARGUMENTS}
 # Make the report CSV
 advixe-cl --report=survey --show-all-columns --project-dir=${ROOT_DATA_ANALYSIS} --format=csv --report-output=${OUTPUT_DIR}/${OUT_FILE_NAME}.csv
 # Make the report HTML

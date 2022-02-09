@@ -42,13 +42,15 @@ class AggregatorRoofline:
         for test_file_name in file_in_folder:
             with open(os.path.join(os.getcwd(), test_file_name)) as test_file:
                 self.results[test_file_name] = {}
+                N_THREADS = test_file_name.split('_')[2] # benchmark_ParallelAlexNetFULL_1_2_10_PHYCORE1_THREAD1.csv -> 1
+                N_REPETITIONS = test_file_name.split('_')[4] # benchmark_ParallelAlexNetFULL_1_2_10_PHYCORE1_THREAD1.csv -> 10
                 reader = csv.reader(test_file)
                 # Skip first 6 rows
                 for i in range(6): reader.__next__()
                 for line in reader:
                     if(len(line)>1 and line[1].find('convolve') != -1): # Enter only in function results (es. convolveThread)
                         if line[20] != '' and float(line[20].replace(',','.')) != 0.:
-                            gflops = float(line[20].replace(',','.')) / self.nLayers['AlexNet']
+                            gflops = float(line[20].replace(',','.')) / self.nLayers['AlexNet'] / N_REPETITIONS / N_THREADS
                             self.results[test_file_name]['GFLOPS'] = gflops
 
         # Show the final collected data

@@ -42,8 +42,8 @@ class AggregatorRoofline:
         for test_file_name in file_in_folder:
             with open(os.path.join(os.getcwd(), test_file_name)) as test_file:
                 self.results[test_file_name] = {}
-                N_THREADS = test_file_name.split('_')[2] # benchmark_ParallelAlexNetFULL_1_2_10_PHYCORE1_THREAD1.csv -> 1
-                N_REPETITIONS = test_file_name.split('_')[4] # benchmark_ParallelAlexNetFULL_1_2_10_PHYCORE1_THREAD1.csv -> 10
+                N_THREADS = float(test_file_name.split('_')[2]) # benchmark_ParallelAlexNetFULL_1_2_10_PHYCORE1_THREAD1.csv -> 1
+                N_REPETITIONS = float(test_file_name.split('_')[4]) # benchmark_ParallelAlexNetFULL_1_2_10_PHYCORE1_THREAD1.csv -> 10
                 reader = csv.reader(test_file)
                 # Skip first 6 rows
                 for i in range(6): reader.__next__()

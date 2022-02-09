@@ -5,7 +5,7 @@ import csv
 import argparse
 
 
-class AggregatorRoofline
+class AggregatorRoofline:
     '''
     Attributes:
         output_path:        Path to the output file
@@ -36,25 +36,21 @@ class AggregatorRoofline
         # Get all the files in the folder and sort them
         file_in_folder = os.listdir()
         file_in_folder = [file_name for file_name in file_in_folder if file_name.endswith('.csv')]
+        if self.output_path in file_in_folder: file_in_folder.remove(self.output_path)
         file_in_folder.sort(key = lambda x : int(x.split('_')[2].split('.')[0]))
         # Iterate all the file of the current folder
-        print(file_in_folder)
         for test_file_name in file_in_folder:
-            for layer in range(self.nLayers['AlexNet']):
-                with open(os.path.join(os.getcwd(), test_file_name)) as test_file:
-                    key_name = test_file_name + '_LAYER' + str(layer)
-                    self.results[key_name] = {}
-                    layer_prefix = str(layer) + ":"
-                    for line in test_file:
-                        if((line.find(layer_prefix) != -1 ) and (line.find('Median') != -1)):           # TIME-MEDIAN
-                            self.results[key_name]['TIME-MEDIAN'] = self.__get_time_info(line)
-                        if((line.find(layer_prefix) != -1 ) and (line.find('Mean') != -1)):             # TIME-MEAN
-                            self.results[key_name]['TIME-MEAN'] = self.__get_time_info(line)
-                        if((line.find(layer_prefix) != -1 ) and (line.find('Minimum') != -1)):          # TIME-MINIMUM
-                            self.results[key_name]['TIME-MINIMUN'] = self.__get_time_info(line)     
-                        if((line.find(layer_prefix) != -1 ) and (line.find('Maximum') != -1)):          # TIME-MAXIMUM
-                            self.results[key_name]['TIME-MAXIMUM'] = self.__get_time_info(line)    
-                        
+            with open(os.path.join(os.getcwd(), test_file_name)) as test_file:
+                self.results[test_file_name] = {}
+                reader = csv.reader(test_file)
+                # Skip first 6 rows
+                for i in range(6): reader.__next__()
+                for line in reader:
+                    if(len(line)>1 and line[1].find('convolve') != -1): # Enter only in function results (es. convolveThread)
+                        if line[20] != '' and float(line[20].replace(',','.')) != 0.:
+                            gflops = float(line[20].replace(',','.')) / self.nLayers['AlexNet']
+                            self.results[test_file_name]['GFLOPS'] = gflops
+
         # Show the final collected data
         print('Data grouped!')
         for file_name, parameters in self.results.items():

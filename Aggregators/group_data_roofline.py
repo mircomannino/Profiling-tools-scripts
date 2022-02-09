@@ -47,7 +47,9 @@ class AggregatorRoofline:
                 reader = csv.reader(test_file)
                 # Skip first 6 rows
                 for i in range(5): reader.__next__()
-                print(reader.__next__())
+                header = reader.__next__()
+                for i, h in enumerate(header):
+                    print(i, h)
                 for line in reader:
                     if(len(line)>1 and line[1].find('convolve') != -1): # Enter only in function results (es. convolveThread)
                         if line[20] != '' and float(line[20].replace(',','.')) != 0.:

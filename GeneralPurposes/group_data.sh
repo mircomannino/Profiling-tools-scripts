@@ -56,15 +56,6 @@ do
         cd ../..
     done
 
-    # Roofline
-    mkdir -p ${ALL_ROOFLINES_FOLDER}
-    for ROOFLINE_ANALYSIS_FOLDER in ./Roofline*
-    do
-        # echo ${ROOFLINE_ANALYSIS_FOLDER}
-        cp ${ROOFLINE_ANALYSIS_FOLDER}/roofline-reports/*.html ${ALL_ROOFLINES_FOLDER}
-        echo Copied ${ANALYSIS_FOLDER} HTML report in ${ALL_ROOFLINES_FOLDER}
-    done
-
     cd ..
 done
 

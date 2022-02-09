@@ -52,6 +52,7 @@ class AggregatorRoofline:
                         if line[20] != '' and float(line[20].replace(',','.')) != 0.:
                             gflops = float(line[20].replace(',','.')) / self.nLayers['AlexNet'] / N_REPETITIONS / N_THREADS
                             self.results[test_file_name]['GFLOPS'] = gflops
+                            self.results[test_file_name]['Debug'] = float(line[20].replace(',','.'))
 
         # Show the final collected data
         print('Data grouped!')

@@ -51,7 +51,7 @@ class AggregatorRoofline:
                     if(len(line)>1 and line[1].find('convolve') != -1): # Enter only in function results (es. convolveThread)
                         if line[20] != '' and float(line[20].replace(',','.')) != 0.:
                             total_gflops = float(line[20].replace(',','.'))
-                            avg_trip_counts = float(line[31]) if float(line[31]) != 0 else 1.0  # Available if tripcounts were collected
+                            avg_trip_counts = float(line[31]) if (line[31]=='' or float(line[31]) != 0 )else 1.0  # Available if tripcounts were collected
                             self.results[test_file_name]['GFLOPS'] = total_gflops / self.nLayers['AlexNet'] / N_REPETITIONS
                             self.results[test_file_name]['AVG-TRIPCOUNT'] = avg_trip_counts
 

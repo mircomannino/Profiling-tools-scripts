@@ -1,8 +1,4 @@
-# Python script used to create bar charts from previous analysis    
-from cProfile import label
-from operator import index
-from tkinter import N
-from matplotlib import markers
+# Python script used to create bar charts from previous analysis   
 import pandas as pd
 import numpy as np
 import os

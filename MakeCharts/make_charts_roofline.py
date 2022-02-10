@@ -86,6 +86,9 @@ FONTSIZE = {
 CORES_USAGE =  {
     'PHYCORE1_THREAD1': {
         1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 8, 10: 8, 11: 8, 12: 8, 13: 8, 14: 8, 15: 8, 16: 8
+    },
+    'LOGCORE1_THREAD1': {
+        1: 1, 2: 1, 3: 2, 4: 2, 5: 3, 6: 3, 7: 4, 8: 4, 9: 5, 10: 5, 11: 6, 12: 6, 13: 7, 14: 7, 15: 8, 16: 8
     }
 }
 
@@ -182,6 +185,7 @@ class ChartsCreator:
             ax[i].set_ylabel(measurements_unit, fontsize=FONTSIZE['REGULAR'])
             ax[i].set_xlabel('Number of threads', fontsize=FONTSIZE['REGULAR'])
             ax[i].tick_params(labelsize=FONTSIZE['REGULAR'])
+            ax[i].set_ylim([1, 2*(10**3)])
 
             # Plot the rooflines
             blackyeti_perf = BlackYeti()
@@ -190,27 +194,30 @@ class ChartsCreator:
             max_performance_L1 = {int(k):blackyeti_perf.L1_interpolation((CORES_USAGE[alloc_type][int(k)])) for k in n_threads}
             x_val = [(k-1) for k,v in max_performance_L1.items()]
             y_val = [v for k,v in max_performance_L1.items()]
-            ax[i].plot(x_val, y_val, '+', c='blue', markeredgewidth=2, markersize=30, label='L1 peak', zorder=3)
+            ax[i].plot(x_val, y_val, '+-', c='blue', markeredgewidth=2, markersize=33, label='L1 peak', zorder=3)
             # # Max Performance L2
             max_performance_L2 = {int(k):blackyeti_perf.L2_interpolation((CORES_USAGE[alloc_type][int(k)])) for k in n_threads}
             x_val = [(k-1) for k,v in max_performance_L2.items()]
             y_val = [v for k,v in max_performance_L2.items()]
-            ax[i].plot(x_val, y_val, '+', c='green', markeredgewidth=2, markersize=30, label='L2 peak', zorder=3)
+            ax[i].plot(x_val, y_val, '+-', c='green', markeredgewidth=2, markersize=33, label='L2 peak', zorder=3)
             # # Max Performance L3
             max_performance_L3 = {int(k):blackyeti_perf.L3_interpolation((CORES_USAGE[alloc_type][int(k)])) for k in n_threads}
             x_val = [(k-1) for k,v in max_performance_L3.items()]
             y_val = [v for k,v in max_performance_L3.items()]
-            ax[i].plot(x_val, y_val, '+', c='purple', markeredgewidth=2, markersize=30, label='L3 peak', zorder=3)
+            ax[i].plot(x_val, y_val, '+-', c='purple', markeredgewidth=2, markersize=33, label='L3 peak', zorder=3)
             # # Max Performance DRAM
             max_performance_DRAM = {int(k):blackyeti_perf.DRAM_interpolation((CORES_USAGE[alloc_type][int(k)])) for k in n_threads}
             x_val = [(k-1) for k,v in max_performance_DRAM.items()]
             y_val = [v for k,v in max_performance_DRAM.items()]
-            ax[i].plot(x_val, y_val, '+', c='red', markeredgewidth=2, markersize=30, label='DRAM peak', zorder=3)
+            ax[i].plot(x_val, y_val, '+-', c='red', markeredgewidth=2, markersize=33, label='DRAM peak', zorder=3)
 
             # Annotate values 
-            for p in ax[i].patches:
+            for j, p in enumerate(ax[i].patches):
                 value = int(np.round(p.get_height()))
                 ax[i].annotate(str(value), (p.get_x(), p.get_height()/2), fontsize=FONTSIZE['ANNOTATIONS'])
+                n_cores = min(j+1,8)
+                n_cores_text = (str(n_cores)+' core') if n_cores==1 else (str(n_cores)+' cores')
+                ax[i].annotate(n_cores_text, (p.get_x(), 1100), fontsize=FONTSIZE['LEGEND'])
 
     
         plt.tight_layout()
@@ -244,4 +251,4 @@ if __name__ == "__main__":
     my_chart_creator = ChartsCreator(args.output_folder, file_format=args.output_type)
     n_repetitions = args.n_repetitions
 
-    my_chart_creator.make_chart('GFLOPS', 'Performance [GLOPs/S]', n_repetitions, 'Roofline', title="Performance of AlexNet at 0.167 FLOPs/Byte", alloc_type='PHYCORE1_THREAD1')
+    my_chart_creator.make_chart('GFLOPS', 'Performance [GLOPs/S]', n_repetitions, 'Roofline', title="Performance of AlexNet and maximum peaks at 0.167 FLOPs/Byte", alloc_type='PHYCORE1_THREAD1')

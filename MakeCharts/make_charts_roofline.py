@@ -1,5 +1,7 @@
 # Python script used to create bar charts from previous analysis    
 from cProfile import label
+from operator import index
+from tkinter import N
 from matplotlib import markers
 import pandas as pd
 import numpy as np
@@ -157,11 +159,11 @@ class ChartsCreator:
             for i, row in benchmarks_data.iterrows():
                 benchmarks_info = row[0].split('_')
                 n_threads = benchmarks_info[2]
-
                 results[n_analysis][n_threads] = row[parameter_to_plot]
+    
 
         # results_df = {n_analysis_name: pd.DataFrame(n_analysis_dict) for n_analysis_name, n_analysis_dict in results.items()}
-        results_df = pd.DataFrame(results)
+        results_df = pd.DataFrame.from_dict(results)
 
         # Order by analysis
         results_df = {n_analysis_name: results_df[n_analysis_name] for n_analysis_name in sorted(results_df.keys())}
@@ -173,18 +175,17 @@ class ChartsCreator:
 
         # Plot
         for i, (n_analysis_name,result_df) in enumerate(results_df.items()):
-            result_df.T.plot(ax=ax[i], kind='bar', rot=0, legend=False, width=0.6, colormap='Pastel1', edgecolor='black', zorder=3, label=alloc_type+' Performance'),
+            result_df.T.plot(ax=ax[i], kind='bar', rot=0, legend=False, width=0.6, colormap='Pastel1', edgecolor='black', zorder=3, label=alloc_type+' Performance')
 
             # Setup subplots
             ax[i].grid('y')
             ax[i].set_yscale('log')
-            for axis in [ax[i].xaxis, ax[i].yaxis]:
+            for axis in [ax[i].yaxis]:
                 axis.set_major_formatter(ScalarFormatter())
             ax[i].set_title('Order: '+n_analysis_name, fontsize=FONTSIZE['REGULAR'])
             ax[i].set_ylabel(measurements_unit, fontsize=FONTSIZE['REGULAR'])
             ax[i].set_xlabel('Number of threads', fontsize=FONTSIZE['REGULAR'])
             ax[i].tick_params(labelsize=FONTSIZE['REGULAR'])
-            # ax[i].set_ylim([0,1.6])
 
             # Plot the rooflines
             blackyeti_perf = BlackYeti()

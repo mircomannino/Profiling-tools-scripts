@@ -35,13 +35,13 @@
 BIN_NAME=$(basename $1)
 BINARY_FILE=$1
 
-if [[ ${BINARY_FILE} =~ ./bin/benchmark_Parallel[a-zA-Z]+FULL$ ]] && [[ "$#" -ne 6 ]]; then
+if [[ ${BINARY_FILE} =~ ./bin/benchmark_Parallel[a-zA-Z]+FULL$ ]] && [[ "$#" -ne 7 ]]; then
     echo "Detect Parallel + AlexNet FULL version with wrong arguments"
     echo "Insert the following arguments:"
     echo "  1) Binary file to analyze"
     echo "  2) Root data for VTune"
     echo "  3) Output directory"
-    echo "  4-6) Arguements of binary file. See documentation"
+    echo "  4-7) Arguements of binary file. See documentation"
     exit 1
 elif [[ ${BINARY_FILE} =~ ./bin/benchmark_Sequential[a-zA-Z]+FULL$ ]] && [[ "$#" -ne 5 ]]; then
     echo "Detect Parallel + AlexNet FULL version with wrong arguments"
@@ -84,8 +84,8 @@ fi
 
 # Setup identifiers and arguments
 if [[ ${BINARY_FILE} =~ ./bin/benchmark_Parallel[a-zA-Z]+FULL$ ]]; then # Parallel
-    BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6
-    ARGUMENTS="$4 $5 $6"
+    BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7
+    ARGUMENTS="$4 $5 $6 $7"
 elif [[ ${BINARY_FILE} =~ ./bin/benchmark_Sequential[a-zA-Z]+FULL$ ]]; then # Parallel
     BIN_IDENTIFIER=${BIN_NAME}_$4_$5
     ARGUMENTS="$4 $5"
@@ -123,7 +123,7 @@ mkdir -p ${BIN_REPORTS_DIR}
 
 # Add list of collection options
 declare -a collect_types=(
-        "hpc-performance"
+        # "hpc-performance"
         "uarch-exploration"
         # "memory-access"
         # "threading"

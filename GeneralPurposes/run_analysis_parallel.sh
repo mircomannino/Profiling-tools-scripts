@@ -6,11 +6,7 @@ declare -a list_of_analysis=("1" "2" "3" "4" "5")
 
 declare -a n_repetitions=("5")
 
-declare -a n_threads=(
-    "2"
-    "4"
-    "8"
-)
+declare -a n_threads=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16")
 
 declare -a arguments=( # (Image size, Image depth, Kernel size, N. Kernel, Cib size, Cob size, Wob size)
     "227 3 11 96"

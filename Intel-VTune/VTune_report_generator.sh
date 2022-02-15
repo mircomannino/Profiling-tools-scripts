@@ -86,6 +86,7 @@ fi
 if [[ ${BINARY_FILE} =~ ./bin/benchmark_Parallel[a-zA-Z]+FULL$ ]]; then # Parallel
     BIN_IDENTIFIER=${BIN_NAME}_$4_$5_$6_$7
     ARGUMENTS="$4 $5 $6 $7"
+    echo Args: ${ARGUMENTS}
 elif [[ ${BINARY_FILE} =~ ./bin/benchmark_Sequential[a-zA-Z]+FULL$ ]]; then # Parallel
     BIN_IDENTIFIER=${BIN_NAME}_$4_$5
     ARGUMENTS="$4 $5"

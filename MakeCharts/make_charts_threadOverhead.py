@@ -64,7 +64,7 @@ class ChartsCreator:
                 results_normalized_nthread[time_type][n_thread] = results[time_type][n_thread] / n_thread   
         results_normalized_nthread_df = pd.DataFrame.from_dict(results_normalized_nthread)
         results_normalized_nthread_df.plot(ax=ax[2], kind='line', marker='o', grid='y')
-        ax[2].set(title='Overhead for 1 thread (time_1_thread = time_N_threads / N) [1 to 8 threads]')
+        ax[2].set(title='Overhead per thread (time_1_thread = time_N_threads / N) [1 to 8 threads]')
 
         # Finalize the plot
         for i, axes in enumerate(ax):
@@ -80,4 +80,3 @@ class ChartsCreator:
 
 my_chart_creator = ChartsCreator('./charts')
 my_chart_creator.make_chart_empty()
-

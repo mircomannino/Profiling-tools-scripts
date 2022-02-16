@@ -121,14 +121,6 @@ class AggregatorVTuneData:
                                 self.results[subdirectory]['MACHINE-CLEARS'] = self.__to_float(line[2])
                             if(metric_name.find('FP Arithmetic') != -1):
                                 self.results[subdirectory]['N-FP-ARITHMETIC'] = self.__to_float(line[2])
-                            if(metric_name.find('L1 Bound') != -1):
-                                self.results[subdirectory]['L1-BOUND'] = self.__to_float(line[2])
-                            if(metric_name.find('L2 Bound') != -1):
-                                self.results[subdirectory]['L2-BOUND'] = self.__to_float(line[2])
-                            if(metric_name.find('L3 Bound') != -1):
-                                self.results[subdirectory]['L3-BOUND'] = self.__to_float(line[2])
-                            if(metric_name.find('DRAM Bound') != -1):
-                                self.results[subdirectory]['DRAM-BOUND'] = self.__to_float(line[2])
 
 
                         ### MEMORY ACCESS ###

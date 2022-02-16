@@ -124,8 +124,8 @@ mkdir -p ${BIN_REPORTS_DIR}
 # Add list of collection options
 declare -a collect_types=(
         # "hpc-performance"
-        "uarch-exploration"
-        # "memory-access"
+        # "uarch-exploration"
+        "memory-access"
         # "threading"
 )
 

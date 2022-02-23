@@ -41,13 +41,15 @@ class ChartsCreator:
             'VTune': 'reports'
         }
 
-    def make_chart(self, parameter_to_plot, measurements_unit, n_repetitions, tool, title=None, alloc_type=None):
+    def make_chart(self, parameter_to_plot, measurements_unit, n_repetitions, tool, title=None, alloc_type=None, plot_total=False):
         '''
         Args:
             parameter_to_plot:      List with the names of the parameters to use in the charts
             n_repetitions:          Number of repetitions used in the analysisfile_format
             tool:                   Name of the tool from which the results come from [ExecutionTime, Perf, VTune]
             title:                  Title of the charts
+            alloc_type:             Threads allocation type [PHYCORE1_THREAD1, LOGCORE1_THREAD1, DEFAULT]
+            plot_total:             Flag to plot the total stats of all the layers
         '''
         # Get all the folders with analysis
         analysis_directories = os.listdir()
@@ -76,7 +78,7 @@ class ChartsCreator:
             # Read the csv file in a DataFrame
             benchmarks_data_path = [file_ for file_ in os.listdir(data_folder) if file_.endswith('.csv')][0]
             benchmarks_data = pd.read_csv(os.path.join(data_folder, benchmarks_data_path))
-        
+
             for i, row in benchmarks_data.iterrows():
                 benchmarks_info = row[0].split('_')
                 n_threads = benchmarks_info[2]
@@ -86,7 +88,19 @@ class ChartsCreator:
                     results[n_analysis][layer_id] = {}
                 
                 results[n_analysis][layer_id][n_threads] = row[parameter_to_plot]
- 
+
+
+        if plot_total:
+            layers_name = list(results['N2'].keys())
+            n_threads_name = list(results['N2']['0'].keys())
+            for n_analysis_name, n_analysis_dict in results.items():
+                results[n_analysis_name]['TOTAL'] = {}
+                for layer_name in layers_name:
+                    for n_threads in n_threads_name:
+                        if n_threads not in results[n_analysis_name]['TOTAL']:
+                            results[n_analysis_name]['TOTAL'][n_threads] = 0
+                        value = results[n_analysis_name][layer_name][n_threads]
+                        results[n_analysis_name]['TOTAL'][n_threads] += value
         # Normalize
         results_normalized = {}
         for analisys_name, analysis_dict in results.items():
@@ -172,4 +186,12 @@ if __name__ == "__main__":
     my_chart_creator = ChartsCreator(args.output_folder, file_format=args.output_type)
     n_repetitions = args.n_repetitions
 
-    my_chart_creator.make_chart('TIME-MEDIAN', 'Time [ms]', n_repetitions, 'ExecutionTime', title="TIME-MEDIAN AlexNet layers [1 to 16 threads]", alloc_type='PHYCORE1_THREAD1')
+    my_chart_creator.make_chart(
+        'TIME-MEDIAN', 
+        'Time [ms]', 
+        n_repetitions, 
+        'ExecutionTime', 
+        title="TIME-MEDIAN AlexNet layers [1 to 16 threads]", 
+        alloc_type='PHYCORE1_THREAD1',
+        plot_total=True
+        )

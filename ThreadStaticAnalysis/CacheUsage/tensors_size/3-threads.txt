@@ -1,0 +1,107 @@
+### Starting processing AlexNet ###
+N. test: 1
+Order number: 2
+Thread number: 3
+Spawn even one thread: 1
+Core allocation type: DEFAULT
+Layer: 0
+Input dimensions: H=227 W=227 C=3
+Kernel dimensions: H=11 W=11 C=3 N=96
+N. output indices accessed: 95040
+N. input indices accessed: 53799
+N. kernel indices accessed: 34848
+N. output indices accessed: 95040
+N. input indices accessed: 53799
+N. kernel indices accessed: 34848
+N. output indices accessed: 100320
+N. input indices accessed: 56523
+N. kernel indices accessed: 34848
+Output dimensions: H=55 W=55 C=96
+Layer: 1
+Input dimensions: H=55 W=55 C=96
+Kernel dimensions: H=5 W=5 C=96 N=256
+N. output indices accessed: 53248
+N. input indices accessed: 100320
+N. kernel indices accessed: 614400
+N. output indices accessed: 59904
+N. input indices accessed: 110880
+N. kernel indices accessed: 614400
+N. output indices accessed: 59904
+N. input indices accessed: 110880
+N. kernel indices accessed: 614400
+Output dimensions: H=26 W=26 C=256
+Layer: 2
+Input dimensions: H=26 W=26 C=256
+Kernel dimensions: H=3 W=3 C=256 N=384
+N. output indices accessed: 73728
+N. input indices accessed: 66560
+N. kernel indices accessed: 884736
+N. output indices accessed: 73728
+N. input indices accessed: 66560
+N. kernel indices accessed: 884736
+N. output indices accessed: 73728
+N. input indices accessed: 66560
+N. kernel indices accessed: 884736
+Output dimensions: H=24 W=24 C=384
+Layer: 3
+Input dimensions: H=24 W=24 C=384
+Kernel dimensions: H=3 W=3 C=384 N=384
+N. output indices accessed: 59136
+N. input indices accessed: 82944
+N. kernel indices accessed: 1327104
+N. output indices accessed: 59136
+N. input indices accessed: 82944
+N. kernel indices accessed: 1327104
+N. output indices accessed: 67584
+N. input indices accessed: 92160
+N. kernel indices accessed: 1327104
+Output dimensions: H=22 W=22 C=384
+Layer: 4
+Input dimensions: H=22 W=22 C=384
+Kernel dimensions: H=3 W=3 C=384 N=256
+N. output indices accessed: 30720
+N. input indices accessed: 67584
+N. kernel indices accessed: 884736
+N. output indices accessed: 35840
+N. input indices accessed: 76032
+N. kernel indices accessed: 884736
+N. output indices accessed: 35840
+N. input indices accessed: 76032
+N. kernel indices accessed: 884736
+Output dimensions: H=20 W=20 C=256
+0
+0: Execution time (Mean):   	3572.11 ms
+0: Execution std deviation: 	0 ms
+0: Execution time (Median): 	3572.11 ms
+0: Execution time (Minimum):	3572.11 ms
+0: Execution time (Maximum):	3572.11 ms
+-----------------------------------------------
+1
+1: Execution time (Mean):   	15841.6 ms
+1: Execution std deviation: 	0 ms
+1: Execution time (Median): 	15841.6 ms
+1: Execution time (Minimum):	15841.6 ms
+1: Execution time (Maximum):	15841.6 ms
+-----------------------------------------------
+2
+2: Execution time (Mean):   	19790.7 ms
+2: Execution std deviation: 	0 ms
+2: Execution time (Median): 	19790.7 ms
+2: Execution time (Minimum):	19790.7 ms
+2: Execution time (Maximum):	19790.7 ms
+-----------------------------------------------
+3
+3: Execution time (Mean):   	27059.2 ms
+3: Execution std deviation: 	0 ms
+3: Execution time (Median): 	27059.2 ms
+3: Execution time (Minimum):	27059.2 ms
+3: Execution time (Maximum):	27059.2 ms
+-----------------------------------------------
+4
+4: Execution time (Mean):   	12675.8 ms
+4: Execution std deviation: 	0 ms
+4: Execution time (Median): 	12675.8 ms
+4: Execution time (Minimum):	12675.8 ms
+4: Execution time (Maximum):	12675.8 ms
+-----------------------------------------------
+__________________________________________________________

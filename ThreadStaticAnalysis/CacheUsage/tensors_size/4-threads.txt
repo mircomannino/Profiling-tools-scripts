@@ -1,0 +1,122 @@
+### Starting processing AlexNet ###
+N. test: 1
+Order number: 2
+Thread number: 4
+Spawn even one thread: 1
+Core allocation type: DEFAULT
+Layer: 0
+Input dimensions: H=227 W=227 C=3
+Kernel dimensions: H=11 W=11 C=3 N=96
+N. output indices accessed: 68640
+N. input indices accessed: 40179
+N. kernel indices accessed: 34848
+N. output indices accessed: 73920
+N. input indices accessed: 42903
+N. kernel indices accessed: 34848
+N. output indices accessed: 73920
+N. input indices accessed: 42903
+N. kernel indices accessed: 34848
+N. output indices accessed: 73920
+N. input indices accessed: 42903
+N. kernel indices accessed: 34848
+Output dimensions: H=55 W=55 C=96
+Layer: 1
+Input dimensions: H=55 W=55 C=96
+Kernel dimensions: H=5 W=5 C=96 N=256
+N. output indices accessed: 39936
+N. input indices accessed: 79200
+N. kernel indices accessed: 614400
+N. output indices accessed: 39936
+N. input indices accessed: 79200
+N. kernel indices accessed: 614400
+N. output indices accessed: 46592
+N. input indices accessed: 89760
+N. kernel indices accessed: 614400
+N. output indices accessed: 46592
+N. input indices accessed: 89760
+N. kernel indices accessed: 614400
+Output dimensions: H=26 W=26 C=256
+Layer: 2
+Input dimensions: H=26 W=26 C=256
+Kernel dimensions: H=3 W=3 C=256 N=384
+N. output indices accessed: 55296
+N. input indices accessed: 53248
+N. kernel indices accessed: 884736
+N. output indices accessed: 55296
+N. input indices accessed: 53248
+N. kernel indices accessed: 884736
+N. output indices accessed: 55296
+N. input indices accessed: 53248
+N. kernel indices accessed: 884736
+N. output indices accessed: 55296
+N. input indices accessed: 53248
+N. kernel indices accessed: 884736
+Output dimensions: H=24 W=24 C=384
+Layer: 3
+Input dimensions: H=24 W=24 C=384
+Kernel dimensions: H=3 W=3 C=384 N=384
+N. output indices accessed: 42240
+N. input indices accessed: 64512
+N. kernel indices accessed: 1327104
+N. output indices accessed: 42240
+N. input indices accessed: 64512
+N. kernel indices accessed: 1327104
+N. output indices accessed: 50688
+N. input indices accessed: 73728
+N. kernel indices accessed: 1327104
+N. output indices accessed: 50688
+N. input indices accessed: 73728
+N. kernel indices accessed: 1327104
+Output dimensions: H=22 W=22 C=384
+Layer: 4
+Input dimensions: H=22 W=22 C=384
+Kernel dimensions: H=3 W=3 C=384 N=256
+N. output indices accessed: 25600
+N. input indices accessed: 59136
+N. kernel indices accessed: 884736
+N. output indices accessed: 25600
+N. input indices accessed: 59136
+N. kernel indices accessed: 884736
+N. output indices accessed: 25600
+N. input indices accessed: 59136
+N. kernel indices accessed: 884736
+N. output indices accessed: 25600
+N. input indices accessed: 59136
+N. kernel indices accessed: 884736
+Output dimensions: H=20 W=20 C=256
+0
+0: Execution time (Mean):   	3320.82 ms
+0: Execution std deviation: 	0 ms
+0: Execution time (Median): 	3320.82 ms
+0: Execution time (Minimum):	3320.82 ms
+0: Execution time (Maximum):	3320.82 ms
+-----------------------------------------------
+1
+1: Execution time (Mean):   	14783.9 ms
+1: Execution std deviation: 	0 ms
+1: Execution time (Median): 	14783.9 ms
+1: Execution time (Minimum):	14783.9 ms
+1: Execution time (Maximum):	14783.9 ms
+-----------------------------------------------
+2
+2: Execution time (Mean):   	18273.4 ms
+2: Execution std deviation: 	0 ms
+2: Execution time (Median): 	18273.4 ms
+2: Execution time (Minimum):	18273.4 ms
+2: Execution time (Maximum):	18273.4 ms
+-----------------------------------------------
+3
+3: Execution time (Mean):   	24607.4 ms
+3: Execution std deviation: 	0 ms
+3: Execution time (Median): 	24607.4 ms
+3: Execution time (Minimum):	24607.4 ms
+3: Execution time (Maximum):	24607.4 ms
+-----------------------------------------------
+4
+4: Execution time (Mean):   	12019.7 ms
+4: Execution std deviation: 	0 ms
+4: Execution time (Median): 	12019.7 ms
+4: Execution time (Minimum):	12019.7 ms
+4: Execution time (Maximum):	12019.7 ms
+-----------------------------------------------
+__________________________________________________________

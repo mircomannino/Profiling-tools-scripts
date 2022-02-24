@@ -41,7 +41,7 @@ class ChartsCreator:
             'VTune': 'reports'
         }
 
-    def make_chart(self, parameter_to_plot, measurements_unit, n_repetitions, tool, title=None, alloc_type=None, plot_total=False):
+    def make_chart(self, parameter_to_plot, measurements_unit, n_repetitions, tool, title=None, alloc_type=None, plot_total=False, plot_kind_=None):
         '''
         Args:
             parameter_to_plot:      List with the names of the parameters to use in the charts
@@ -50,6 +50,7 @@ class ChartsCreator:
             title:                  Title of the charts
             alloc_type:             Threads allocation type [PHYCORE1_THREAD1, LOGCORE1_THREAD1, DEFAULT]
             plot_total:             Flag to plot the total stats of all the layers
+            plot_kind_:             Kind of plot (bar, line)
         '''
         # Get all the folders with analysis
         analysis_directories = os.listdir()
@@ -58,7 +59,12 @@ class ChartsCreator:
 
         # Collect data from each analysis folder
         results = {}
-        SELECTED_ANALYSIS=['N2', 'N3', 'N4']
+        SELECTED_ANALYSIS= ['N2', 'N3', 'N4']
+        SELECTED_NTHREADS= ['1', '2', '3', '4', '5', '6', '7', '8']
+        # SELECTED_NTHREADS+=['9', '10', '11', '12', '13', '14', '15', '16']
+
+        plot_kind = plot_kind_ if plot_kind_!=None else 'bar'
+
         for analysis_directory in analysis_directories:
             # Get Number of the analysis
             n_analysis = analysis_directory.replace('analysis_', '')    # 'analysis_N1' ---> 'N1'
@@ -82,6 +88,10 @@ class ChartsCreator:
             for i, row in benchmarks_data.iterrows():
                 benchmarks_info = row[0].split('_')
                 n_threads = benchmarks_info[2]
+                
+                if n_threads not in SELECTED_NTHREADS: 
+                    continue
+
                 layer_id  = benchmarks_info[6].replace('LAYER','')
 
                 if layer_id not in results[n_analysis]:
@@ -113,7 +123,7 @@ class ChartsCreator:
                     results_normalized[analisys_name][layer_name][n_thread_name] = results[analisys_name][layer_name][n_thread_name] / reference_value
 
         # Create the DataFrames
-        normalize = True
+        normalize = True if plot_kind == 'bar' else False
         if normalize:
             results_df = {n_analysis_name: pd.DataFrame(n_analysis_dict) for n_analysis_name, n_analysis_dict in results_normalized.items()}
         else:
@@ -131,7 +141,12 @@ class ChartsCreator:
 
         # Plot
         for i, (n_analysis_name,result_df) in enumerate(results_df.items()):
-            result_df.T.plot(ax=ax[i], kind='bar', rot=0, legend=False, width=0.9, colormap='tab20', edgecolor='black'),
+            if plot_kind == 'bar':
+                result_df.T.plot(ax=ax[i], kind=plot_kind, rot=0, legend=False, colormap='tab20', width=0.9, edgecolor='black')
+                ax[i].set_ylim([0,1.6])
+            elif plot_kind == 'line':
+                result_df.T.plot(ax=ax[i], kind=plot_kind, rot=0, legend=False, colormap='tab20', marker='o', linewidth=4, markersize=15)
+                ax[i].set_yticks(np.arange(0,60,10))
 
             # Setup subplots
             ax[i].grid('y')
@@ -139,7 +154,6 @@ class ChartsCreator:
             ax[i].set_ylabel(measurements_unit, fontsize=FONTSIZE['REGULAR'])
             ax[i].set_xlabel('Layer ID', fontsize=FONTSIZE['REGULAR'])
             ax[i].tick_params(labelsize=FONTSIZE['REGULAR'])
-            ax[i].set_ylim([0,1.6])
 
             # Horizontal line
             if normalize:
@@ -193,5 +207,6 @@ if __name__ == "__main__":
         'ExecutionTime', 
         title="TIME-MEDIAN AlexNet layers [1 to 16 threads]", 
         alloc_type='PHYCORE1_THREAD1',
-        plot_total=True
+        plot_total=False,
+        plot_kind_='line'
         )

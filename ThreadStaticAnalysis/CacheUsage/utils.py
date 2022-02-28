@@ -16,7 +16,7 @@ CACHE_SIZE = {
 }
 
 NETWORKS = {
-    'ALEXNET': {
+    'ALEXNET-Ho': {
         # 1 Thread
         '1': {
             'layer 0': {
@@ -246,6 +246,125 @@ NETWORKS = {
                 'input':    33792,
                 'kernel':   884736,
                 'output':   10240,
+            }
+        },
+    },
+
+
+    'ALEXNET-Hf': {
+        # 1 Thread
+        '1': {
+            'layer 0': {
+                'input':    154587,
+                'kernel':   34848,
+                'output':   290400,
+            },
+            'layer 1': {
+                'input':    290400,
+                'kernel':   614400,
+                'output':   173056,
+            },
+            'layer 2': {
+                'input':    173056,
+                'kernel':   884736,
+                'output':   221184,
+            }, 
+            'layer 3': {
+                'input':    221184,
+                'kernel':   1327104,
+                'output':   185856,
+            },
+            'layer 4': {
+                'input':    185856,
+                'kernel':   884736,
+                'output':   102400,
+            }
+        },
+
+        # 2 Threads
+        '2': {
+            'layer 0': {
+                'input':    [150501, 151182],
+                'kernel':   [15840, 19008],
+                'output':   290400,
+            },
+            'layer 1': {
+                'input':    [274560, 279840],
+                'kernel':   [245760, 368640],
+                'output':   173056,
+            },
+            'layer 2': {
+                'input':    [159744, 166400],
+                'kernel':   [294912, 589824],
+                'output':   221184,
+            }, 
+            'layer 3': {
+                'input':    [202752, 211968],
+                'kernel':   [442368, 884736],
+                'output':   185856,
+            },
+            'layer 4': {
+                'input':    [168960, 177408],
+                'kernel':   [294912, 589824],
+                'output':   102400,
+            }
+        },
+
+        # 3 Threads
+        '3': {
+            'layer 0': {
+                'input':    [112365, 149820, 149820],
+                'kernel':   [9504, 12672, 12672],
+                'output':   290400,
+            },
+            'layer 1': {
+                'input':    [137280, 274560, 274560],
+                'kernel':   [122880, 173056, 173056],
+                'output':   173056,
+            },
+            'layer 2': {
+                'input':    159744,
+                'kernel':   294912,
+                'output':   221184,
+            }, 
+            'layer 3': {
+                'input':    202752,
+                'kernel':   442368,
+                'output':   185856,
+            },
+            'layer 4': {
+                'input':    168960,
+                'kernel':   294912,
+                'output':   102400,
+            }
+        },
+
+        # 4 Threads
+        '4': {
+            'layer 0': {
+                'input':    [74910, 112365, 112365, 112365],
+                'kernel':   [6336, 9504, 9504, 9504],
+                'output':   290400,
+            },
+            'layer 1': {
+                'input':    [137280, 137280, 137280, 274560],
+                'kernel':   [122880, 122880, 122880, 245760],
+                'output':   173056,
+            },
+            'layer 2': {
+                'input':    159744,
+                'kernel':   294912,
+                'output':   221184,
+            }, 
+            'layer 3': {
+                'input':    202752,
+                'kernel':   442368,
+                'output':   185856,
+            },
+            'layer 4': {
+                'input':    168960,
+                'kernel':   294912,
+                'output':   102400,
             }
         },
     }

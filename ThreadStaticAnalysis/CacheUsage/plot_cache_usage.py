@@ -10,10 +10,10 @@ THREADS_POSITIONS = {
     '2': (0, 1),
     '3': (0, 2),
     '4': (0, 3),
-    '5': (1, 0),
-    '6': (1, 1),
-    '7': (1, 2),
-    '8': (1, 3)
+    # '5': (1, 0),
+    # '6': (1, 1),
+    # '7': (1, 2),
+    # '8': (1, 3)
 }
 
 FONTSIZE = {
@@ -21,6 +21,8 @@ FONTSIZE = {
 }
 
 def compute_layer_size(n_elements, element_bytes=None, measurement_unit=None):
+    if type(n_elements) == list:
+        n_elements = sum(n_elements) / len(n_elements)
     size = n_elements * element_bytes 
     if measurement_unit.lower() == 'b':
         return float(size)
@@ -35,8 +37,8 @@ def compute_network_sizes_SP_KB(network: dict):
     network_sizes = {}
     for layer_id, layer_dict in network.items():
         network_sizes[layer_id] = {}
-        for tensor_type, tensor_dim in layer_dict.items():
-                network_sizes[layer_id][tensor_type] = compute_layer_size(tensor_dim, element_bytes=4, measurement_unit='KB')
+        for tensor_type, tensor_dims in layer_dict.items():
+                network_sizes[layer_id][tensor_type] = compute_layer_size(tensor_dims, element_bytes=4, measurement_unit='KB')
     return network_sizes
 
 def plot_network_layers(network: dict, ax, n_threds_title=None):
@@ -56,13 +58,15 @@ def plot_cache_sizes(cache_size: dict, ax):
 
 if __name__=='__main__':
     fig, ax = plt.subplots(nrows=2, ncols=4, figsize=(20,10))
+    SELECTED_NET = 'ALEXNET-Hf'
 
     for n_threads, pos in THREADS_POSITIONS.items():
-        ax[pos] = plot_network_layers(compute_network_sizes_SP_KB(NETWORKS['ALEXNET'][n_threads]), ax=ax[pos], n_threds_title=n_threads)
+        ax[pos] = plot_network_layers(compute_network_sizes_SP_KB(NETWORKS[SELECTED_NET][n_threads]), ax=ax[pos], n_threds_title=n_threads)
 
         ax[pos] = plot_cache_sizes(CACHE_SIZE, ax[pos])
 
         ax[pos].set_yscale('log')
+        ax[pos].set_ylim(10**1, 10**4+1)
 
     plt.tight_layout()
 
@@ -70,4 +74,4 @@ if __name__=='__main__':
     fig.subplots_adjust(top=0.9)
     title = 'Size (KB) of tensors in each layer of AlexNet, using 1 to 8 threads. With respect to L1,L2,L3 cache levels'
     plt.text(x=0.5, y=0.95, s=title, ha="center", transform=fig.transFigure, fontsize=FONTSIZE['TITLE'])
-    plt.savefig('results.pdf')
+    plt.savefig('results_'+SELECTED_NET+'.pdf')

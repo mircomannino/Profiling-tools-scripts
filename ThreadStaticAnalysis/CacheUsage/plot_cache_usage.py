@@ -20,6 +20,11 @@ FONTSIZE = {
     'TITLE': 24
 }
 
+SUBPLOTS_GRID = {
+    4: {'nrows': 1, 'ncols': 4, 'figsize': (20,5)},
+    8: {'nrows': 2, 'ncols': 4, 'figsize': (20,10)}
+}
+
 def compute_layer_size(n_elements, element_bytes=None, measurement_unit=None):
     if type(n_elements) == list:
         n_elements = sum(n_elements) / len(n_elements)
@@ -57,21 +62,24 @@ def plot_cache_sizes(cache_size: dict, ax):
     return ax
 
 if __name__=='__main__':
-    fig, ax = plt.subplots(nrows=2, ncols=4, figsize=(20,10))
+    nrows, ncols = SUBPLOTS_GRID[len(THREADS_POSITIONS.keys())]['nrows'], SUBPLOTS_GRID[len(THREADS_POSITIONS.keys())]['ncols']
+    figsize = SUBPLOTS_GRID[len(THREADS_POSITIONS.keys())]['figsize']
+    fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize)
     SELECTED_NET = 'ALEXNET-Hf'
 
     for n_threads, pos in THREADS_POSITIONS.items():
+        if len(THREADS_POSITIONS.keys()): pos = pos[1]
         ax[pos] = plot_network_layers(compute_network_sizes_SP_KB(NETWORKS[SELECTED_NET][n_threads]), ax=ax[pos], n_threds_title=n_threads)
 
         ax[pos] = plot_cache_sizes(CACHE_SIZE, ax[pos])
 
         ax[pos].set_yscale('log')
-        ax[pos].set_ylim(10**1, 10**4+1)
+        ax[pos].set_ylim(10**1, 2*10**4)
 
     plt.tight_layout()
 
     # Set title
-    fig.subplots_adjust(top=0.9)
+    fig.subplots_adjust(top=0.85)
     title = 'Size (KB) of tensors in each layer of AlexNet, using 1 to 8 threads. With respect to L1,L2,L3 cache levels'
-    plt.text(x=0.5, y=0.95, s=title, ha="center", transform=fig.transFigure, fontsize=FONTSIZE['TITLE'])
+    plt.text(x=0.5, y=0.94, s=title, ha="center", transform=fig.transFigure, fontsize=FONTSIZE['TITLE'])
     plt.savefig('results_'+SELECTED_NET+'.pdf')

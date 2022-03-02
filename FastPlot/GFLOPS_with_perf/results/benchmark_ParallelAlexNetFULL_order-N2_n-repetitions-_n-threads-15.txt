@@ -1,0 +1,11 @@
+# started on Wed Mar  2 15:42:22 2022
+
+
+ Performance counter stats for './bin/benchmark_ParallelAlexNetFULL 15 2 1 PHYCORE1_THREAD1' (100 runs):
+
+                 0      fp_arith_inst_retired.128b_packed_single                                   
+       506.642.568      fp_arith_inst_retired.256b_packed_single                                     ( +-  0,00% )
+                10      fp_arith_inst_retired.scalar_single                                     ( +-  0,10% )
+
+          0,042965 +- 0,000267 seconds time elapsed  ( +-  0,62% )
+

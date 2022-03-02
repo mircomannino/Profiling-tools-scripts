@@ -16,7 +16,7 @@ mkdir -p ${OUT_DIR}
 
 for N_ANALYSIS in ${n_analysis[@]}; do
     for N_THREADS in ${n_threads[@]}; do
-        OUT_NAME=$(basename ${BIN})_order-N${N_ANALYSIS}_n-repetitions-${N_REPETITIONS}_n-threads-${N_THREADS}
+        OUT_NAME=$(basename ${BIN})_order-N${N_ANALYSIS}_n-repetitions-${CONVOLUTION_N_REPETITIONS}_n-threads-${N_THREADS}
 
         ARGUMENTS="${N_THREADS} ${N_ANALYSIS} ${CONVOLUTION_N_REPETITIONS} ${ALLOCATION_TYPE}"
         echo ${ARGUMENTS}

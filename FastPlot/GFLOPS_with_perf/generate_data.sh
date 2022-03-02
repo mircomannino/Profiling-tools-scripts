@@ -17,6 +17,6 @@ for N_ANALYSIS in ${n_analysis[@]}; do
         OUT_NAME=$(basename ${BIN})_order-N${N_ANALYSIS}_n-repetitions-${N_REPETITIONS}_n-threads-${N_THREADS}
         
         ARGUMENTS="${N_THREADS} ${N_ANALYSIS} ${N_REPETITIONS}"
-        echo "perf stat -o ${OUT_DIR}/${OUT_NAME}.txt -r 100 -e ${PERF_EVENTS} ${BIN} ${ARGUMENTS}"
+        perf stat -o ${OUT_DIR}/${OUT_NAME}.txt -r 100 -e ${PERF_EVENTS} ${BIN} ${ARGUMENTS}
     done
 done

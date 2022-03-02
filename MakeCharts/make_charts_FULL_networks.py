@@ -61,7 +61,7 @@ class ChartsCreator:
         results = {}
         SELECTED_ANALYSIS= ['N2', 'N3', 'N4']
         SELECTED_NTHREADS= ['1', '2', '3', '4', '5', '6', '7', '8']
-        # SELECTED_NTHREADS+=['9', '10', '11', '12', '13', '14', '15', '16']
+        SELECTED_NTHREADS+=['9', '10', '11', '12', '13', '14', '15', '16']
 
         plot_kind = plot_kind_ if plot_kind_!=None else 'bar'
 
@@ -135,9 +135,13 @@ class ChartsCreator:
         results_df = {n_analysis_name: results_df[n_analysis_name] for n_analysis_name in sorted(results_df.keys())}
 
         # Prepare the plot
-        N_ROWS = len(results.keys()) # One row for each analysis: N1, N2, ...
-        N_COLS = 1
-        fig, ax = plt.subplots(nrows=N_ROWS, ncols=N_COLS, figsize=(25,23))
+        N_COLS = len(results.keys()) # One row for each analysis: N1, N2, ...
+        N_ROWS = 1
+
+        if plot_kind == 'bar':
+            fig, ax = plt.subplots(nrows=N_ROWS, ncols=N_COLS, figsize=(25,23))
+        elif plot_kind == 'line':
+            fig, ax = plt.subplots(nrows=N_ROWS, ncols=N_COLS, figsize=(30,10))
 
         # Plot
         for i, (n_analysis_name,result_df) in enumerate(results_df.items()):
@@ -146,7 +150,7 @@ class ChartsCreator:
                 ax[i].set_ylim([0,1.6])
             elif plot_kind == 'line':
                 result_df.T.plot(ax=ax[i], kind=plot_kind, rot=0, legend=False, colormap='tab20', marker='o', linewidth=4, markersize=15)
-                ax[i].set_yticks(np.arange(0,60,10))
+                ax[i].set_ylim((0, 60))
 
             # Setup subplots
             ax[i].grid('y')
@@ -176,14 +180,23 @@ class ChartsCreator:
             ax[0].legend(fontsize=FONTSIZE['LEGEND'], ncol=16//2, loc='upper left', bbox_to_anchor=(0, 1.68), title='Number of threads')
             fig.subplots_adjust(top=0.85, hspace = .6)
         if len(SELECTED_ANALYSIS) == 3:
-            ax[0].legend(fontsize=FONTSIZE['LEGEND'], ncol=16//2, loc='upper left', bbox_to_anchor=(0, 1.38), title='Number of threads')
-            fig.subplots_adjust(top=0.86, hspace = .3)
+            if plot_kind == 'bar':
+                ax[0].legend(fontsize=FONTSIZE['LEGEND'], ncol=16//2, loc='upper left', bbox_to_anchor=(0, 1.38), title='Number of threads')
+                fig.subplots_adjust(top=0.86, hspace = .3)
+            elif plot_kind == 'line':
+                ax[0].legend(fontsize=FONTSIZE['LEGEND'], ncol=16//2, loc='upper center', bbox_to_anchor=(1.65, 1.35), title='Number of threads')
+                fig.subplots_adjust(top=0.65)
 
         # Finalization 
         chart_name = parameter_to_plot + '_' + str(n_repetitions) + '-repetitions_' + tool + '_' + alloc_type + self.file_format
-        plt.text(x=0.5, y=0.98, s=title, ha="center", transform=fig.transFigure, fontsize=FONTSIZE['TITLE'])
-        plt.text(x=0.5, y=0.96, s='Normalized with respect to order N2 (1-thread version)', color='darkgrey', ha="center", transform=fig.transFigure, fontsize=FONTSIZE['SUBTITLE'])
-        plt.text(x=0.5, y=0.945, s='Affinity type: '+alloc_type, color='darkgrey', ha="center", transform=fig.transFigure, fontsize=FONTSIZE['SUBTITLE'])
+        if plot_kind == 'bar':
+            plt.text(x=0.5, y=0.98, s=title, ha="center", transform=fig.transFigure, fontsize=FONTSIZE['TITLE'])
+            plt.text(x=0.5, y=0.96, s='Normalized with respect to order N2 (1-thread version)', color='darkgrey', ha="center", transform=fig.transFigure, fontsize=FONTSIZE['SUBTITLE'])
+            plt.text(x=0.5, y=0.945, s='Affinity type: '+alloc_type, color='darkgrey', ha="center", transform=fig.transFigure, fontsize=FONTSIZE['SUBTITLE'])
+        elif plot_kind == 'line':
+            plt.text(x=0.5, y=0.95, s=title, ha="center", transform=fig.transFigure, fontsize=FONTSIZE['TITLE'])
+            plt.text(x=0.5, y=0.90, s='Normalized with respect to order N2 (1-thread version)', color='darkgrey', ha="center", transform=fig.transFigure, fontsize=FONTSIZE['SUBTITLE'])
+            plt.text(x=0.5, y=0.87, s='Affinity type: '+alloc_type, color='darkgrey', ha="center", transform=fig.transFigure, fontsize=FONTSIZE['SUBTITLE'])
         
         plt.savefig(os.path.join(self.output_path, chart_name))
         print(chart_name, ': Done')

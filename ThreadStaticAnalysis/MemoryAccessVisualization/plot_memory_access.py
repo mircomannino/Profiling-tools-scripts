@@ -1,11 +1,13 @@
+from matplotlib import markers
 import matplotlib.pyplot as plt
 import pandas as pd 
 import seaborn as sns
 import numpy as np
 
-if __name__=='__main__':
 
-    output_tensor = np.zeros(shape=(290400,10980), dtype=bool)
+def heatmap():
+    output_size = 290400
+    output_tensor = np.zeros(shape=(int(output_size/(10)), 10), dtype=bool)
 
     # Dummy fill
     # n_iter_dummy = 0
@@ -22,8 +24,31 @@ if __name__=='__main__':
 
     ax = sns.heatmap(
         output_tensor,
-        vmin=0
     )
 
 
-    plt.savefig('./results.pdf')
+    plt.savefig('./heatmap.pdf')
+
+def yx_plot():
+    output_size = 290400
+
+    file_path='/home/mannino/Desktop/Git/EfficientConvolution/testMemAccess.txt'
+
+    with open(file_path, 'r') as file:
+        for i in range(0, 9): next(file)    # Skip first 9 rows
+
+        x = []
+        y = []
+        for line in file:
+            line_splitted = line.split()
+            # if len(line_splitted) != 2: print(line_splitted)
+            x.append(line_splitted[0])
+            y.append(line_splitted[1])              
+
+    plt.scatter(x, y, marker='o')
+
+    plt.savefig('yx_plot.png')
+
+if __name__=='__main__':
+
+    yx_plot()

@@ -5,6 +5,7 @@ declare -a n_threads=("1" "2" "3" "4" "5" "6" "7" "8" "9" "9" "10" "11" "12" "13
 
 PERF_EVENTS=("fp_arith_inst_retired.128b_packed_single,fp_arith_inst_retired.256b_packed_single,fp_arith_inst_retired.scalar_single")
 
+ALLOCATION_TYPE="PHYCORE1_THREAD1"
 N_REPETITIONS=100
 
 BIN=./bin/benchmark_ParallelAlexNetFULL

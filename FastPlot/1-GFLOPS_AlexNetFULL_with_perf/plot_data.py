@@ -7,9 +7,9 @@ from peak_interpolation import BlackYeti
 FONTSIZE = {
     'REGULAR': 14,
     'TITLE': 20,
-    'SUBTITLE': 27,
+    'SUBTITLE': 18,
     'LEGEND': 12,
-    'ANNOTATIONS': 18
+    'ANNOTATIONS': 10
 }
 
 ORDER_COLORS = {
@@ -65,14 +65,14 @@ def __get_time(line):
         return float(time)
     return -1
 
-def read_data():
+def read_data(alloc_type: str):
     performance = {}
     for n_analysis in N_ANALYSIS:
         performance[n_analysis] = {}
         for n_threads in N_THREADS:
             performance[n_analysis][n_threads] = {}
             performance[n_analysis][n_threads]['flops'] = {}
-            file_name = './results_PHYCORE1_THREAD1/benchmark_ParallelAlexNetFULL_order-N' + str(n_analysis) + '_n-repetitions-' + str(N_REPETITIONS) + '_n-threads-' + str(n_threads) + '.txt'
+            file_name = './results_'+alloc_type+'/benchmark_ParallelAlexNetFULL_order-N' + str(n_analysis) + '_n-repetitions-' + str(N_REPETITIONS) + '_n-threads-' + str(n_threads) + '.txt'
             with open(file_name, 'r') as file:
                 for line in file:
                     # SCALAR
@@ -100,7 +100,7 @@ def group_data(performance: dict):
             performance_to_plot[n_analysis_key].append((tot_flops / time) / 10**9)
     return performance_to_plot
 
-def plot_data(performance_to_plot: dict):
+def plot_data(performance_to_plot: dict, alloc_type: str):
     fig, ax = plt.subplots(figsize=(16,7))
     for order_name, p in performance_to_plot.items():
         x_val = [i+1 for i in range(len(p))]
@@ -142,12 +142,14 @@ def plot_data(performance_to_plot: dict):
     
     ax.set_facecolor('whitesmoke')
 
-    ax.set_title('Performance of AlexNet and maximum peaks at 0.167 FLOPs/Byte', fontsize=FONTSIZE['TITLE'], pad=20)
+    ax.set_title('Performance of AlexNet and maximum peaks at 0.167 FLOPs/Byte', fontsize=FONTSIZE['TITLE'], pad=40)
+    plt.text(x=0.5, y=0.9, s='Affinity type: '+alloc_type, ha="center", transform=fig.transFigure, color='grey', fontsize=FONTSIZE['SUBTITLE'])
 
     plt.tight_layout()
-    plt.savefig('./charts/GFLOPS_AlexNet.pdf')
+    plt.savefig('./charts/GFLOPS_AlexNet_'+alloc_type+'.pdf')
 
 if __name__=='__main__':
-    performance = read_data()
+    ALLOC_TYPE = 'PHYCORE1_THREAD1'
+    performance = read_data(alloc_type=ALLOC_TYPE)
     performance_to_plot = group_data(performance)
-    plot_data(performance_to_plot=performance_to_plot)
+    plot_data(performance_to_plot=performance_to_plot, alloc_type=ALLOC_TYPE)

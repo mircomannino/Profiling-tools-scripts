@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib.ticker import ScalarFormatter
 import numpy as np
 from peak_interpolation import BlackYeti
 
@@ -9,6 +10,12 @@ FONTSIZE = {
     'SUBTITLE': 27,
     'LEGEND': 12,
     'ANNOTATIONS': 18
+}
+
+ORDER_COLORS = {
+    'Order N2 performance': 'purple',
+    'Order N3 performance': 'pink',
+    'Order N4 performance': 'coral',
 }
 
 THREAD_CORE_MAP = {
@@ -98,7 +105,7 @@ def plot_data(performance_to_plot: dict):
     for order_name, p in performance_to_plot.items():
         x_val = [i+1 for i in range(len(p))]
         y_val = p
-        ax.plot(x_val, y_val, marker='o', linewidth=2, markersize=8, label=order_name)
+        ax.plot(x_val, y_val, marker='o', linewidth=2, markersize=8, label=order_name, color=ORDER_COLORS[order_name])
     
     # Plot roofline
     blackyeti_perf = BlackYeti()
@@ -106,27 +113,29 @@ def plot_data(performance_to_plot: dict):
     max_performance_L1 = {k:blackyeti_perf.L1_interpolation(v) for k,v in THREAD_CORE_MAP['PHYCORE1_THREAD1'].items()}
     x_val = [k for k,v in max_performance_L1.items()]
     y_val = [v for k,v in max_performance_L1.items()]
-    ax.plot(x_val, y_val, '--', c='blue', linewidth=2, markersize=12, label='L1 peak', zorder=3)
+    ax.plot(x_val, y_val, '--', c='blue', linewidth=1, markersize=12, label='L1 peak', zorder=3)
     # Max Performance L2
     max_performance_L2 = {k:blackyeti_perf.L2_interpolation(v) for k,v in THREAD_CORE_MAP['PHYCORE1_THREAD1'].items()}
     x_val = [k for k,v in max_performance_L2.items()]
     y_val = [v for k,v in max_performance_L2.items()]
-    ax.plot(x_val, y_val, '--', c='green', linewidth=2, markersize=12, label='L2 peak', zorder=3)
+    ax.plot(x_val, y_val, '--', c='green', linewidth=1, markersize=12, label='L2 peak', zorder=3)
     # Max Performance L3
     max_performance_L3 = {k:blackyeti_perf.L3_interpolation(v) for k,v in THREAD_CORE_MAP['PHYCORE1_THREAD1'].items()}
     x_val = [k for k,v in max_performance_L3.items()]
     y_val = [v for k,v in max_performance_L3.items()]
-    ax.plot(x_val, y_val, '--', c='purple', linewidth=2, markersize=12, label='L3 peak', zorder=3)
+    ax.plot(x_val, y_val, '--', c='purple', linewidth=1, markersize=12, label='L3 peak', zorder=3)
     # Max Performance DRAM
     max_performance_DRAM = {k:blackyeti_perf.DRAM_interpolation(v) for k,v in THREAD_CORE_MAP['PHYCORE1_THREAD1'].items()}
     x_val = [k for k,v in max_performance_DRAM.items()]
     y_val = [v for k,v in max_performance_DRAM.items()]
-    ax.plot(x_val, y_val, '--', c='red', linewidth=2, markersize=12, label='DRAM peak', zorder=3)
+    ax.plot(x_val, y_val, '--', c='red', linewidth=1, markersize=12, label='DRAM peak', zorder=3)
     
     ax.grid('y')
     ax.set_yscale('log')
     ax.legend(loc='best', fontsize=FONTSIZE['LEGEND'], ncol=1)
-    ax.set_xticks(np.arange(17))
+    ax.set_xticks(np.arange(1, 17))
+    for axis in [ax.yaxis]:
+        axis.set_major_formatter(ScalarFormatter())
 
     ax.set_ylabel('Performance [GFLOPS]', fontsize=FONTSIZE['REGULAR'])
     ax.set_xlabel('Number of threads', fontsize=FONTSIZE['REGULAR'])

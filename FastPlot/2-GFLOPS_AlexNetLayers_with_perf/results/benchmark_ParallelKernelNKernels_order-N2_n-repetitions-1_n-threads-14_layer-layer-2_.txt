@@ -1,0 +1,11 @@
+# started on Thu Mar  3 10:34:37 2022
+
+
+ Performance counter stats for './bin/benchmark_ParallelKernelNKernels 26 256 3 384 1 14 2 1 PHYCORE1_THREAD1' (100 runs):
+
+                 0      fp_arith_inst_retired.128b_packed_single                                   
+       127.401.984      fp_arith_inst_retired.256b_packed_single                                   
+                 2      fp_arith_inst_retired.scalar_single                                   
+
+         0,0115592 +- 0,0000961 seconds time elapsed  ( +-  0,83% )
+

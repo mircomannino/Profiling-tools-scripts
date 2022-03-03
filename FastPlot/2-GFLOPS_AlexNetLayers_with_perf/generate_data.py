@@ -8,11 +8,11 @@ def bash_command(command: str):
 n_analysis=["2", "3", "4"]
 n_threads=["1", "2", "3", "4", "5", "6", "7", "8", "9", "9", "10", "11", "12", "13", "14", "15", "16"]
 convolution_info={ # <input-H/W> <input-C> <kernel-H/W> <kernel-N> <stride>
-    'layer-0': '227 3 11 96 4',
-    'layer-1': '55 96 5 265 2',
-    'layer-2': '26 256 3 384 1',
-    'layer-3': '24 384 3 384 1',
-    'layer-4': '22 384 3 256 1'
+    '0': '227 3 11 96 4',
+    '1': '55 96 5 265 2',
+    '2': '26 256 3 384 1',
+    '3': '24 384 3 384 1',
+    '4': '22 384 3 256 1'
 }
 
 PERF_EVENTS=("fp_arith_inst_retired.128b_packed_single,fp_arith_inst_retired.256b_packed_single,fp_arith_inst_retired.scalar_single")

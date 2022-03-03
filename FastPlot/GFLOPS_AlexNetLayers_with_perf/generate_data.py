@@ -21,16 +21,17 @@ ALLOCATION_TYPE = "PHYCORE1_THREAD1"
 CONVOLUTION_N_REPETITIONS = "1"
 PERF_N_REPETITIONS = "100"
 
-BIN="./bin/benchmark_ParallelAlexNetFULL"
+BIN="./bin/benchmark_ParallelKernelNKernels"
 
 OUT_DIR="./results"
 bash_command("mkdir -p  {}".format(OUT_DIR))
 
-for N_ANALYSIS in n_analysis: 
+n_iter = 0
+for N_ANALYSIS in n_analysis:
     for N_THREADS in n_threads:
         for LAYER_ID, CONVOLUTION_INFO in convolution_info.items():
             OUT_NAME = '_'.join([
-                os.path.basename(BIN), 
+                os.path.basename(BIN),
                 'order-N'+N_ANALYSIS,
                 'n-repetitions-'+CONVOLUTION_N_REPETITIONS,
                 'n-threads-'+N_THREADS,
@@ -46,7 +47,7 @@ for N_ANALYSIS in n_analysis:
                 ALLOCATION_TYPE
             ])
 
-            print(
+            bash_command(
                 'perf stat -o {} -r {} -e {} {} {}'.format(
                     os.path.join(OUT_DIR,OUT_NAME),
                     PERF_N_REPETITIONS,
@@ -55,3 +56,6 @@ for N_ANALYSIS in n_analysis:
                     ARGUMENTS
                 )
             )
+            
+            print("[{}/{}]".format(n_iter, len(n_analysis)*len(n_threads)*len(convolution_info.keys())))
+            n_iter += 1

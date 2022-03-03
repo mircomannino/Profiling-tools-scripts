@@ -9,7 +9,7 @@ from peak_interpolation import BlackYeti
 FONTSIZE = {
     'REGULAR': 18,
     'TITLE': 30,
-    'SUBTITLE': 27,
+    'SUBTITLE': 25,
     'LEGEND': 20,
     'ANNOTATIONS': 14,
     'LABEL': 15
@@ -71,7 +71,7 @@ def __get_time(line):
         return float(time)
     return -1
 
-def read_data():
+def read_data(alloc_type: str):
     performance = {}
     for n_analysis in N_ANALYSIS:
         performance[n_analysis] = {}
@@ -80,7 +80,7 @@ def read_data():
             for n_threads in N_THREADS:
                 performance[n_analysis][layer][n_threads] = {}
                 performance[n_analysis][layer][n_threads]['flops'] = {}
-                file_name = './results/benchmark_ParallelKernelNKernels_order-N' + str(n_analysis) + '_n-repetitions-' + str(N_REPETITIONS) + '_n-threads-' + str(n_threads) + '_layer-layer-' + str(layer) + '_.txt'
+                file_name = './results_'+alloc_type+'/benchmark_ParallelKernelNKernels_order-N' + str(n_analysis) + '_n-repetitions-' + str(N_REPETITIONS) + '_n-threads-' + str(n_threads) + '_layer-layer-' + str(layer) + '_.txt'
                 with open(file_name, 'r') as file:
                     for line in file:
                         # SCALAR
@@ -111,7 +111,7 @@ def group_data(performance: dict):
                 performance_to_plot[n_analysis_key][layer_key].append((tot_flops / time) / 10**9)
     return performance_to_plot
 
-def plot_data(performance_to_plot: dict):
+def plot_data(performance_to_plot: dict, alloc_type: str):
     fig, ax = plt.subplots(nrows=3, ncols=1, figsize=(30,15))
     index = np.arange(1,len(N_THREADS)+1)
 
@@ -156,15 +156,17 @@ def plot_data(performance_to_plot: dict):
     fig.subplots_adjust(top=0.83, hspace = .5)
     handles, labels = plt.gca().get_legend_handles_labels()
     by_label = dict(zip(labels, handles))
-    ax[0].legend(by_label.values(), by_label.keys(), ncol=9, fontsize=FONTSIZE['LEGEND'], loc='upper left', bbox_to_anchor=(0.0, 1.5))
+    ax[0].legend(by_label.values(), by_label.keys(), ncol=9, fontsize=FONTSIZE['LEGEND'], loc='upper left', bbox_to_anchor=(0.0, 1.4))
 
     title = 'Performance of AlexNet layers and maximum peaks at 0.167 FLOPs/Byte'
     plt.text(x=0.5, y=0.95, s=title, ha="center", transform=fig.transFigure, fontsize=FONTSIZE['TITLE'])
+    plt.text(x=0.5, y=0.92, s='Affinity type: '+alloc_type, ha="center", transform=fig.transFigure, color='grey', fontsize=FONTSIZE['SUBTITLE'])
     
-    
-    plt.savefig('./charts/GFLOPS_per_layer.pdf')
+
+    plt.savefig('./charts/GFLOPS_per_layer_'+alloc_type+'.pdf')
 
 if __name__=='__main__':
-    performance = read_data()
+    ALLOC_TYPE = 'PHYCORE1_THREAD1'
+    performance = read_data(alloc_type=ALLOC_TYPE)
     performance_to_plot = group_data(performance)
-    plot_data(performance_to_plot=performance_to_plot)
+    plot_data(performance_to_plot=performance_to_plot, alloc_type=ALLOC_TYPE)

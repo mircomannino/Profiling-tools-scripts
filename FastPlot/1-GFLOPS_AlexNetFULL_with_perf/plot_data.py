@@ -72,7 +72,7 @@ def read_data():
         for n_threads in N_THREADS:
             performance[n_analysis][n_threads] = {}
             performance[n_analysis][n_threads]['flops'] = {}
-            file_name = './results/benchmark_ParallelAlexNetFULL_order-N' + str(n_analysis) + '_n-repetitions-' + str(N_REPETITIONS) + '_n-threads-' + str(n_threads) + '.txt'
+            file_name = './results_PHYCORE1_THREAD1/benchmark_ParallelAlexNetFULL_order-N' + str(n_analysis) + '_n-repetitions-' + str(N_REPETITIONS) + '_n-threads-' + str(n_threads) + '.txt'
             with open(file_name, 'r') as file:
                 for line in file:
                     # SCALAR
@@ -143,7 +143,7 @@ def plot_data(performance_to_plot: dict):
     ax.set_title('Performance of AlexNet and maximum peaks at 0.167 FLOPs/Byte', fontsize=FONTSIZE['TITLE'], pad=20)
 
     plt.tight_layout()
-    plt.savefig('./charts/GFLOPS.pdf')
+    plt.savefig('./charts/GFLOPS_AlexNet.pdf')
 
 if __name__=='__main__':
     performance = read_data()

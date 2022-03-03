@@ -112,14 +112,14 @@ def group_data(performance: dict):
     return performance_to_plot
 
 def plot_data(performance_to_plot: dict):
-    fig, ax = plt.subplots(nrows=3, ncols=1, figsize=(30,12))
+    fig, ax = plt.subplots(nrows=3, ncols=1, figsize=(30,15))
     index = np.arange(1,len(N_THREADS)+1)
 
     results = {n_analysis: pd.DataFrame(result, index=index) for n_analysis, result in performance_to_plot.items()}
 
     for i, (n_analysis_name, result) in enumerate(results.items()):
          # Plot performance
-        result.plot(ax=ax[i], kind='bar', edgecolor='black', rot=0, legend=False, colormap='Blues', zorder=3)
+        result.plot(ax=ax[i], kind='bar', edgecolor='black', rot=0, legend=False, colormap='Set3', zorder=3)
 
         # Plot roofline
         blackyeti_perf = BlackYeti()
@@ -135,7 +135,7 @@ def plot_data(performance_to_plot: dict):
             ax[i].hlines(max_performance_L1[thread_counter], xmin=xmin, xmax=xmax, color='blue', linewidth=3, label='L1 peak', zorder=3)
             ax[i].hlines(max_performance_L2[thread_counter], xmin=xmin, xmax=xmax, color='green', linewidth=3, label='L2 peak', zorder=3)
             ax[i].hlines(max_performance_L3[thread_counter], xmin=xmin, xmax=xmax, color='purple', linewidth=3, label='L3 peak', zorder=3)
-            ax[i].hlines(max_performance_DRAM[thread_counter], xmin=xmin, xmax=xmax, color='red', linewidth=3, label='DRAM peak', zorder=3)
+            ax[i].hlines(max_performance_DRAM[thread_counter], xmin=xmin, xmax=xmax, color='brown', linewidth=3, label='DRAM peak', zorder=3)
             thread_counter += 1
         
         # Adjust plot
@@ -148,6 +148,7 @@ def plot_data(performance_to_plot: dict):
         ax[i].set_title(n_analysis_name.replace('performance',''), fontsize=FONTSIZE['REGULAR'])
         ax[i].set_ylabel('Performance [GFLOPS]', fontsize=FONTSIZE['REGULAR'])
         ax[i].set_xlabel('Number of threads', fontsize=FONTSIZE['REGULAR'])
+
 
     plt.tight_layout()
 

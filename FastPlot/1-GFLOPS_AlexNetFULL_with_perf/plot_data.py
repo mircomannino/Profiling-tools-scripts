@@ -139,6 +139,8 @@ def plot_data(performance_to_plot: dict):
 
     ax.set_ylabel('Performance [GFLOPS]', fontsize=FONTSIZE['REGULAR'])
     ax.set_xlabel('Number of threads', fontsize=FONTSIZE['REGULAR'])
+    
+    ax.set_facecolor('whitesmoke')
 
     ax.set_title('Performance of AlexNet and maximum peaks at 0.167 FLOPs/Byte', fontsize=FONTSIZE['TITLE'], pad=20)
 

@@ -1,8 +1,9 @@
+from matplotlib import transforms
 import pandas as pd 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
 
-from utils import NETWORKS
+from utils import MACHINE_CPU, NETWORKS
 from utils import CACHE_SIZE
 
 THREADS_POSITIONS = {
@@ -10,19 +11,25 @@ THREADS_POSITIONS = {
     '2': (0, 1),
     '3': (0, 2),
     '4': (0, 3),
-    # '5': (1, 0),
-    # '6': (1, 1),
-    # '7': (1, 2),
-    # '8': (1, 3)
+    '5': (1, 0),
+    '6': (1, 1),
+    '7': (1, 2),
+    '8': (1, 3),
+    # '9': (2, 0),
+    # '10': (2, 1),
+    # '11': (2, 2),
+    # '12': (2, 3)
 }
 
 FONTSIZE = {
-    'TITLE': 24
+    'TITLE': 24,
+    'SUB-TITLE': 20
 }
 
 SUBPLOTS_GRID = {
-    4: {'nrows': 1, 'ncols': 4, 'figsize': (20,5)},
-    8: {'nrows': 2, 'ncols': 4, 'figsize': (20,10)}
+    4:  {'nrows': 1, 'ncols': 4, 'figsize': (20,5)},
+    8:  {'nrows': 2, 'ncols': 4, 'figsize': (20,10)},
+    12: {'nrows': 3, 'ncols': 4, 'figsize': (20, 15)}
 }
 
 def compute_layer_size(n_elements, element_bytes=None, measurement_unit=None):
@@ -62,24 +69,29 @@ def plot_cache_sizes(cache_size: dict, ax):
     return ax
 
 if __name__=='__main__':
+    SELECTED_MACHINE = 'BlackYeti'
+    # SELECTED_MACHINE = 'Thor'
+
     nrows, ncols = SUBPLOTS_GRID[len(THREADS_POSITIONS.keys())]['nrows'], SUBPLOTS_GRID[len(THREADS_POSITIONS.keys())]['ncols']
     figsize = SUBPLOTS_GRID[len(THREADS_POSITIONS.keys())]['figsize']
+
     fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize)
-    SELECTED_NET = 'ALEXNET-Hf'
+    SELECTED_NET = 'ALEXNET-Ho'
 
     for n_threads, pos in THREADS_POSITIONS.items():
-        if len(THREADS_POSITIONS.keys()): pos = pos[1]
+        if (len(THREADS_POSITIONS.keys()) == 4): pos = pos[1]
         ax[pos] = plot_network_layers(compute_network_sizes_SP_KB(NETWORKS[SELECTED_NET][n_threads]), ax=ax[pos], n_threds_title=n_threads)
 
-        ax[pos] = plot_cache_sizes(CACHE_SIZE, ax[pos])
+        ax[pos] = plot_cache_sizes(CACHE_SIZE[SELECTED_MACHINE], ax[pos])
 
         ax[pos].set_yscale('log')
-        ax[pos].set_ylim(10**1, 2*10**4)
+        ax[pos].set_ylim(10**1, 4*10**4)
 
     plt.tight_layout()
 
     # Set title
     fig.subplots_adjust(top=0.85)
-    title = 'Size (KB) of tensors in each layer of AlexNet, using 1 to 8 threads. With respect to L1,L2,L3 cache levels'
+    title = 'Size (KB) of tensors in each layer of AlexNet, using 1 to {} threads. With respect to L1,L2,L3 cache levels'.format(len(THREADS_POSITIONS))
     plt.text(x=0.5, y=0.94, s=title, ha="center", transform=fig.transFigure, fontsize=FONTSIZE['TITLE'])
-    plt.savefig('results_'+SELECTED_NET+'.pdf')
+    plt.text(x=0.5, y=0.9, s=MACHINE_CPU[SELECTED_MACHINE], ha='center', transform=fig.transFigure, fontsize=FONTSIZE['SUB-TITLE'], color='grey')
+    plt.savefig('results_'+SELECTED_NET+'_'+SELECTED_MACHINE+'.pdf')
